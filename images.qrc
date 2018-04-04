@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>images/pac_map.png</file>
+        <file>images/pacman_image.png</file>
     </qresource>
 </RCC>

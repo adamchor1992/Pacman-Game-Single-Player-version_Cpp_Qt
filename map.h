@@ -9,15 +9,19 @@
 
 class Map
 {
+private:
+    QVector<QPoint> pacman_paths;
+
 public:
     Map();
     void CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end);
     void LoadMapImage();
-    ~Map();
+    bool IsPointAvailable(QPoint);
+    QRectF boundingRect() const;
+
     QPixmap map_background_picture;
 
-private:
-    QVector<QPoint> pacman_paths;
+    ~Map();
 };
 
 #endif // MAP_H

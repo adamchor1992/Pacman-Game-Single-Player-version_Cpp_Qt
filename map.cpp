@@ -10,7 +10,7 @@ Map::Map()
     CreatePathPoints(340, 35, 579, 35);
 
     //LINE 2
-    CreatePathPoints(35, 121, 579, 12);
+    CreatePathPoints(35, 121, 579, 121);
 
     //LINE 3
     CreatePathPoints(35, 187, 144, 187);
@@ -97,6 +97,11 @@ void Map::LoadMapImage()
     map_background_picture.load(":/images/pac_map.png");
 }
 
+QRectF Map::boundingRect() const //sets map bounding rect which will be updated and redrawn every timer cycle
+{
+    return QRect(0,0,614,740);
+}
+
 void Map::CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end) //only left-right and up-down lines
 {
     QPoint p;
@@ -151,6 +156,18 @@ void Map::CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end) //onl
                 }
         }
     }
+}
+
+bool Map::IsPointAvailable(QPoint point) //checks if given point is accessible for Pacman (is present in pacman_paths vector)
+{
+    for(int i=0;i<pacman_paths.size();i++)
+    {
+        if(pacman_paths[i]==point)
+        {
+             return true;
+        }
+    }
+    return false;
 }
 
 Map::~Map()
