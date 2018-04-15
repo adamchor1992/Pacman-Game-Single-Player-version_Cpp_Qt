@@ -27,12 +27,16 @@ SOURCES += \
         main.cpp \
     Game_window.cpp \
     map.cpp \
-    pacman.cpp
+    pacman.cpp \
+    foodball.cpp \
+    powerball.cpp
 
 HEADERS += \
     Game_window.h \
     map.h \
-    pacman.h
+    pacman.h \
+    foodball.h \
+    powerball.h
 
 FORMS += \
     Game_window.ui

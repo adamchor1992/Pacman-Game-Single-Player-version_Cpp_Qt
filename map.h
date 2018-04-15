@@ -18,6 +18,7 @@ public:
     void LoadMapImage();
     bool IsPointAvailable(QPoint);
     QRectF boundingRect() const;
+    QVector<QPoint> getPacmanPaths(void);
 
     QPixmap map_background_picture;
 

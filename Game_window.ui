@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>744</width>
-    <height>861</height>
+    <width>750</width>
+    <height>850</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
-    <width>623</width>
-    <height>749</height>
+    <width>750</width>
+    <height>850</height>
    </size>
   </property>
   <property name="palette">
@@ -39,7 +39,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>127</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -48,7 +48,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>191</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -57,7 +57,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>159</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -66,7 +66,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>63</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -75,7 +75,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>84</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -120,7 +120,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>127</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -138,7 +138,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>63</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -176,7 +176,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>127</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -185,7 +185,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>191</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -194,7 +194,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>159</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -203,7 +203,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>63</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -212,7 +212,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>84</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -257,7 +257,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>127</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -275,7 +275,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>63</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -304,7 +304,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>63</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -313,7 +313,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>127</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -322,7 +322,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>191</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -331,7 +331,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>159</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -340,7 +340,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>63</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -349,7 +349,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>84</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -358,7 +358,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>63</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -376,7 +376,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>63</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -385,7 +385,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>127</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -394,7 +394,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>127</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -412,7 +412,7 @@
        <color alpha="255">
         <red>0</red>
         <green>0</green>
-        <blue>127</blue>
+        <blue>0</blue>
        </color>
       </brush>
      </colorrole>
@@ -440,31 +440,33 @@
   <property name="windowTitle">
    <string>PacMan</string>
   </property>
-  <widget class="QGraphicsView" name="gameplay_area">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>22</x>
-     <y>30</y>
-     <width>700</width>
-     <height>800</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>614</width>
-     <height>740</height>
-    </size>
-   </property>
-  </widget>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QGraphicsView" name="gameplay_area">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>620</width>
+       <height>750</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>620</width>
+       <height>750</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
