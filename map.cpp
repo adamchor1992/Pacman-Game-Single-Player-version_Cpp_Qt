@@ -102,11 +102,6 @@ QRectF Map::boundingRect() const //sets map bounding rect which will be updated 
     return QRect(0,0,614,740);
 }
 
-QVector<QPoint> Map::getPacmanPaths()
-{
-    return pacman_paths;
-}
-
 void Map::CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end) //only left-right and up-down lines
 {
     QPoint p;

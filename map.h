@@ -1,15 +1,13 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <QPainter>
-#include <QGraphicsItem>
-#include <QGraphicsScene>
 #include <QVector>
 #include <QPixmap>
 
 class Map
 {
 private:
+    QPixmap map_background_picture;
     QVector<QPoint> pacman_paths;
 
 public:
@@ -18,9 +16,9 @@ public:
     void LoadMapImage();
     bool IsPointAvailable(QPoint);
     QRectF boundingRect() const;
-    QVector<QPoint> getPacmanPaths(void);
 
-    QPixmap map_background_picture;
+    QPixmap getMap_Background_Picture() {return map_background_picture;}
+    QVector<QPoint> getPacmanPaths() {return pacman_paths;}
 
     ~Map();
 };

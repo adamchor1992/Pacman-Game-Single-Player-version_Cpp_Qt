@@ -9,6 +9,10 @@ private:
     int pac_x;
     int pac_y;
     int direction;
+    int nextdirection;
+    bool is_moving;
+
+    QPixmap pacman_pixmap;
 
 public:
     Pacman();
@@ -17,11 +21,15 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
     void LoadPacmanImage();
-    void SetPacX(int);
-    void SetPacY(int);
-    void SetDirection(int dir);
+    void setPac_X(int);
+    void setPac_Y(int);
+    void setDirection(int dir);
+    void setNextDirection(int dir);
 
-    QPixmap pacman_pixmap;
+    int getPac_X() {return pac_x;}
+    int getPac_Y() {return pac_y;}
+    int getDirection() {return direction;}
+    int getNextDirection() {return nextdirection;}
 };
 
 #endif // PACMAN_H

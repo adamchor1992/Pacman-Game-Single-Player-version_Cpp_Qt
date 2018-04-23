@@ -29,17 +29,23 @@ SOURCES += \
     map.cpp \
     pacman.cpp \
     foodball.cpp \
-    powerball.cpp
+    powerball.cpp \
+    ghost.cpp \
+    textstartend.cpp
 
 HEADERS += \
     Game_window.h \
     map.h \
     pacman.h \
     foodball.h \
-    powerball.h
+    powerball.h \
+    ghost.h \
+    textstartend.h
 
 FORMS += \
     Game_window.ui
 
 RESOURCES += \
     images.qrc
+
+DISTFILES +=

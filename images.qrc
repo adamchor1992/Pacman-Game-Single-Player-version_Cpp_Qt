@@ -2,5 +2,11 @@
     <qresource prefix="/">
         <file>images/pac_map.png</file>
         <file>images/pacman_image.png</file>
+        <file>images/ghostblue.png</file>
+        <file>images/ghostorange.png</file>
+        <file>images/ghostpurple.png</file>
+        <file>images/ghostred.png</file>
+        <file>images/ghostscared.png</file>
+        <file>images/ghostscaredwhite.png</file>
     </qresource>
 </RCC>

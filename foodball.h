@@ -1,7 +1,7 @@
 #ifndef FOODBALL_H
 #define FOODBALL_H
 
-#include <QGraphicsItem>
+#include <QVector>
 #include <QPoint>
 
 class FoodBall
@@ -12,8 +12,7 @@ private:
     QVector<QPoint> pacmanmapforreference;
 public:
     FoodBall();
-
-    QVector<QPoint> getFoodBallPositions();
+    QVector<QPoint> getFoodBallPositions() {return foodballpositions;}
     void CreateFoodballPositionsVector();
 };
 

@@ -1,9 +1,6 @@
 #ifndef POWERBALL_H
 #define POWERBALL_H
 
-#include <QGraphicsItem>
-#include <QPainter>
-
 #include <QVector>
 #include <QPoint>
 
@@ -13,7 +10,7 @@ private:
     QVector<QPoint> powerballpositions;
 public:
     PowerBall();
-    QVector<QPoint> getPowerBallPositions();
+    QVector<QPoint> getPowerBallPositions() {return powerballpositions;}
 };
 
 #endif // POWERBALL_H

@@ -4,8 +4,8 @@
 
 PowerBall::PowerBall()
 {
-    QPoint powerballposition1 = QPoint(35,57);
-    QPoint powerballposition2 = QPoint(579,57);
+    QPoint powerballposition1 = QPoint(35,75);
+    QPoint powerballposition2 = QPoint(579,75);
     QPoint powerballposition3 = QPoint(35,514);
     QPoint powerballposition4 = QPoint(579,514);
 
@@ -14,10 +14,4 @@ PowerBall::PowerBall()
     powerballpositions.push_back(powerballposition3);
     powerballpositions.push_back(powerballposition4);
 }
-
-QVector<QPoint> PowerBall::getPowerBallPositions()
-{
-    return powerballpositions;
-}
-
 
