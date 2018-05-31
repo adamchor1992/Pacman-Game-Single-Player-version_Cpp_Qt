@@ -4,15 +4,6 @@
 #include "powerball.h"
 #include <QGraphicsScene>
 
-void Game_window::ShowScoresAndLives()
-{
-    score=0;
-    score_display = scene->addText("Score:");
-    score_display->setDefaultTextColor(Qt::white);
-    score_display->setFont(QFont("Arial", 40));
-    score_display->setPos(0,671);
-}
-
 Game_window::Game_window(QWidget *parent) : QDialog(parent),ui(new Ui::Game_window)
 {
     ui->setupUi(this);
@@ -26,26 +17,16 @@ Game_window::Game_window(QWidget *parent) : QDialog(parent),ui(new Ui::Game_wind
     GenerateAndPopulateMap();
     GenerateAndPlacePacman();
     GenerateAndPlaceGhosts();
-    ShowScoresAndLives();
+    InitializeSounds();
+    ShowScore();
 
     collision_detection_delay = 0; //delay collision detection after game restart
 
     text_start_end = new TextStartEnd;
     scene->addItem(text_start_end);
 
-    playing=false;
-
-    beginning_sound = new QMediaPlayer;
-    eat_sound1 = new QMediaPlayer;
-    eat_sound2 = new QMediaPlayer;
-    eat_ghost_sound = new QMediaPlayer;
-    pacman_death_sound = new QMediaPlayer;
-
-    beginning_sound->setMedia(QUrl("qrc:/sounds/pacman_beginning.wav"));
-    eat_sound1->setMedia(QUrl("qrc:/sounds/pacman_eat.wav"));
-    eat_sound2->setMedia(QUrl("qrc:/sounds/pacman_eat.wav"));
-    eat_ghost_sound->setMedia(QUrl("qrc:/sounds/pacman_eatghost.wav"));
-    pacman_death_sound->setMedia(QUrl("qrc:/sounds/pacman_death.wav"));
+    playing = false;
+    ready_to_restart = false;
 
     this->setFocus(Qt::ActiveWindowFocusReason);
 }
@@ -146,11 +127,26 @@ void Game_window::GenerateAndPlaceGhosts()
     scene->addItem(ghost4);
 }
 
+void Game_window::InitializeSounds()
+{
+    sounds = new Sounds;
+}
+
+void Game_window::ShowScore()
+{
+    score=0;
+    score_display = scene->addText("Score:");
+    score_display->setDefaultTextColor(Qt::white);
+    score_display->setFont(QFont("Arial", 40));
+    score_display->setPos(0,671);
+}
+
 void Game_window::StartGame()
 {
-    beginning_sound->play();
+    sounds->beginning_sound->play();
 
     text_start_end->hide();
+    delete text_start_end;
 
     timer = new QTimer(this);
     ghoststimer=new QTimer(this);
@@ -159,6 +155,39 @@ void Game_window::StartGame()
     timer->start(4);
     ghoststimer->start(4);
     this->setFocus(); //gives the keyboard input focus to this widget
+}
+
+void Game_window::RestartGame()
+{
+    ClearVariablesAndContainers();
+
+    GenerateAndPopulateMap();
+    GenerateAndPlacePacman();
+    GenerateAndPlaceGhosts();
+    ShowScore();
+
+    sounds->beginning_sound->play();
+
+    text_start_end->hide();
+    delete text_start_end;
+
+    timer->start(4);
+    ghoststimer->start(4);
+    this->setFocus(); //gives the keyboard input focus to this widget
+}
+
+void Game_window::ClearVariablesAndContainers()
+{
+    qDebug() << &pac_man <<"Pacman address before deletion";
+    qDebug() << &pac_map <<"Pacmap address before deletion";
+
+    delete power_ball;
+    delete food_ball;
+
+    delete foodball_positions;
+    delete powerball_positions;
+    powerball_graphical_items_table.clear();
+    foodball_graphical_items_table.clear();
 }
 
 void Game_window::EndGame(int win)
@@ -180,13 +209,15 @@ void Game_window::EndGame(int win)
 
         scene->update();
         qDebug("GAME OVER");
+        playing = false;
+        ready_to_restart = true;
     }
 
     else
     {
         qDebug("YOU LOSE");
 
-        pacman_death_sound->play();
+        sounds->pacman_death_sound->play();
 
         scene->clear();
 
@@ -201,6 +232,9 @@ void Game_window::EndGame(int win)
 
         scene->update();
         qDebug("GAME OVER");
+
+        playing = false;
+        ready_to_restart = true;
     }
 }
 
@@ -1170,10 +1204,17 @@ void Game_window::keyPressEvent(QKeyEvent *event) //supports pacman movement usi
         break;
 
     case Qt::Key_Space:
-        if(!playing)
+        if(!playing && ready_to_restart == false)
         {
+            playing = true;
             StartGame();
-            playing=true;
+        }
+        if(!playing && ready_to_restart == true)
+        {
+            qDebug() << "Restarting game";
+            ready_to_restart = false;
+            playing = true;
+            RestartGame();
         }
 
     default:
@@ -1191,7 +1232,7 @@ void Game_window::CheckCollision()
     {
         if(pac_man->collidesWithItem(ghost1) && ghost1->getIsScared())
         {
-            eat_ghost_sound->play();
+            sounds->eat_ghost_sound->play();
             score+=200;
             score_display->setPlainText("Score: " + QString::number(score));
             ghost1->setGhost_X(307);
@@ -1200,7 +1241,7 @@ void Game_window::CheckCollision()
         }
         else if(pac_man->collidesWithItem(ghost2) && ghost2->getIsScared())
         {
-            eat_ghost_sound->play();
+            sounds->eat_ghost_sound->play();
             score+=200;
             score_display->setPlainText("Score: " + QString::number(score));
             ghost2->setGhost_X(307);
@@ -1209,7 +1250,7 @@ void Game_window::CheckCollision()
         }
         else if(pac_man->collidesWithItem(ghost3) && ghost3->getIsScared())
         {
-            eat_ghost_sound->play();
+            sounds->eat_ghost_sound->play();
             score+=200;
             score_display->setPlainText("Score: " + QString::number(score));
             ghost3->setGhost_X(307);
@@ -1218,7 +1259,7 @@ void Game_window::CheckCollision()
         }
         else if(pac_man->collidesWithItem(ghost4) && ghost4->getIsScared())
         {
-            eat_ghost_sound->play();
+            sounds->eat_ghost_sound->play();
             score+=200;
             score_display->setPlainText("Score: " + QString::number(score));
             ghost4->setGhost_X(307);
@@ -1254,14 +1295,14 @@ void Game_window::updater()
             foodball_graphical_items_table.at(i)->hide();
             foodball_graphical_items_table.remove(i);
 
-            if(eat_sound1->state()==QMediaPlayer::StoppedState)
+            if(sounds->eat_sound1->state()==QMediaPlayer::StoppedState)
             {
-                eat_sound1->play();
+                sounds->eat_sound1->play();
             }
 
-            if(eat_sound1->state()==QMediaPlayer::PlayingState)
+            if(sounds->eat_sound1->state()==QMediaPlayer::PlayingState)
             {
-                eat_sound2->play();
+                sounds->eat_sound2->play();
             }
 
             score++;
@@ -1301,8 +1342,6 @@ void Game_window::updater()
         ghoststimer->stop();
         EndGame(1);
     }
-
-qDebug("%d", scarestate);
 
     if(scared)
     {
@@ -1344,8 +1383,6 @@ qDebug("%d", scarestate);
     ghost2->advance();
     ghost3->advance();
     ghost4->advance();
-
-    //qDebug("Items left: %d", foodball_items_count);
 
     scene->update(scene->sceneRect());
     //qDebug("Pacman coordinates: (%d,%d)", pac_x, pac_y);
@@ -1510,4 +1547,6 @@ Game_window::~Game_window()
     delete ui;
     delete pac_map;
     delete scene;
+    delete timer;
+    delete ghoststimer;
 }

@@ -32,7 +32,8 @@ SOURCES += \
     foodball.cpp \
     powerball.cpp \
     ghost.cpp \
-    textstartend.cpp
+    textstartend.cpp \
+    sounds.cpp
 
 HEADERS += \
     Game_window.h \
@@ -41,7 +42,8 @@ HEADERS += \
     foodball.h \
     powerball.h \
     ghost.h \
-    textstartend.h
+    textstartend.h \
+    sounds.h
 
 FORMS += \
     Game_window.ui

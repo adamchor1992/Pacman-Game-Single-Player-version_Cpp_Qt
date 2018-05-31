@@ -26,19 +26,21 @@ void TextStartEnd::setScore(int _score)
 
 void TextStartEnd::setGameWon(bool _game_won)
 {
-    this -> game_won=game_won;
+    this -> game_won = _game_won;
 }
 
 void TextStartEnd::setGameLost(bool _game_lost)
 {
-    this -> game_lost=_game_lost;
+    this -> game_lost = _game_lost;
 }
 
 void TextStartEnd::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    QPen pen(Qt::red);
-    painter->setPen(pen);
-    QFont font=painter->font();
+    QPen pen_red(Qt::red);
+    QPen pen_yellow(Qt::yellow);
+    QPen pen_blue(Qt::blue);
+    painter->setPen(pen_red);
+    QFont font = painter->font();
     font.setPointSize (33);
     painter->setFont(font);
 
@@ -46,13 +48,20 @@ void TextStartEnd::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     {
         if(game_won)
         {
-            painter->drawText(boundingRect().x(),boundingRect().y(), "CONGRATULATIONS, YOU WON");
+            painter->setPen(pen_yellow);
+            painter->drawText(boundingRect(),Qt::AlignTop | Qt::AlignHCenter,"CONGRATULATIONS");
             painter->drawText(boundingRect(),Qt::AlignCenter, "FINAL SCORE : "+QString::number(score));
+            painter->setPen(pen_blue);
+            painter->drawText(boundingRect(),Qt::AlignBottom | Qt::AlignHCenter,"PRESS SPACE TO RESTART");
         }
         else if(game_lost)
         {
-            painter->drawText(boundingRect().x(),boundingRect().y(), "YOU LOST, GAME OVER");
+            painter->setPen(pen_red);
+            painter->drawText(boundingRect(),Qt::AlignTop | Qt::AlignHCenter,"YOU LOST, GAME OVER");
+            painter->setPen(pen_yellow);
             painter->drawText(boundingRect(),Qt::AlignCenter, "FINAL SCORE : "+QString::number(score));
+            painter->setPen(pen_blue);
+            painter->drawText(boundingRect(),Qt::AlignBottom | Qt::AlignHCenter,"PRESS SPACE TO RESTART");
         }
         else
         {

@@ -7,6 +7,7 @@
 #include "foodball.h"
 #include "ghost.h"
 #include "textstartend.h"
+#include "sounds.h"
 #include <QDialog>
 #include <QtCore>
 #include <QtGui>
@@ -36,28 +37,22 @@ private:
     Ghost *ghost2;
     Ghost *ghost3;
     Ghost *ghost4;
-
-    bool playing;
+    Sounds *sounds;
 
     int score;
     int foodball_items_count;
     int collision_detection_delay;
-    bool all_ghosts_started;
-    bool scared;
     int scarestate;
+    int start_timer;
+
     bool ghostmoving1,ghostmoving2,ghostmoving3,ghostmoving4;
     bool ghoststart1,ghoststart2,ghoststart3,ghoststart4;
-    int start_timer;
-    bool start;
-    bool moving;
+    bool start,moving,playing,scared,all_ghosts_started,ready_to_restart;
 
     QVector<QPoint> *powerball_positions;
     QVector<QPoint> *foodball_positions;
 
     QGraphicsPixmapItem *map_item;
-
-    QGraphicsEllipseItem powerball_items;
-    QGraphicsEllipseItem foodball_items;
 
     QVector<QGraphicsEllipseItem*> foodball_graphical_items_table;
     QVector<QGraphicsEllipseItem*> powerball_graphical_items_table;
@@ -79,7 +74,8 @@ public:
     void GenerateAndPopulateMap();
     void GenerateAndPlacePacman();
     void GenerateAndPlaceGhosts();
-    void ShowScoresAndLives();
+    void InitializeSounds();
+    void ShowScore();
 
     void GhostPlayerMove();
     void GhostMove1();
@@ -91,6 +87,8 @@ public:
     void MoveGhostInStartingRect3();
     void MoveGhostInStartingRect4();
     void StartGame();
+    void RestartGame();
+    void ClearVariablesAndContainers();
     void PacmanMove();
     void RespawnGhost();
     void CheckCollision();
