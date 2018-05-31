@@ -1,2 +1,2 @@
 # PacMan_git
-PacMan game supporting LAN multiplayer
+PacMan single player game
