@@ -162,7 +162,7 @@ bool Map::IsPointAvailable(QPoint point) //checks if given point is accessible f
 {
     for(int i=0;i<pacman_paths.size();i++)
     {
-        if(pacman_paths[i]==point)
+        if(pacman_paths.at(i)==point)
         {
              return true;
         }

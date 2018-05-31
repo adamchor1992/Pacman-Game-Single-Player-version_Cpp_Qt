@@ -88,6 +88,7 @@ public:
     void MoveGhostInStartingRect4();
     void StartGame();
     void RestartGame();
+    void HideSceneItems();
     void ClearVariablesAndContainers();
     void PacmanMove();
     void RespawnGhost();
@@ -95,7 +96,6 @@ public:
     void EndGame(int win);
 
     ~Game_window();
-
 
 public slots:
     void updater();

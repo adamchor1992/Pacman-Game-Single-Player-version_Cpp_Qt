@@ -178,16 +178,42 @@ void Game_window::RestartGame()
 
 void Game_window::ClearVariablesAndContainers()
 {
-    qDebug() << &pac_man <<"Pacman address before deletion";
-    qDebug() << &pac_map <<"Pacmap address before deletion";
-
+    delete pac_map;
     delete power_ball;
     delete food_ball;
-
     delete foodball_positions;
     delete powerball_positions;
+    delete pac_man;
+    delete ghost1;
+    delete ghost2;
+    delete ghost3;
+    delete ghost4;
+
     powerball_graphical_items_table.clear();
     foodball_graphical_items_table.clear();
+    powerball_graphical_items_table.squeeze();
+    foodball_graphical_items_table.squeeze();
+}
+
+void Game_window::HideSceneItems()
+{
+    map_item->hide();
+    score_display->hide();
+    ghost1->hide();
+    ghost2->hide();
+    ghost3->hide();
+    ghost4->hide();
+    pac_man->hide();
+
+    for(int i=0; i<foodball_graphical_items_table.size();i++)
+    {
+        foodball_graphical_items_table.at(i)->hide();
+    }
+
+    for(int i=0; i<powerball_graphical_items_table.size();i++)
+    {
+        powerball_graphical_items_table.at(i)->hide();
+    }
 }
 
 void Game_window::EndGame(int win)
@@ -196,7 +222,7 @@ void Game_window::EndGame(int win)
     {
         qDebug("YOU WIN");
 
-        scene->clear();
+        HideSceneItems();
 
         text_start_end = new TextStartEnd;
         scene->addItem(text_start_end);
@@ -219,7 +245,7 @@ void Game_window::EndGame(int win)
 
         sounds->pacman_death_sound->play();
 
-        scene->clear();
+        HideSceneItems();
 
         text_start_end = new TextStartEnd;
         scene->addItem(text_start_end);
@@ -376,7 +402,6 @@ void Game_window::GhostMove1()
     }
     else
     {
-        //nextghost4_dir=(qrand()%4)+1;
         if(ghost1_dir==4 &&ghost1_y<pac_y || ghost1_dir==1 && ghost1_y>pac_y)
         {
             if(ghost1_dir==1 && ghost1_y>pac_y)
@@ -549,7 +574,6 @@ void Game_window::GhostMove2()
     }
     else
     {
-        //nextghost4_dir=(qrand()%4)+1;
         if(ghost2_dir==4 &&ghost2_y<pac_y || ghost2_dir==1 && ghost2_y>pac_y)
         {
             if(ghost2_dir==1 && ghost2_y>pac_y)
@@ -720,7 +744,6 @@ void Game_window::GhostMove3()
     }
     else
     {
-        //nextghost4_dir=(qrand()%4)+1;
         if(ghost3_dir==4 &&ghost3_y<pac_y || ghost3_dir==1 && ghost3_y>pac_y)
         {
             if(ghost3_dir==1 && ghost3_y>pac_y)
@@ -894,7 +917,6 @@ void Game_window::GhostMove4()
     }
     else
     {
-        //nextghost4_dir=(qrand()%4)+1;
         if(ghost4_dir==4 &&ghost4_y<pac_y || ghost4_dir==1 && ghost4_y>pac_y)
         {
             if(ghost4_dir==1 && ghost4_y>pac_y)
@@ -1065,6 +1087,7 @@ void Game_window::MoveGhostInStartingRect1()
             ghost1_dir=4; //go right
         }
     }
+
     if(ghost1_dir==4)
     {
         ghost1_x+=1;
