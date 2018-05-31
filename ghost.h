@@ -10,8 +10,18 @@ private:
     QPixmap ghost_scared_blue;
     QPixmap ghost_scared_white;
 
+    QPixmap left1,left2;
+    QPixmap up1,up2;
+    QPixmap down1,down2;
+    QPixmap right1,right2;
+    QPixmap scaredblue, scaredblue1;
+    QPixmap scaredwhite, scaredwhite1;
+
     bool is_scared;
     bool scared_white;
+
+    int animestate;
+    int animation_modify_factor;
 
     int ghost_x,ghost_y;
     int ghostdirection;
@@ -21,12 +31,12 @@ public:
     Ghost();
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void LoadGhostImages();
     void advance();
 
     void setGhost_X(int);
     void setGhost_Y(int);
     void setIsScared(bool option) {is_scared=option;}
-    //void setScarestate(int number) {scarestat}
     void setScaredWhite(bool option) {scared_white=option;}
     void setGhostDirection(int dir) {ghostdirection=dir;}
     void setNextGhostDirection(int dir) {nextghostdirection=dir;}
