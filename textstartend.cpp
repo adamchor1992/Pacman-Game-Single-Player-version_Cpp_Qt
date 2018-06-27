@@ -41,7 +41,7 @@ void TextStartEnd::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     QPen pen_blue(Qt::blue);
     painter->setPen(pen_red);
     QFont font = painter->font();
-    font.setPointSize (33);
+    font.setPointSize (30);
     painter->setFont(font);
 
     if(!playing)

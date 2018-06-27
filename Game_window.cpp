@@ -7,23 +7,21 @@
 Game_window::Game_window(QWidget *parent) : QDialog(parent),ui(new Ui::Game_window)
 {
     ui->setupUi(this);
-
-    scene = new QGraphicsScene(this);
-    ui->gameplay_area->setScene(scene);
+    scene.setParent(this);
+    ui->gameplay_area->setScene(&scene);
     ui->gameplay_area->setRenderHint(QPainter::Antialiasing);
-    scene->setSceneRect(0,0,614,740);
-    ui->gameplay_area->setSceneRect(scene->sceneRect());
+    scene.setSceneRect(0,0,614,740);
+    ui->gameplay_area->setSceneRect(scene.sceneRect());
 
     GenerateAndPopulateMap();
     GenerateAndPlacePacman();
     GenerateAndPlaceGhosts();
-    InitializeSounds();
+
     ShowScore();
 
     collision_detection_delay = 0; //delay collision detection after game restart
 
-    text_start_end = new TextStartEnd;
-    scene->addItem(text_start_end);
+    scene.addItem(&text_start_end);
 
     playing = false;
     ready_to_restart = false;
@@ -33,30 +31,21 @@ Game_window::Game_window(QWidget *parent) : QDialog(parent),ui(new Ui::Game_wind
 
 void Game_window::GenerateAndPopulateMap()
 {
-    pac_map=new Map;
-    power_ball=new PowerBall;
-    food_ball=new FoodBall;
+    powerball_positions = power_ball.getPowerBallPositions();
+    foodball_positions = food_ball.getFoodBallPositions();
 
-    powerball_positions = new QVector<QPoint>;
-    *powerball_positions = power_ball->getPowerBallPositions();
+    map_item = scene.addPixmap(pac_map.getMap_Background_Picture());
 
-    foodball_positions = new QVector<QPoint>;
-    *foodball_positions = food_ball->getFoodBallPositions();
-
-    map_item = scene->addPixmap(pac_map->getMap_Background_Picture());
-
-    for(int i=0;i<powerball_positions->size();i++)
+    for(int i=0;i<powerball_positions.size();i++)
     {
-        powerball_graphical_items_table.push_back(scene->addEllipse(powerball_positions->at(i).x()-5,powerball_positions->at(i).y()-8,15,15,QPen(Qt::NoPen),QBrush(Qt::white)));
+        powerball_graphical_items_table.push_back(scene.addEllipse(powerball_positions.at(i).x()-5,powerball_positions.at(i).y()-8,15,15,QPen(Qt::NoPen),QBrush(Qt::white)));
     }
 
-    foodball_items_count=foodball_positions->size();
+    foodball_items_count=foodball_positions.size();
 
-    qDebug("Foodball positions size: %d", foodball_positions->size());
-
-    for(int i=0;i<foodball_positions->size();i++)
+    for(int i=0;i<foodball_positions.size();i++)
     {
-        foodball_graphical_items_table.push_back(scene->addEllipse(foodball_positions->at(i).x(),foodball_positions->at(i).y(),7,7,QPen(Qt::NoPen),QBrush(Qt::white)));
+        foodball_graphical_items_table.push_back(scene.addEllipse(foodball_positions.at(i).x(),foodball_positions.at(i).y(),7,7,QPen(Qt::NoPen),QBrush(Qt::white)));
     }
 }
 
@@ -64,50 +53,39 @@ void Game_window::GenerateAndPlacePacman()
 {
     start=false;
 
-    pac_man=new Pacman;
+    pac_man.setDirection(1); //pacman moves left after game start
 
-    pac_man->setDirection(1); //pacman moves left after game start
+    pac_man.setPac_X(320);
+    pac_man.setPac_Y(514);
 
-    moving=false;
-
-    pac_man->setPac_X(320);
-    pac_man->setPac_Y(514);
-
-    scene->addItem(pac_man);
-
-    moving=false;
+   scene.addItem(&pac_man);
 }
 
 void Game_window::GenerateAndPlaceGhosts()
 {
-    ghost1=new Ghost;
-    ghost2=new Ghost;
-    ghost3=new Ghost;
-    ghost4=new Ghost;
-
     start_timer = 0;
 
     scared = false;
 
     scarestate = 0;
 
-    ghost1->setIsScared(false);
-    ghost2->setIsScared(false);
-    ghost3->setIsScared(false);
-    ghost4->setIsScared(false);
+    ghost1.setIsScared(false);
+    ghost2.setIsScared(false);
+    ghost3.setIsScared(false);
+    ghost4.setIsScared(false);
 
-    ghost1->setGhost_X(307);
-    ghost1->setGhost_Y(318);
-    ghost2->setGhost_X(307);
-    ghost2->setGhost_Y(318);
-    ghost3->setGhost_X(307);
-    ghost3->setGhost_Y(318);
-    ghost4->setGhost_X(307);
-    ghost4->setGhost_Y(318);
+    ghost1.setGhost_X(307);
+    ghost1.setGhost_Y(318);
+    ghost2.setGhost_X(307);
+    ghost2.setGhost_Y(318);
+    ghost3.setGhost_X(307);
+    ghost3.setGhost_Y(318);
+    ghost4.setGhost_X(307);
+    ghost4.setGhost_Y(318);
 
-    ghost1->setGhostColor("orange");
-    ghost2->setGhostColor("red");
-    ghost3->setGhostColor("blue");
+    ghost1.setGhostColor("orange");
+    ghost2.setGhostColor("red");
+    ghost3.setGhostColor("blue");
 
     ghostmoving1=false;
     ghostmoving2=false;
@@ -121,21 +99,16 @@ void Game_window::GenerateAndPlaceGhosts()
 
     all_ghosts_started = false;
 
-    scene->addItem(ghost1);
-    scene->addItem(ghost2);
-    scene->addItem(ghost3);
-    scene->addItem(ghost4);
-}
-
-void Game_window::InitializeSounds()
-{
-    sounds = new Sounds;
+    scene.addItem(&ghost1);
+    scene.addItem(&ghost2);
+    scene.addItem(&ghost3);
+    scene.addItem(&ghost4);
 }
 
 void Game_window::ShowScore()
 {
     score=0;
-    score_display = scene->addText("Score:");
+    score_display = scene.addText("Score:");
     score_display->setDefaultTextColor(Qt::white);
     score_display->setFont(QFont("Arial", 40));
     score_display->setPos(0,671);
@@ -143,17 +116,15 @@ void Game_window::ShowScore()
 
 void Game_window::StartGame()
 {
-    sounds->beginning_sound->play();
+    sounds.beginning_sound.play();
 
-    text_start_end->hide();
-    delete text_start_end;
+    text_start_end.hide();
 
-    timer = new QTimer(this);
-    ghoststimer=new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this,SLOT(updater()));
-    connect(ghoststimer, SIGNAL(timeout()), this,SLOT(ghostupdater()));
-    timer->start(4);
-    ghoststimer->start(4);
+    connect(&timer, SIGNAL(timeout()), this,SLOT(updater()));
+    connect(&ghoststimer, SIGNAL(timeout()), this,SLOT(ghostupdater()));
+
+    timer.start(4);
+    ghoststimer.start(4);
     this->setFocus(); //gives the keyboard input focus to this widget
 }
 
@@ -161,34 +132,29 @@ void Game_window::RestartGame()
 {
     ClearVariablesAndContainers();
 
+    pac_man.show();
+    ghost1.show();
+    ghost2.show();
+    ghost3.show();
+    ghost4.show();
+
     GenerateAndPopulateMap();
     GenerateAndPlacePacman();
     GenerateAndPlaceGhosts();
+
     ShowScore();
 
-    sounds->beginning_sound->play();
+    sounds.beginning_sound.play();
 
-    text_start_end->hide();
-    delete text_start_end;
+    text_start_end.hide();
 
-    timer->start(4);
-    ghoststimer->start(4);
+    timer.start(4);
+    ghoststimer.start(4);
     this->setFocus(); //gives the keyboard input focus to this widget
 }
 
 void Game_window::ClearVariablesAndContainers()
 {
-    delete pac_map;
-    delete power_ball;
-    delete food_ball;
-    delete foodball_positions;
-    delete powerball_positions;
-    delete pac_man;
-    delete ghost1;
-    delete ghost2;
-    delete ghost3;
-    delete ghost4;
-
     powerball_graphical_items_table.clear();
     foodball_graphical_items_table.clear();
     powerball_graphical_items_table.squeeze();
@@ -199,11 +165,18 @@ void Game_window::HideSceneItems()
 {
     map_item->hide();
     score_display->hide();
-    ghost1->hide();
-    ghost2->hide();
-    ghost3->hide();
-    ghost4->hide();
-    pac_man->hide();
+
+    pac_man.hide();
+    scene.removeItem(&pac_man);
+
+    ghost1.hide();
+    ghost2.hide();
+    ghost3.hide();
+    ghost4.hide();
+    scene.removeItem(&ghost1);
+    scene.removeItem(&ghost2);
+    scene.removeItem(&ghost3);
+    scene.removeItem(&ghost4);
 
     for(int i=0; i<foodball_graphical_items_table.size();i++)
     {
@@ -220,45 +193,35 @@ void Game_window::EndGame(int win)
 {
     if(win==1)
     {
-        qDebug("YOU WIN");
-
         HideSceneItems();
 
-        text_start_end = new TextStartEnd;
-        scene->addItem(text_start_end);
+        text_start_end.show();
 
-        text_start_end->setScore(score);
-        text_start_end->setGameWon(true);
-        text_start_end->show();
+        text_start_end.setScore(score);
+        text_start_end.setGameWon(true);
+        text_start_end.show();
 
         score=0;
 
-        scene->update();
-        qDebug("GAME OVER");
+        scene.update();
         playing = false;
         ready_to_restart = true;
     }
 
     else
     {
-        qDebug("YOU LOSE");
-
-        sounds->pacman_death_sound->play();
+        sounds.pacman_death_sound.play();
 
         HideSceneItems();
 
-        text_start_end = new TextStartEnd;
-        scene->addItem(text_start_end);
-
-        text_start_end->setScore(score);
-        text_start_end->setGameLost(true);
-        text_start_end->show();
+        text_start_end.show();
+        text_start_end.setScore(score);
+        text_start_end.setGameLost(true);
+        text_start_end.show();
 
         score=0;
 
-        scene->update();
-        qDebug("GAME OVER");
-
+        scene.update();
         playing = false;
         ready_to_restart = true;
     }
@@ -268,10 +231,10 @@ void Game_window::PacmanMove()
 {
     QPoint p;
 
-    int pac_x = pac_man->getPac_X();
-    int pac_y = pac_man->getPac_Y();
-    int direction = pac_man->getDirection();
-    int nextdirection = pac_man->getNextDirection();
+    int pac_x = pac_man.getPac_X();
+    int pac_y = pac_man.getPac_Y();
+    int direction = pac_man.getDirection();
+    int nextdirection = pac_man.getNextDirection();
 
     if(nextdirection!=direction)
     {
@@ -281,7 +244,7 @@ void Game_window::PacmanMove()
             p.setX(pac_x-1);
             p.setY(pac_y);
 
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 direction=nextdirection;
                 nextdirection=0;
@@ -291,7 +254,7 @@ void Game_window::PacmanMove()
         case 2: //up
             p.setX(pac_x);
             p.setY(pac_y-1);
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 direction=nextdirection;
                 nextdirection=0;
@@ -301,7 +264,7 @@ void Game_window::PacmanMove()
         case 3: //down
             p.setX(pac_x);
             p.setY(pac_y+1);
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 direction=nextdirection;
                 nextdirection=0;
@@ -311,7 +274,7 @@ void Game_window::PacmanMove()
         case 4: //right
             p.setX(pac_x+1);
             p.setY(pac_y);
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 direction=nextdirection;
                 nextdirection=0;
@@ -325,9 +288,9 @@ void Game_window::PacmanMove()
     case 1: //left
         p.setX(pac_x-1);
         p.setY(pac_y);
-        pac_man->setDirection(direction);
+        pac_man.setDirection(direction);
 
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             pac_x = pac_x - 1;
         }
@@ -337,9 +300,9 @@ void Game_window::PacmanMove()
     case 2: //up
         p.setX(pac_x);
         p.setY(pac_y-1);
-        pac_man->setDirection(direction);
+        pac_man.setDirection(direction);
 
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             pac_y= pac_y - 1;
         }
@@ -349,9 +312,9 @@ void Game_window::PacmanMove()
     case 3: //down
         p.setX(pac_x);
         p.setY(pac_y+1);
-        pac_man->setDirection(direction);
+        pac_man.setDirection(direction);
 
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             pac_y= pac_y + 1;
         }
@@ -361,9 +324,9 @@ void Game_window::PacmanMove()
     case 4: //right
         p.setX(pac_x+1);
         p.setY(pac_y);
-        pac_man->setDirection(direction);
+        pac_man.setDirection(direction);
 
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             pac_x = pac_x + 1;
         }
@@ -381,20 +344,20 @@ void Game_window::PacmanMove()
         pac_x=1;
     }
 
-    pac_man->setPac_X(pac_x);
-    pac_man->setPac_Y(pac_y);
+    pac_man.setPac_X(pac_x);
+    pac_man.setPac_Y(pac_y);
 }
 
 void Game_window::GhostMove1()
 {
     QPoint p;
 
-    int pac_x = pac_man->getPac_X();
-    int pac_y = pac_man->getPac_Y();
-    int ghost1_x = ghost1->getGhost_X();
-    int ghost1_y = ghost1->getGhost_Y();
-    int ghost1_dir = ghost1->getGhostDirection();
-    int nextghost1_dir = ghost1->getNextGhostDirection();
+    int pac_x = pac_man.getPac_X();
+    int pac_y = pac_man.getPac_Y();
+    int ghost1_x = ghost1.getGhost_X();
+    int ghost1_y = ghost1.getGhost_Y();
+    int ghost1_dir = ghost1.getGhostDirection();
+    int nextghost1_dir = ghost1.getNextGhostDirection();
 
     if(!ghostmoving1)
     {
@@ -434,7 +397,7 @@ void Game_window::GhostMove1()
             p.setX(ghost1_x-1);
             p.setY(ghost1_y);
 
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost1_dir=nextghost1_dir;
                 nextghost1_dir=0;
@@ -445,7 +408,7 @@ void Game_window::GhostMove1()
         case 4:
             p.setX(ghost1_x+1);
             p.setY(ghost1_y);
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost1_dir=nextghost1_dir;
                 nextghost1_dir=0;
@@ -455,7 +418,7 @@ void Game_window::GhostMove1()
         case 3:
             p.setX(ghost1_x);
             p.setY(ghost1_y+1);
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost1_dir=nextghost1_dir;
                 nextghost1_dir=0;
@@ -465,7 +428,7 @@ void Game_window::GhostMove1()
         case 2:
             p.setX(ghost1_x);
             p.setY(ghost1_y-1);
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost1_dir=nextghost1_dir;
                 nextghost1_dir=0;
@@ -480,9 +443,9 @@ void Game_window::GhostMove1()
     case 1:
         p.setX(ghost1_x-1);
         p.setY(ghost1_y);
-        ghost1->setGhostDirection(ghost1_dir);
+        ghost1.setGhostDirection(ghost1_dir);
 
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost1_x-=1;
             ghostmoving1=true;
@@ -495,10 +458,10 @@ void Game_window::GhostMove1()
         break;
 
     case 4:
-        ghost1->setGhostDirection(ghost1_dir);
+        ghost1.setGhostDirection(ghost1_dir);
         p.setX(ghost1_x+1);
         p.setY(ghost1_y);
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost1_x+=1;
             ghostmoving1=true;
@@ -511,10 +474,10 @@ void Game_window::GhostMove1()
         break;
 
     case 3:
-        ghost1->setGhostDirection(ghost1_dir);
+        ghost1.setGhostDirection(ghost1_dir);
         p.setX(ghost1_x);
         p.setY(ghost1_y+1);
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost1_y+=1;
             ghostmoving1=true;
@@ -526,10 +489,10 @@ void Game_window::GhostMove1()
 
         break;
     case 2:
-        ghost1->setGhostDirection(ghost1_dir);
+        ghost1.setGhostDirection(ghost1_dir);
         p.setX(ghost1_x);
         p.setY(ghost1_y-1);
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost1_y-=1;
             ghostmoving1=true;
@@ -553,20 +516,20 @@ void Game_window::GhostMove1()
         ghost1_y=318;
     }
 
-    ghost1->setGhost_X(ghost1_x);
-    ghost1->setGhost_Y(ghost1_y);
-    ghost1->setNextGhostDirection(nextghost1_dir);
+    ghost1.setGhost_X(ghost1_x);
+    ghost1.setGhost_Y(ghost1_y);
+    ghost1.setNextGhostDirection(nextghost1_dir);
 }
 void Game_window::GhostMove2()
 {
     QPoint p;
 
-    int pac_x = pac_man->getPac_X();
-    int pac_y = pac_man->getPac_Y();
-    int ghost2_x = ghost2->getGhost_X();
-    int ghost2_y = ghost2->getGhost_Y();
-    int ghost2_dir = ghost2->getGhostDirection();
-    int nextghost2_dir = ghost2->getNextGhostDirection();
+    int pac_x = pac_man.getPac_X();
+    int pac_y = pac_man.getPac_Y();
+    int ghost2_x = ghost2.getGhost_X();
+    int ghost2_y = ghost2.getGhost_Y();
+    int ghost2_dir = ghost2.getGhostDirection();
+    int nextghost2_dir = ghost2.getNextGhostDirection();
 
     if(!ghostmoving2)
     {
@@ -606,7 +569,7 @@ void Game_window::GhostMove2()
             p.setX(ghost2_x-1);
             p.setY(ghost2_y);
 
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost2_dir=nextghost2_dir;
                 nextghost2_dir=0;
@@ -617,7 +580,7 @@ void Game_window::GhostMove2()
         case 4:
             p.setX(ghost2_x+1);
             p.setY(ghost2_y);
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost2_dir=nextghost2_dir;
                 nextghost2_dir=0;
@@ -627,7 +590,7 @@ void Game_window::GhostMove2()
         case 3:
             p.setX(ghost2_x);
             p.setY(ghost2_y+1);
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost2_dir=nextghost2_dir;
                 nextghost2_dir=0;
@@ -637,7 +600,7 @@ void Game_window::GhostMove2()
         case 2:
             p.setX(ghost2_x);
             p.setY(ghost2_y-1);
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost2_dir=nextghost2_dir;
                 nextghost2_dir=0;
@@ -651,9 +614,9 @@ void Game_window::GhostMove2()
     case 1:
         p.setX(ghost2_x-1);
         p.setY(ghost2_y);
-        ghost2->setGhostDirection(ghost2_dir);
+        ghost2.setGhostDirection(ghost2_dir);
 
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost2_x-=1;
             ghostmoving2=true;
@@ -666,10 +629,10 @@ void Game_window::GhostMove2()
         break;
 
     case 4:
-        ghost2->setGhostDirection(ghost2_dir);
+        ghost2.setGhostDirection(ghost2_dir);
         p.setX(ghost2_x+1);
         p.setY(ghost2_y);
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost2_x+=1;
             ghostmoving2=true;
@@ -681,10 +644,10 @@ void Game_window::GhostMove2()
 
         break;
     case 3:
-        ghost2->setGhostDirection(ghost2_dir);
+        ghost2.setGhostDirection(ghost2_dir);
         p.setX(ghost2_x);
         p.setY(ghost2_y+1);
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost2_y+=1;
             ghostmoving2=true;
@@ -696,10 +659,10 @@ void Game_window::GhostMove2()
 
         break;
     case 2:
-        ghost2->setGhostDirection(ghost2_dir);
+        ghost2.setGhostDirection(ghost2_dir);
         p.setX(ghost2_x);
         p.setY(ghost2_y-1);
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost2_y-=1;
             ghostmoving2=true;
@@ -723,20 +686,20 @@ void Game_window::GhostMove2()
         ghost2_y=318;
     }
 
-    ghost2->setGhost_X(ghost2_x);
-    ghost2->setGhost_Y(ghost2_y);
-    ghost2->setNextGhostDirection(nextghost2_dir);
+    ghost2.setGhost_X(ghost2_x);
+    ghost2.setGhost_Y(ghost2_y);
+    ghost2.setNextGhostDirection(nextghost2_dir);
 }
 void Game_window::GhostMove3()
 {
     QPoint p;
 
-    int pac_x = pac_man->getPac_X();
-    int pac_y = pac_man->getPac_Y();
-    int ghost3_x = ghost3->getGhost_X();
-    int ghost3_y = ghost3->getGhost_Y();
-    int ghost3_dir = ghost3->getGhostDirection();
-    int nextghost3_dir = ghost3->getNextGhostDirection();
+    int pac_x = pac_man.getPac_X();
+    int pac_y = pac_man.getPac_Y();
+    int ghost3_x = ghost3.getGhost_X();
+    int ghost3_y = ghost3.getGhost_Y();
+    int ghost3_dir = ghost3.getGhostDirection();
+    int nextghost3_dir = ghost3.getNextGhostDirection();
 
     if(!ghostmoving3)
     {
@@ -777,7 +740,7 @@ void Game_window::GhostMove3()
             p.setX(ghost3_x-1);
             p.setY(ghost3_y);
 
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost3_dir=nextghost3_dir;
                 nextghost3_dir=0;
@@ -789,7 +752,7 @@ void Game_window::GhostMove3()
         case 4:
             p.setX(ghost3_x+1);
             p.setY(ghost3_y);
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost3_dir=nextghost3_dir;
                 nextghost3_dir=0;
@@ -799,7 +762,7 @@ void Game_window::GhostMove3()
         case 3:
             p.setX(ghost3_x);
             p.setY(ghost3_y+1);
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost3_dir=nextghost3_dir;
                 nextghost3_dir=0;
@@ -809,7 +772,7 @@ void Game_window::GhostMove3()
         case 2:
             p.setX(ghost3_x);
             p.setY(ghost3_y-1);
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost3_dir=nextghost3_dir;
                 nextghost3_dir=0;
@@ -823,9 +786,9 @@ void Game_window::GhostMove3()
     case 1:
         p.setX(ghost3_x-1);
         p.setY(ghost3_y);
-        ghost3->setGhostDirection(ghost3_dir);
+        ghost3.setGhostDirection(ghost3_dir);
 
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost3_x-=1;
             ghostmoving3=true;
@@ -839,10 +802,10 @@ void Game_window::GhostMove3()
         break;
 
     case 4:
-        ghost3->setGhostDirection(ghost3_dir);
+        ghost3.setGhostDirection(ghost3_dir);
         p.setX(ghost3_x+1);
         p.setY(ghost3_y);
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost3_x+=1;
             ghostmoving3=true;
@@ -854,10 +817,10 @@ void Game_window::GhostMove3()
 
         break;
     case 3:
-        ghost3->setGhostDirection(ghost3_dir);
+        ghost3.setGhostDirection(ghost3_dir);
         p.setX(ghost3_x);
         p.setY(ghost3_y+1);
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost3_y+=1;
             ghostmoving3=true;
@@ -869,10 +832,10 @@ void Game_window::GhostMove3()
 
         break;
     case 2:
-        ghost3->setGhostDirection(ghost3_dir);
+        ghost3.setGhostDirection(ghost3_dir);
         p.setX(ghost3_x);
         p.setY(ghost3_y-1);
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost3_y-=1;
             ghostmoving3=true;
@@ -896,20 +859,20 @@ void Game_window::GhostMove3()
         ghost3_y=318;
     }
 
-    ghost3->setGhost_X(ghost3_x);
-    ghost3->setGhost_Y(ghost3_y);
-    ghost3->setNextGhostDirection(nextghost3_dir);
+    ghost3.setGhost_X(ghost3_x);
+    ghost3.setGhost_Y(ghost3_y);
+    ghost3.setNextGhostDirection(nextghost3_dir);
 }
 void Game_window::GhostMove4()
 {
     QPoint p;
 
-    int pac_x = pac_man->getPac_X();
-    int pac_y = pac_man->getPac_Y();
-    int ghost4_x = ghost4->getGhost_X();
-    int ghost4_y = ghost4->getGhost_Y();
-    int ghost4_dir = ghost4->getGhostDirection();
-    int nextghost4_dir = ghost4->getNextGhostDirection();
+    int pac_x = pac_man.getPac_X();
+    int pac_y = pac_man.getPac_Y();
+    int ghost4_x = ghost4.getGhost_X();
+    int ghost4_y = ghost4.getGhost_Y();
+    int ghost4_dir = ghost4.getGhostDirection();
+    int nextghost4_dir = ghost4.getNextGhostDirection();
 
     if(!ghostmoving4)
     {
@@ -949,7 +912,7 @@ void Game_window::GhostMove4()
             p.setX(ghost4_x-1);
             p.setY(ghost4_y);
 
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost4_dir=nextghost4_dir;
                 nextghost4_dir=0;
@@ -960,7 +923,7 @@ void Game_window::GhostMove4()
         case 4:
             p.setX(ghost4_x+1);
             p.setY(ghost4_y);
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost4_dir=nextghost4_dir;
                 nextghost4_dir=0;
@@ -970,7 +933,7 @@ void Game_window::GhostMove4()
         case 3:
             p.setX(ghost4_x);
             p.setY(ghost4_y+1);
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost4_dir=nextghost4_dir;
                 nextghost4_dir=0;
@@ -980,7 +943,7 @@ void Game_window::GhostMove4()
         case 2:
             p.setX(ghost4_x);
             p.setY(ghost4_y-1);
-            if(pac_map->IsPointAvailable(p))
+            if(pac_map.IsPointAvailable(p))
             {
                 ghost4_dir=nextghost4_dir;
                 nextghost4_dir=0;
@@ -995,9 +958,9 @@ void Game_window::GhostMove4()
     case 1:
         p.setX(ghost4_x-1);
         p.setY(ghost4_y);
-        ghost4->setGhostDirection(ghost4_dir);
+        ghost4.setGhostDirection(ghost4_dir);
 
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost4_x-=1;
             ghostmoving4=true;
@@ -1010,10 +973,10 @@ void Game_window::GhostMove4()
         break;
 
     case 4:
-        ghost4->setGhostDirection(ghost4_dir);
+        ghost4.setGhostDirection(ghost4_dir);
         p.setX(ghost4_x+1);
         p.setY(ghost4_y);
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost4_x+=1;
             ghostmoving4=true;
@@ -1025,10 +988,10 @@ void Game_window::GhostMove4()
 
         break;
     case 3:
-        ghost4->setGhostDirection(ghost4_dir);
+        ghost4.setGhostDirection(ghost4_dir);
         p.setX(ghost4_x);
         p.setY(ghost4_y+1);
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost4_y+=1;
             ghostmoving4=true;
@@ -1040,10 +1003,10 @@ void Game_window::GhostMove4()
 
         break;
     case 2:
-        ghost4->setGhostDirection(ghost4_dir);
+        ghost4.setGhostDirection(ghost4_dir);
         p.setX(ghost4_x);
         p.setY(ghost4_y-1);
-        if(pac_map->IsPointAvailable(p))
+        if(pac_map.IsPointAvailable(p))
         {
             ghost4_y-=1;
             ghostmoving4=true;
@@ -1065,16 +1028,16 @@ void Game_window::GhostMove4()
         ghost4_x=1;
         ghost4_y=318;
     }
-    ghost4->setGhost_X(ghost4_x);
-    ghost4->setGhost_Y(ghost4_y);
-    ghost4->setNextGhostDirection(nextghost4_dir);
+    ghost4.setGhost_X(ghost4_x);
+    ghost4.setGhost_Y(ghost4_y);
+    ghost4.setNextGhostDirection(nextghost4_dir);
 }
 
 void Game_window::MoveGhostInStartingRect1()
 {
-    int ghost1_x = ghost1->getGhost_X();
-    int ghost1_y = ghost1->getGhost_Y();
-    int ghost1_dir = ghost1->getGhostDirection();
+    int ghost1_x = ghost1.getGhost_X();
+    int ghost1_y = ghost1.getGhost_Y();
+    int ghost1_dir = ghost1.getGhostDirection();
 
     if(ghost1_x==307-50 || ghost1_x==307+50)
     {
@@ -1097,15 +1060,15 @@ void Game_window::MoveGhostInStartingRect1()
         ghost1_x-=1;
     }
 
-    ghost1->setGhost_X(ghost1_x);
-    ghost1->setGhost_Y(ghost1_y);
-    ghost1->setGhostDirection(ghost1_dir);
+    ghost1.setGhost_X(ghost1_x);
+    ghost1.setGhost_Y(ghost1_y);
+    ghost1.setGhostDirection(ghost1_dir);
 }
 void Game_window::MoveGhostInStartingRect2()
 {
-    int ghost2_x = ghost2->getGhost_X();
-    int ghost2_y = ghost2->getGhost_Y();
-    int ghost2_dir = ghost2->getGhostDirection();
+    int ghost2_x = ghost2.getGhost_X();
+    int ghost2_y = ghost2.getGhost_Y();
+    int ghost2_dir = ghost2.getGhostDirection();
 
     if(ghost2_x==307-50 || ghost2_x==307+50)
     {
@@ -1127,15 +1090,15 @@ void Game_window::MoveGhostInStartingRect2()
         ghost2_x-=1;
     }
 
-    ghost2->setGhost_X(ghost2_x);
-    ghost2->setGhost_Y(ghost2_y);
-    ghost2->setGhostDirection(ghost2_dir);
+    ghost2.setGhost_X(ghost2_x);
+    ghost2.setGhost_Y(ghost2_y);
+    ghost2.setGhostDirection(ghost2_dir);
 }
 void Game_window::MoveGhostInStartingRect3()
 {
-    int ghost3_x = ghost3->getGhost_X();
-    int ghost3_y = ghost3->getGhost_Y();
-    int ghost3_dir = ghost3->getGhostDirection();
+    int ghost3_x = ghost3.getGhost_X();
+    int ghost3_y = ghost3.getGhost_Y();
+    int ghost3_dir = ghost3.getGhostDirection();
 
     if(ghost3_x==307-50 || ghost3_x==307+50)
     {
@@ -1157,15 +1120,15 @@ void Game_window::MoveGhostInStartingRect3()
         ghost3_x-=1;
     }
 
-    ghost3->setGhost_X(ghost3_x);
-    ghost3->setGhost_Y(ghost3_y);
-    ghost3->setGhostDirection(ghost3_dir);
+    ghost3.setGhost_X(ghost3_x);
+    ghost3.setGhost_Y(ghost3_y);
+    ghost3.setGhostDirection(ghost3_dir);
 }
 void Game_window::MoveGhostInStartingRect4()
 {
-    int ghost4_x = ghost4->getGhost_X();
-    int ghost4_y = ghost4->getGhost_Y();
-    int ghost4_dir = ghost4->getGhostDirection();
+    int ghost4_x = ghost4.getGhost_X();
+    int ghost4_y = ghost4.getGhost_Y();
+    int ghost4_dir = ghost4.getGhostDirection();
 
     if(ghost4_x==307-50 || ghost4_x==307+50)
     {
@@ -1187,14 +1150,14 @@ void Game_window::MoveGhostInStartingRect4()
         ghost4_x-=1;
     }
 
-    ghost4->setGhost_X(ghost4_x);
-    ghost4->setGhost_Y(ghost4_y);
-    ghost4->setGhostDirection(ghost4_dir);
+    ghost4.setGhost_X(ghost4_x);
+    ghost4.setGhost_Y(ghost4_y);
+    ghost4.setGhostDirection(ghost4_dir);
 }
 
 void Game_window::keyPressEvent(QKeyEvent *event) //supports pacman movement using WSAD and directional keys
 {
-    int nextdirection=pac_man->getNextDirection();
+    int nextdirection=pac_man.getNextDirection();
 
     switch(event->key())
     {
@@ -1234,7 +1197,6 @@ void Game_window::keyPressEvent(QKeyEvent *event) //supports pacman movement usi
         }
         if(!playing && ready_to_restart == true)
         {
-            qDebug() << "Restarting game";
             ready_to_restart = false;
             playing = true;
             RestartGame();
@@ -1243,56 +1205,56 @@ void Game_window::keyPressEvent(QKeyEvent *event) //supports pacman movement usi
     default:
         break;
     }
-    pac_man->setNextDirection(nextdirection);
+    pac_man.setNextDirection(nextdirection);
 }
 
 void Game_window::CheckCollision()
 {
-    if(pac_man->collidesWithItem(ghost1) ||
-            pac_man->collidesWithItem(ghost2) ||
-            pac_man->collidesWithItem(ghost3) ||
-            pac_man->collidesWithItem(ghost4))
+    if(pac_man.collidesWithItem(&ghost1) ||
+            pac_man.collidesWithItem(&ghost2) ||
+            pac_man.collidesWithItem(&ghost3) ||
+            pac_man.collidesWithItem(&ghost4))
     {
-        if(pac_man->collidesWithItem(ghost1) && ghost1->getIsScared())
+        if(pac_man.collidesWithItem(&ghost1) && ghost1.getIsScared())
         {
-            sounds->eat_ghost_sound->play();
+            sounds.eat_ghost_sound.play();
             score+=200;
             score_display->setPlainText("Score: " + QString::number(score));
-            ghost1->setGhost_X(307);
-            ghost1->setGhost_Y(252);
-            ghost1->setIsScared(false);
+            ghost1.setGhost_X(307);
+            ghost1.setGhost_Y(252);
+            ghost1.setIsScared(false);
         }
-        else if(pac_man->collidesWithItem(ghost2) && ghost2->getIsScared())
+        else if(pac_man.collidesWithItem(&ghost2) && ghost2.getIsScared())
         {
-            sounds->eat_ghost_sound->play();
+            sounds.eat_ghost_sound.play();
             score+=200;
             score_display->setPlainText("Score: " + QString::number(score));
-            ghost2->setGhost_X(307);
-            ghost2->setGhost_Y(252);
-            ghost2->setIsScared(false);
+            ghost2.setGhost_X(307);
+            ghost2.setGhost_Y(252);
+            ghost2.setIsScared(false);
         }
-        else if(pac_man->collidesWithItem(ghost3) && ghost3->getIsScared())
+        else if(pac_man.collidesWithItem(&ghost3) && ghost3.getIsScared())
         {
-            sounds->eat_ghost_sound->play();
+            sounds.eat_ghost_sound.play();
             score+=200;
             score_display->setPlainText("Score: " + QString::number(score));
-            ghost3->setGhost_X(307);
-            ghost3->setGhost_Y(252);
-            ghost3->setIsScared(false);
+            ghost3.setGhost_X(307);
+            ghost3.setGhost_Y(252);
+            ghost3.setIsScared(false);
         }
-        else if(pac_man->collidesWithItem(ghost4) && ghost4->getIsScared())
+        else if(pac_man.collidesWithItem(&ghost4) && ghost4.getIsScared())
         {
-            sounds->eat_ghost_sound->play();
+            sounds.eat_ghost_sound.play();
             score+=200;
             score_display->setPlainText("Score: " + QString::number(score));
-            ghost4->setGhost_X(307);
-            ghost4->setGhost_Y(252);
-            ghost4->setIsScared(false);
+            ghost4.setGhost_X(307);
+            ghost4.setGhost_Y(252);
+            ghost4.setIsScared(false);
         }
         else
         {
-            timer->stop();
-            ghoststimer->stop();
+            timer.stop();
+            ghoststimer.stop();
             EndGame(0);
         }
     }
@@ -1300,8 +1262,8 @@ void Game_window::CheckCollision()
 
 void Game_window::updater()
 {
-    int pac_x = pac_man->getPac_X();
-    int pac_y = pac_man->getPac_Y();
+    int pac_x = pac_man.getPac_X();
+    int pac_y = pac_man.getPac_Y();
 
     if(collision_detection_delay >= 500)
         CheckCollision();
@@ -1310,22 +1272,22 @@ void Game_window::updater()
 
     PacmanMove();  //changes position of pacman
 
-    for(int i=0;i<foodball_positions->size();i++)
+    for(int i=0;i<foodball_positions.size();i++)
     {
-        if(pac_x==foodball_positions->at(i).x() && pac_y==foodball_positions->at(i).y())
+        if(pac_x==foodball_positions.at(i).x() && pac_y==foodball_positions.at(i).y())
         {
-            foodball_positions->remove(i);
+            foodball_positions.remove(i);
             foodball_graphical_items_table.at(i)->hide();
             foodball_graphical_items_table.remove(i);
 
-            if(sounds->eat_sound1->state()==QMediaPlayer::StoppedState)
+            if(sounds.eat_sound1.state()==QMediaPlayer::StoppedState)
             {
-                sounds->eat_sound1->play();
+                sounds.eat_sound1.play();
             }
 
-            if(sounds->eat_sound1->state()==QMediaPlayer::PlayingState)
+            if(sounds.eat_sound1.state()==QMediaPlayer::PlayingState)
             {
-                sounds->eat_sound2->play();
+                sounds.eat_sound2.play();
             }
 
             score++;
@@ -1335,11 +1297,11 @@ void Game_window::updater()
         }
     }
 
-    for(int i=0;i<powerball_positions->size();i++)
+    for(int i=0;i<powerball_positions.size();i++)
     {
-        if(pac_x==powerball_positions->at(i).x() && pac_y==powerball_positions->at(i).y())
+        if(pac_x==powerball_positions.at(i).x() && pac_y==powerball_positions.at(i).y())
         {
-            powerball_positions->remove(i);
+            powerball_positions.remove(i);
             powerball_graphical_items_table.at(i)->hide();
             powerball_graphical_items_table.remove(i);
 
@@ -1348,10 +1310,10 @@ void Game_window::updater()
 
             scarestate = 0;
 
-            ghost1->setIsScared(true);
-            ghost2->setIsScared(true);
-            ghost3->setIsScared(true);
-            ghost4->setIsScared(true);
+            ghost1.setIsScared(true);
+            ghost2.setIsScared(true);
+            ghost3.setIsScared(true);
+            ghost4.setIsScared(true);
 
             scared=true;
 
@@ -1361,8 +1323,8 @@ void Game_window::updater()
 
     if(foodball_items_count==0)
     {
-        timer->stop();
-        ghoststimer->stop();
+        timer.stop();
+        ghoststimer.stop();
         EndGame(1);
     }
 
@@ -1372,55 +1334,54 @@ void Game_window::updater()
 
         if(scarestate==1)
         {
-            ghoststimer->setInterval(50);
+            ghoststimer.setInterval(50);
         }
 
         if(scarestate==750)
         {
-            ghost1->setScaredWhite(true);
-            ghost2->setScaredWhite(true);
-            ghost3->setScaredWhite(true);
-            ghost4->setScaredWhite(true);
+            ghost1.setScaredWhite(true);
+            ghost2.setScaredWhite(true);
+            ghost3.setScaredWhite(true);
+            ghost4.setScaredWhite(true);
         }
 
         if(scarestate==1000)
         {
             scared=false;
-            ghost1->setIsScared(false);
-            ghost2->setIsScared(false);
-            ghost3->setIsScared(false);
-            ghost4->setIsScared(false);
+            ghost1.setIsScared(false);
+            ghost2.setIsScared(false);
+            ghost3.setIsScared(false);
+            ghost4.setIsScared(false);
 
-            ghost1->setScaredWhite(false);
-            ghost2->setScaredWhite(false);
-            ghost3->setScaredWhite(false);
-            ghost4->setScaredWhite(false);
+            ghost1.setScaredWhite(false);
+            ghost2.setScaredWhite(false);
+            ghost3.setScaredWhite(false);
+            ghost4.setScaredWhite(false);
 
             scarestate = 0;
-            ghoststimer->setInterval(4);
+            ghoststimer.setInterval(4);
         }
     }
 
-    pac_man->advance();
-    ghost1->advance();
-    ghost2->advance();
-    ghost3->advance();
-    ghost4->advance();
+    pac_man.advance();
+    ghost1.advance();
+    ghost2.advance();
+    ghost3.advance();
+    ghost4.advance();
 
-    scene->update(scene->sceneRect());
-    //qDebug("Pacman coordinates: (%d,%d)", pac_x, pac_y);
+    scene.update(scene.sceneRect());
 }
 
 void Game_window::ghostupdater()
 {
-    int ghost1_x = ghost1->getGhost_X();
-    int ghost1_y = ghost1->getGhost_Y();
-    int ghost2_x = ghost2->getGhost_X();
-    int ghost2_y = ghost2->getGhost_Y();
-    int ghost3_x = ghost3->getGhost_X();
-    int ghost3_y = ghost3->getGhost_Y();
-    int ghost4_x = ghost4->getGhost_X();
-    int ghost4_y = ghost4->getGhost_Y();
+    int ghost1_x = ghost1.getGhost_X();
+    int ghost1_y = ghost1.getGhost_Y();
+    int ghost2_x = ghost2.getGhost_X();
+    int ghost2_y = ghost2.getGhost_Y();
+    int ghost3_x = ghost3.getGhost_X();
+    int ghost3_y = ghost3.getGhost_Y();
+    int ghost4_x = ghost4.getGhost_X();
+    int ghost4_y = ghost4.getGhost_Y();
 
     if(all_ghosts_started)
     {
@@ -1471,11 +1432,11 @@ void Game_window::ghostupdater()
             if(!ghoststart1)
             {
                 ghost1_y-=1;
-                ghost1->setGhost_X(ghost1_x);
-                ghost1->setGhost_Y(ghost1_y);
+                ghost1.setGhost_X(ghost1_x);
+                ghost1.setGhost_Y(ghost1_y);
                 p1.setX(ghost1_x);
                 p1.setY(ghost1_y);
-                if(pac_map->getPacmanPaths().contains(p1))
+                if(pac_map.getPacmanPaths().contains(p1))
                 {
                     ghoststart1=true;
                 }
@@ -1497,11 +1458,11 @@ void Game_window::ghostupdater()
             if(!ghoststart2)
             {
                 ghost2_y-=1;
-                ghost2->setGhost_X(ghost2_x);
-                ghost2->setGhost_Y(ghost2_y);
+                ghost2.setGhost_X(ghost2_x);
+                ghost2.setGhost_Y(ghost2_y);
                 p2.setX(ghost2_x);
                 p2.setY(ghost2_y);
-                if(pac_map->getPacmanPaths().contains(p2))
+                if(pac_map.getPacmanPaths().contains(p2))
                 {
                     ghoststart2=true;
                 }
@@ -1523,11 +1484,11 @@ void Game_window::ghostupdater()
             if(!ghoststart3)
             {
                 ghost3_y-=1;
-                ghost3->setGhost_X(ghost3_x);
-                ghost3->setGhost_Y(ghost3_y);
+                ghost3.setGhost_X(ghost3_x);
+                ghost3.setGhost_Y(ghost3_y);
                 p3.setX(ghost3_x);
                 p3.setY(ghost3_y);
-                if(pac_map->getPacmanPaths().contains(p3))
+                if(pac_map.getPacmanPaths().contains(p3))
                 {
                     ghoststart3=true;
                 }
@@ -1549,11 +1510,11 @@ void Game_window::ghostupdater()
             if(!ghoststart4)
             {
                 ghost4_y-=1;
-                ghost4->setGhost_X(ghost4_x);
-                ghost4->setGhost_Y(ghost4_y);
+                ghost4.setGhost_X(ghost4_x);
+                ghost4.setGhost_Y(ghost4_y);
                 p4.setX(ghost4_x);
                 p4.setY(ghost4_y);
-                if(pac_map->getPacmanPaths().contains(p4))
+                if(pac_map.getPacmanPaths().contains(p4))
                 {
                     ghoststart4=true;
                 }
@@ -1568,8 +1529,4 @@ void Game_window::ghostupdater()
 Game_window::~Game_window()
 {
     delete ui;
-    delete pac_map;
-    delete scene;
-    delete timer;
-    delete ghoststimer;
 }

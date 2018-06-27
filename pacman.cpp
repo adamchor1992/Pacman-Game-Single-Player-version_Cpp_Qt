@@ -17,8 +17,6 @@ QRectF Pacman::boundingRect() const
 
 void Pacman::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    //painter->drawPixmap(pac_x-15,pac_y-15,30,30,pacman_pixmap);
-
     switch(direction)
     {
         case 1:
@@ -110,8 +108,6 @@ void Pacman::advance()
 
 void Pacman::LoadPacmanImages()
 {
-    //pacman_pixmap.load("://images/pacman_image.png");
-
     right1.load(":/pacman/images/pacman_images/pacclose.png");
     right2.load(":/pacman/images/pacman_images/pacopen1.png");
     right3.load(":/pacman/images/pacman_images/pacopen2.png");

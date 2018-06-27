@@ -25,19 +25,25 @@ class Game_window : public QDialog
 
 private:
     Ui::Game_window *ui;
-    QGraphicsScene *scene;
-    TextStartEnd *text_start_end;
-    QTimer *timer;
-    QTimer *ghoststimer;
-    Map *pac_map;
-    PowerBall *power_ball;
-    FoodBall *food_ball;
-    Pacman *pac_man;
-    Ghost *ghost1;
-    Ghost *ghost2;
-    Ghost *ghost3;
-    Ghost *ghost4;
-    Sounds *sounds;
+
+    QGraphicsScene scene;
+
+    TextStartEnd text_start_end;
+
+    QTimer timer;
+    QTimer ghoststimer;
+
+    Map pac_map;
+    PowerBall power_ball;
+    FoodBall food_ball;
+
+    Pacman pac_man;
+    Ghost ghost1;
+    Ghost ghost2;
+    Ghost ghost3;
+    Ghost ghost4;
+
+    Sounds sounds;
 
     int score;
     int foodball_items_count;
@@ -47,10 +53,10 @@ private:
 
     bool ghostmoving1,ghostmoving2,ghostmoving3,ghostmoving4;
     bool ghoststart1,ghoststart2,ghoststart3,ghoststart4;
-    bool start,moving,playing,scared,all_ghosts_started,ready_to_restart;
+    bool start, playing, scared, all_ghosts_started, ready_to_restart;
 
-    QVector<QPoint> *powerball_positions;
-    QVector<QPoint> *foodball_positions;
+    QVector<QPoint> powerball_positions;
+    QVector<QPoint> foodball_positions;
 
     QGraphicsPixmapItem *map_item;
 
@@ -74,7 +80,9 @@ public:
     void GenerateAndPopulateMap();
     void GenerateAndPlacePacman();
     void GenerateAndPlaceGhosts();
-    void InitializeSounds();
+    void ResetMap();
+    void ResetPacman();
+    void ResetGhosts();
     void ShowScore();
 
     void GhostPlayerMove();

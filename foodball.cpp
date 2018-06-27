@@ -29,8 +29,6 @@ void FoodBall::CreateFoodballPositionsVector()
         }
     }
 
-    qDebug("Foodball positions vector size in function creating it: %d",foodballpositions.size());
-
     // Create a new vector without the duplicates
     QVector<QPoint> unique_foodballpositions;
 
@@ -38,11 +36,9 @@ void FoodBall::CreateFoodballPositionsVector()
     {
         if(std::find(unique_foodballpositions.begin(),unique_foodballpositions.end(), *iter)==unique_foodballpositions.end())
         {
-            unique_foodballpositions.push_back( *iter );
+            unique_foodballpositions.push_back(*iter);
             foodballcount++;
         }
     }
     std::swap( foodballpositions, unique_foodballpositions );
-
-    qDebug("Foodball positions vector size after deleting non-unique elements: %d",foodballpositions.size());
 }

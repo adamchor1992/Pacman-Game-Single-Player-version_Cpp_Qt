@@ -19,6 +19,7 @@ private:
 
     bool is_scared;
     bool scared_white;
+    bool hidden;
 
     int animestate;
     int animation_modify_factor;
