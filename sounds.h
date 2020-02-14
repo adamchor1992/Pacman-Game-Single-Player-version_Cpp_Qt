@@ -5,16 +5,14 @@
 
 class Sounds
 {
-private:
 public:
-     QMediaPlayer beginning_sound;
-     QMediaPlayer eat_sound1;
-     QMediaPlayer eat_sound2;
-     QMediaPlayer eat_ghost_sound;
-     QMediaPlayer pacman_death_sound;
-     QMediaPlayer pacman_siren;
-
-     Sounds();
+    Sounds();
+    QMediaPlayer m_BeginningSound;
+    QMediaPlayer m_EatSound1;
+    QMediaPlayer m_EatSound2;
+    QMediaPlayer m_EatGhostSound;
+    QMediaPlayer m_PacmanDeathSound;
+    QMediaPlayer m_PacmanSiren;
 };
 
 #endif // SOUNDS_H

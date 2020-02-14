@@ -94,75 +94,71 @@ Map::Map()
 
 void Map::LoadMapImage()
 {
-    map_background_picture.load(":/images/pac_map.png");
+    m_MapBackgroundPixmap.load(":/images/map.png");
 }
 
-QRectF Map::boundingRect() const //sets map bounding rect which will be updated and redrawn every timer cycle
-{
-    return QRect(0,0,614,740);
-}
-
-void Map::CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end) //only left-right and up-down lines
+void Map::CreatePathPoints(int startX, int startY, int endX, int endY) //only left-right and up-down lines
 {
     QPoint p;
 
-    if (x_begin == x_end) //vertical line condition
+    if (startX == endX) //vertical line condition
     {
-        if (y_begin < y_end) //vertical line from y_begin to y_end
+        if (startY < endY) //vertical line from startY to endY
         {
-            for (int y=y_begin; y<=y_end; y++)
+            for (int y=startY; y<=endY; y++)
             {
-                p.setX(x_begin);
+                p.setX(startX);
                 p.setY(y);
-                if (! pacman_paths.contains(p))
+                if (! m_PacmanPaths.contains(p))
                 {
-                    pacman_paths.push_front(p);
+                    m_PacmanPaths.push_front(p);
                 }
             }
         }
 
-        else if(y_begin==y_end) //single point
+        else if(startY==endY) //single point
         {
-                p.setX(x_begin);
-                p.setY(y_begin);
-                if (! pacman_paths.contains(p))
+                p.setX(startX);
+                p.setY(startY);
+                if (! m_PacmanPaths.contains(p))
                 {
-                    pacman_paths.push_front(p);
+                    m_PacmanPaths.push_front(p);
                 }
         }
     }
 
-    if (y_begin == y_end) //horizontal line condition
+    if (startY == endY) //horizontal line condition
     {
-        if (x_begin < x_end) //horizontal line from x_begin to x_end
+        if (startX < endX) //horizontal line from startX to endX
         {
-            for (int x=x_begin; x<=x_end; x++)
+            for (int x=startX; x<=endX; x++)
             {
                 p.setX(x);
-                p.setY(y_begin);
-                if (! pacman_paths.contains(p))
+                p.setY(startY);
+                if (! m_PacmanPaths.contains(p))
                 {
-                    pacman_paths.push_front(p);
+                    m_PacmanPaths.push_front(p);
                 }
             }
         }
         else //single point
         {
-                p.setX(x_begin);
-                p.setY(y_begin);
-                if (! pacman_paths.contains(p))
+                p.setX(startX);
+                p.setY(startY);
+                if (! m_PacmanPaths.contains(p))
                 {
-                    pacman_paths.push_front(p);
+                    m_PacmanPaths.push_front(p);
                 }
         }
     }
 }
 
-bool Map::IsPointAvailable(QPoint point) //checks if given point is accessible for Pacman (is present in pacman_paths vector)
+/*Checks if given point is accessible for Pacman (is present in m_PacmanPaths vector)*/
+bool Map::IsPointAvailable(QPoint point)
 {
-    for(int i=0;i<pacman_paths.size();i++)
+    for(int i=0;i<m_PacmanPaths.size();i++)
     {
-        if(pacman_paths.at(i)==point)
+        if(m_PacmanPaths.at(i)==point)
         {
              return true;
         }
@@ -170,6 +166,7 @@ bool Map::IsPointAvailable(QPoint point) //checks if given point is accessible f
     return false;
 }
 
-Map::~Map()
+QRectF Map::boundingRect() const //sets map bounding rect which will be updated and redrawn every timer cycle
 {
+    return QRect(0,0,614,740);
 }

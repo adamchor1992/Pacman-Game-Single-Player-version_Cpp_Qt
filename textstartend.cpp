@@ -2,36 +2,36 @@
 
 TextStartEnd::TextStartEnd()
 {
-    game_won=false;
-    game_lost=false;
+    m_GameWon=false;
+    m_GameLost=false;
 
-    w=600;
-    h=200;
-    x=614/2-w/2;
-    y=714/2-h/2;
+    m_W=600;
+    m_H=200;
+    m_X=614/2-m_W/2;
+    m_Y=714/2-m_H/2;
 
-    score=0;
-    playing=false;
+    m_Score=0;
+    m_Playing=false;
 }
 
 QRectF TextStartEnd::boundingRect() const
 {
-    return QRect(x, y, w, h);
+    return QRect(m_X, m_Y, m_W, m_H);
 }
 
-void TextStartEnd::setScore(int _score)
+void TextStartEnd::SetScore(int score)
 {
-    this -> score = _score;
+    m_Score = score;
 }
 
-void TextStartEnd::setGameWon(bool _game_won)
+void TextStartEnd::SetGameWon(bool gameWon)
 {
-    this -> game_won = _game_won;
+    m_GameWon = gameWon;
 }
 
-void TextStartEnd::setGameLost(bool _game_lost)
+void TextStartEnd::SetGameLost(bool gameLost)
 {
-    this -> game_lost = _game_lost;
+    m_GameLost = gameLost;
 }
 
 void TextStartEnd::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -44,22 +44,22 @@ void TextStartEnd::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     font.setPointSize (30);
     painter->setFont(font);
 
-    if(!playing)
+    if(!m_Playing)
     {
-        if(game_won)
+        if(m_GameWon)
         {
             painter->setPen(pen_yellow);
             painter->drawText(boundingRect(),Qt::AlignTop | Qt::AlignHCenter,"CONGRATULATIONS");
-            painter->drawText(boundingRect(),Qt::AlignCenter, "FINAL SCORE : "+QString::number(score));
+            painter->drawText(boundingRect(),Qt::AlignCenter, "FINAL SCORE : "+QString::number(m_Score));
             painter->setPen(pen_blue);
             painter->drawText(boundingRect(),Qt::AlignBottom | Qt::AlignHCenter,"PRESS SPACE TO RESTART");
         }
-        else if(game_lost)
+        else if(m_GameLost)
         {
             painter->setPen(pen_red);
             painter->drawText(boundingRect(),Qt::AlignTop | Qt::AlignHCenter,"YOU LOST, GAME OVER");
             painter->setPen(pen_yellow);
-            painter->drawText(boundingRect(),Qt::AlignCenter, "FINAL SCORE : "+QString::number(score));
+            painter->drawText(boundingRect(),Qt::AlignCenter, "FINAL SCORE : "+QString::number(m_Score));
             painter->setPen(pen_blue);
             painter->drawText(boundingRect(),Qt::AlignBottom | Qt::AlignHCenter,"PRESS SPACE TO RESTART");
         }

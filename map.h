@@ -6,21 +6,19 @@
 
 class Map
 {
-private:
-    QPixmap map_background_picture;
-    QVector<QPoint> pacman_paths;
-
 public:
     Map();
-    void CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end);
+    void CreatePathPoints(int beginX, int beginY, int endX, int endY);
     void LoadMapImage();
     bool IsPointAvailable(QPoint);
+    QPixmap GetMapBackgroundPicture() {return m_MapBackgroundPixmap;}
+    QVector<QPoint> GetPacmanPaths() {return m_PacmanPaths;}
+
     QRectF boundingRect() const;
 
-    QPixmap getMap_Background_Picture() {return map_background_picture;}
-    QVector<QPoint> getPacmanPaths() {return pacman_paths;}
-
-    ~Map();
+private:
+    QPixmap m_MapBackgroundPixmap;
+    QVector<QPoint> m_PacmanPaths;
 };
 
 #endif // MAP_H

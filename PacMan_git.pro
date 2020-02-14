@@ -26,27 +26,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    Game_window.cpp \
     map.cpp \
     pacman.cpp \
     foodball.cpp \
     powerball.cpp \
     ghost.cpp \
     textstartend.cpp \
-    sounds.cpp
+    sounds.cpp \
+    gamewindow.cpp
 
 HEADERS += \
-    Game_window.h \
     map.h \
     pacman.h \
     foodball.h \
     powerball.h \
     ghost.h \
     textstartend.h \
-    sounds.h
+    sounds.h \
+    gamewindow.h
 
 FORMS += \
-    Game_window.ui
+    gamewindow.ui
 
 RESOURCES += \
     images.qrc \

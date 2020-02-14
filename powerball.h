@@ -6,11 +6,12 @@
 
 class PowerBall
 {
-private:
-    QVector<QPoint> powerballpositions;
 public:
     PowerBall();
-    QVector<QPoint> getPowerBallPositions() {return powerballpositions;}
+    QVector<QPoint> GetPowerBallPositions() {return m_PowerballPositions;}
+
+private:
+    QVector<QPoint> m_PowerballPositions;
 };
 
 #endif // POWERBALL_H

@@ -5,38 +5,36 @@
 
 class Pacman : public QGraphicsItem
 {
-private:
-    int pac_x;
-    int pac_y;
-    int direction;
-    int nextdirection;
-    int animestate;
-    int animation_modify_factor;
-
-    QPixmap pacman_pixmap;
-
-    QPixmap left1,left2,left3,left4;
-    QPixmap up1,up2,up3,up4;
-    QPixmap down1,down2,down3,down4;
-    QPixmap right1,right2,right3,right4;
-
 public:
     Pacman();
+    void LoadPacmanImages();
+    void Advance();
+    void SetPacX(int);
+    void SetPacY(int);
+    void SetDirection(int dir);
+    void SetNextDirection(int dir);
+    int GetPacX() {return m_PacX;}
+    int GetPacY() {return m_PacY;}
+    int GetDirection() {return m_Direction;}
+    int GetNextDirection() {return m_NextDirection;}
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    void LoadPacmanImages();
-    void advance();
 
-    void setPac_X(int);
-    void setPac_Y(int);
-    void setDirection(int dir);
-    void setNextDirection(int dir);
+private:
+    int m_PacX;
+    int m_PacY;
+    int m_Direction;
+    int m_NextDirection;
+    int m_AnimeState;
+    int m_AnimationModifyFactor;
 
-    int getPac_X() {return pac_x;}
-    int getPac_Y() {return pac_y;}
-    int getDirection() {return direction;}
-    int getNextDirection() {return nextdirection;}
+    QPixmap m_PacmanPixmap;
+
+    QPixmap m_Left1, m_Left2, m_Left3, m_Left4;
+    QPixmap m_Up1, m_Up2, m_Up3, m_Up4;
+    QPixmap m_Down1, m_Down2, m_Down3, m_Down4;
+    QPixmap m_Right1, m_Right2, m_Right3, m_Right4;
 };
 
 #endif // PACMAN_H

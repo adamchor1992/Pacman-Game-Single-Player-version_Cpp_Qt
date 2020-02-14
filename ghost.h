@@ -5,50 +5,49 @@
 
 class Ghost : public QGraphicsItem
 {
-private:
-    QPixmap ghost_pixmap;
-    QPixmap ghost_scared_blue;
-    QPixmap ghost_scared_white;
-
-    QPixmap left1,left2;
-    QPixmap up1,up2;
-    QPixmap down1,down2;
-    QPixmap right1,right2;
-    QPixmap scaredblue, scaredblue1;
-    QPixmap scaredwhite, scaredwhite1;
-
-    bool is_scared;
-    bool scared_white;
-    bool hidden;
-
-    int animestate;
-    int animation_modify_factor;
-
-    int ghost_x,ghost_y;
-    int ghostdirection;
-    int nextghostdirection;
-
 public:
     Ghost();
+    void LoadGhostImages();
+    void Advance();
+    void SetGhostX(int);
+    void SetGhostY(int);
+    void SetIsScared(bool option) {m_IsScared=option;}
+    void SetScaredWhite(bool option) {m_ScaredWhite=option;}
+    void SetGhostDirection(int dir) {m_GhostDirection=dir;}
+    void SetNextGhostDirection(int dir) {m_NextGhostDirection=dir;}
+    void SetGhostColor(QString col);
+    int GetGhostX() {return m_GhostX;}
+    int GetGhostY() {return m_GhostY;}
+    int GetGhostDirection() {return m_GhostDirection;}
+    int GetNextGhostDirection() {return m_NextGhostDirection;}
+    bool GetIsScared() {return m_IsScared;}
+    bool GetScaredWhite() {return m_ScaredWhite;}
+
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    void LoadGhostImages();
-    void advance();
 
-    void setGhost_X(int);
-    void setGhost_Y(int);
-    void setIsScared(bool option) {is_scared=option;}
-    void setScaredWhite(bool option) {scared_white=option;}
-    void setGhostDirection(int dir) {ghostdirection=dir;}
-    void setNextGhostDirection(int dir) {nextghostdirection=dir;}
-    void setGhostColor(QString col);
+private:
+    QPixmap m_GhostPixmap;
+    QPixmap m_GhostScaredBlue;
+    QPixmap m_GhostScaredWhite;
 
-    int getGhost_X() {return ghost_x;}
-    int getGhost_Y() {return ghost_y;}
-    int getGhostDirection() {return ghostdirection;}
-    int getNextGhostDirection() {return nextghostdirection;}
-    bool getIsScared() {return is_scared;}
-    bool getScaredWhite() {return scared_white;}
+    QPixmap m_Left1, m_Left2;
+    QPixmap m_Up1, m_Up2;
+    QPixmap m_Down1, m_Down2;
+    QPixmap m_Right1, m_Right2;
+    QPixmap m_ScaredBlue, m_ScaredBlue1;
+    QPixmap m_ScaredWhitePix, m_ScaredWhite1;
+
+    bool m_IsScared;
+    bool m_ScaredWhite;
+    bool m_Hidden;
+
+    int m_AnimeState;
+    int m_AnimationModifyFactor;
+
+    int m_GhostX, m_GhostY;
+    int m_GhostDirection;
+    int m_NextGhostDirection;
 };
 
 #endif // GHOST_H
