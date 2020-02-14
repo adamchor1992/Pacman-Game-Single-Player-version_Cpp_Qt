@@ -3,10 +3,10 @@
 
 #include <QMediaPlayer>
 
-class Sounds
+struct Sounds
 {
-public:
     Sounds();
+
     QMediaPlayer m_BeginningSound;
     QMediaPlayer m_EatSound1;
     QMediaPlayer m_EatSound2;

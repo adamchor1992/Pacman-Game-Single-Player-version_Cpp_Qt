@@ -8,13 +8,11 @@ class FoodBall
 {
 public:
     FoodBall();
-    QVector<QPoint> GetFoodBallPositions() {return m_FoodballPositions;}
     void CreateFoodballPositionsVector();
+    QVector<QPoint> GetFoodBallPositions() const {return m_FoodballPositions;}
 
 private:
-    int m_FoodballCount;
     QVector<QPoint> m_FoodballPositions;
-    QVector<QPoint> m_PacmanMapForReference;
 };
 
 #endif // FOODBALL_H

@@ -5,6 +5,7 @@
 bool Ghost::m_AllGhostScared = false;
 bool Ghost::m_AllGhostsStarted = false;
 int Ghost::m_GhostsStartTimer = 0;
+int Ghost::m_AllGhostsScaredState = 0;
 
 Ghost::Ghost()
 {
@@ -13,6 +14,7 @@ Ghost::Ghost()
     m_GhostDirection=1;
     m_IsScared=false;
     m_ScaredWhite=false;
+    m_AllGhostsScaredState=0;
     m_GhostMoving = false;
     m_GhostStart = false;
     m_GhostsStartTimer = 0;
@@ -66,7 +68,7 @@ void Ghost::LoadGhostImages()
     m_ScaredWhite1.load(":/ghosts/images/ghost_images/ghostscaredwhite2.png");
 }
 
-void Ghost::Advance()
+void Ghost::AdvanceAnimation()
 {
     if(m_AnimeState>2)
     {

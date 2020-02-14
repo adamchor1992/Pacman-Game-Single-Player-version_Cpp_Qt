@@ -1,6 +1,6 @@
 #include "map.h"
 
-QVector<QPoint> Map::m_PacmanPaths;
+QVector<QPoint> Map::m_PathPoints;
 
 Map::Map()
 {
@@ -111,9 +111,9 @@ void Map::CreatePathPoints(int startX, int startY, int endX, int endY) //only le
             {
                 p.setX(startX);
                 p.setY(y);
-                if (! m_PacmanPaths.contains(p))
+                if (! m_PathPoints.contains(p))
                 {
-                    m_PacmanPaths.push_front(p);
+                    m_PathPoints.push_front(p);
                 }
             }
         }
@@ -122,9 +122,9 @@ void Map::CreatePathPoints(int startX, int startY, int endX, int endY) //only le
         {
                 p.setX(startX);
                 p.setY(startY);
-                if (! m_PacmanPaths.contains(p))
+                if (! m_PathPoints.contains(p))
                 {
-                    m_PacmanPaths.push_front(p);
+                    m_PathPoints.push_front(p);
                 }
         }
     }
@@ -137,9 +137,9 @@ void Map::CreatePathPoints(int startX, int startY, int endX, int endY) //only le
             {
                 p.setX(x);
                 p.setY(startY);
-                if (! m_PacmanPaths.contains(p))
+                if (! m_PathPoints.contains(p))
                 {
-                    m_PacmanPaths.push_front(p);
+                    m_PathPoints.push_front(p);
                 }
             }
         }
@@ -147,9 +147,9 @@ void Map::CreatePathPoints(int startX, int startY, int endX, int endY) //only le
         {
                 p.setX(startX);
                 p.setY(startY);
-                if (! m_PacmanPaths.contains(p))
+                if (! m_PathPoints.contains(p))
                 {
-                    m_PacmanPaths.push_front(p);
+                    m_PathPoints.push_front(p);
                 }
         }
     }
@@ -158,9 +158,9 @@ void Map::CreatePathPoints(int startX, int startY, int endX, int endY) //only le
 /*Checks if given point is accessible for Pacman (is present in m_PacmanPaths vector)*/
 bool Map::IsPointAvailable(QPoint point)
 {
-    for(int i=0;i<m_PacmanPaths.size();i++)
+    for(int i=0;i<m_PathPoints.size();i++)
     {
-        if(m_PacmanPaths.at(i)==point)
+        if(m_PathPoints.at(i)==point)
         {
              return true;
         }

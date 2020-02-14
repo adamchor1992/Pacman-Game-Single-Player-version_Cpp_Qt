@@ -8,22 +8,13 @@ GameWindow::GameWindow(QWidget *parent) : QDialog(parent), m_pUi(new Ui::GameWin
 {
     m_pUi->setupUi(this);
 
+    setFocus(Qt::ActiveWindowFocusReason);
+
+    m_GameState = GameState::BeforeFirstRun;
+
     InitializeGameplayAreaScene();
 
-    GenerateAndPopulateMap();
-    GenerateAndPlacePacman();
-    GenerateAndPlaceGhosts();
-
-    ShowScore();
-
-    m_CollisionDetectionDelay = 0; //delay collision detection after game restart
-
-    m_Scene.addItem(&m_TextStartEnd);
-
-    m_Playing = false;
-    m_ReadyToRestart = false;
-
-    this->setFocus(Qt::ActiveWindowFocusReason);
+    PrepareFirstGameRun();
 }
 
 void GameWindow::InitializeGameplayAreaScene()
@@ -35,31 +26,56 @@ void GameWindow::InitializeGameplayAreaScene()
     m_pUi->m_pGameplayArea->setSceneRect(m_Scene.sceneRect());
 }
 
+void GameWindow::PrepareFirstGameRun()
+{
+    GenerateAndPopulateMap();
+    GenerateAndPlacePacman();
+    GenerateAndPlaceGhosts();
+    GenerateAndPlaceScoreDisplay();
+
+    m_CollisionDetectionDelay = 0; //delay collision detection after game restart
+
+    m_Scene.addItem(&m_StartEndTextDisplay);
+}
+
 void GameWindow::GenerateAndPopulateMap()
 {
+    /*Add background map picture*/
+    m_pMapItem = m_Scene.addPixmap(m_PacMap.GetMapBackgroundPicture());
+
     m_PowerballPositions = m_Powerball.GetPowerBallPositions();
     m_FoodballPositions = m_Foodball.GetFoodBallPositions();
 
-    m_pMapItem = m_Scene.addPixmap(m_PacMap.GetMapBackgroundPicture());
+   int const powerballRadius = 15;
 
     for(int i=0; i<m_PowerballPositions.size();i++)
     {
-        m_PowerballGraphicalItemsTable.push_back(m_Scene.addEllipse(m_PowerballPositions.at(i).x()-5, m_PowerballPositions.at(i).y()-8, 15, 15, QPen(Qt::NoPen), QBrush(Qt::white)));
+        m_PowerballGraphicalItemsTable.push_back(m_Scene.addEllipse(m_PowerballPositions.at(i).x()-5,
+                                                                    m_PowerballPositions.at(i).y()-8,
+                                                                    powerballRadius,
+                                                                    powerballRadius,
+                                                                    QPen(Qt::NoPen),
+                                                                    QBrush(Qt::white)));
     }
 
     m_FoodballItemsCount=m_FoodballPositions.size();
 
+    int const foodballRadius = 7;
+
     for(int i=0;i<m_FoodballPositions.size();i++)
     {
-        m_FoodballGraphicalItemsTable.push_back(m_Scene.addEllipse(m_FoodballPositions.at(i).x(),m_FoodballPositions.at(i).y(),7,7,QPen(Qt::NoPen),QBrush(Qt::white)));
+        m_FoodballGraphicalItemsTable.push_back(m_Scene.addEllipse(m_FoodballPositions.at(i).x(),
+                                                                   m_FoodballPositions.at(i).y(),
+                                                                   foodballRadius,
+                                                                   foodballRadius,
+                                                                   QPen(Qt::NoPen),
+                                                                   QBrush(Qt::white)));
     }
 }
 
 void GameWindow::GenerateAndPlacePacman()
 {
-    m_Pacman.SetDirection(1); //pacman moves left after game start
-    m_Pacman.SetPacX(320);
-    m_Pacman.SetPacY(514);
+    m_Pacman.Reset();
 
     m_Scene.addItem(&m_Pacman);
 }
@@ -68,7 +84,7 @@ void GameWindow::GenerateAndPlaceGhosts()
 {
     Ghost::SetAllGhostsScared(false);
 
-    m_ScareState = 0;
+    Ghost::SetAllGhostsScareState(0);
 
     m_Ghost1.Reset();
     m_Ghost2.Reset();
@@ -87,10 +103,12 @@ void GameWindow::GenerateAndPlaceGhosts()
     m_Scene.addItem(&m_Ghost4);
 }
 
-void GameWindow::ShowScore()
+void GameWindow::GenerateAndPlaceScoreDisplay()
 {
     m_Score=0;
-    m_pScoreDisplay = m_Scene.addText("Score:");
+
+    m_pScoreDisplay = m_Scene.addText("Score: " + QString::number(m_Score));
+
     m_pScoreDisplay->setDefaultTextColor(Qt::white);
     m_pScoreDisplay->setFont(QFont("Arial", 40));
     m_pScoreDisplay->setPos(0,671);
@@ -100,14 +118,20 @@ void GameWindow::StartGame()
 {
     m_Sounds.m_BeginningSound.play();
 
-    m_TextStartEnd.hide();
+    //ClearGameplayScene();
+
+    //m_Scene.removeItem(&m_StartEndTextDisplay);
+    m_StartEndTextDisplay.hide();
 
     connect(&m_Timer, SIGNAL(timeout()), this,SLOT(Updater()));
     connect(&m_GhostsTimer, SIGNAL(timeout()), this,SLOT(GhostUpdater()));
 
     m_Timer.start(4);
     m_GhostsTimer.start(4);
-    this->setFocus(); //gives the keyboard input focus to this widget
+
+    m_GameState = GameState::GameRunning;
+
+    setFocus(); //gives the keyboard input focus to this widget
 }
 
 void GameWindow::RestartGame()
@@ -124,14 +148,17 @@ void GameWindow::RestartGame()
     GenerateAndPlacePacman();
     GenerateAndPlaceGhosts();
 
-    ShowScore();
+    GenerateAndPlaceScoreDisplay();
 
     m_Sounds.m_BeginningSound.play();
 
-    m_TextStartEnd.hide();
+    m_StartEndTextDisplay.hide();
 
     m_Timer.start(4);
     m_GhostsTimer.start(4);
+
+    m_GameState = GameState::GameRunning;
+
     this->setFocus(); //gives the keyboard input focus to this widget
 }
 
@@ -173,215 +200,26 @@ void GameWindow::HideSceneItems()
 
 void GameWindow::EndGame(int win)
 {
+    HideSceneItems();
+
+    m_StartEndTextDisplay.show();
+    m_StartEndTextDisplay.SetScore(m_Score);
+    m_StartEndTextDisplay.SetScore(m_Score);
+    m_Score=0;
+
     if(win==1)
     {
-        HideSceneItems();
-
-        m_TextStartEnd.show();
-
-        m_TextStartEnd.SetScore(m_Score);
-        m_TextStartEnd.SetGameWon(true);
-        m_TextStartEnd.show();
-
-        m_Score=0;
-
-        m_Scene.update();
-        m_Playing = false;
-        m_ReadyToRestart = true;
+        m_StartEndTextDisplay.SetGameWon(true);
     }
-
     else
     {
         m_Sounds.m_PacmanDeathSound.play();
-
-        HideSceneItems();
-
-        m_TextStartEnd.show();
-        m_TextStartEnd.SetScore(m_Score);
-        m_TextStartEnd.SetGameLost(true);
-        m_TextStartEnd.show();
-
-        m_Score=0;
-
-        m_Scene.update();
-        m_Playing = false;
-        m_ReadyToRestart = true;
-    }
-}
-
-void GameWindow::PacmanMove()
-{
-    QPoint p;
-
-    int pac_x = m_Pacman.GetPacX();
-    int pac_y = m_Pacman.GetPacY();
-    int direction = m_Pacman.GetDirection();
-    int nextdirection = m_Pacman.GetNextDirection();
-
-    if(nextdirection!=direction)
-    {
-        switch(nextdirection)
-        {
-        case 1: //left
-            p.setX(pac_x-1);
-            p.setY(pac_y);
-
-            if(m_PacMap.IsPointAvailable(p))
-            {
-                direction=nextdirection;
-                nextdirection=0;
-            }
-            break;
-
-        case 2: //up
-            p.setX(pac_x);
-            p.setY(pac_y-1);
-            if(m_PacMap.IsPointAvailable(p))
-            {
-                direction=nextdirection;
-                nextdirection=0;
-            }
-            break;
-
-        case 3: //down
-            p.setX(pac_x);
-            p.setY(pac_y+1);
-            if(m_PacMap.IsPointAvailable(p))
-            {
-                direction=nextdirection;
-                nextdirection=0;
-            }
-            break;
-
-        case 4: //right
-            p.setX(pac_x+1);
-            p.setY(pac_y);
-            if(m_PacMap.IsPointAvailable(p))
-            {
-                direction=nextdirection;
-                nextdirection=0;
-            }
-            break;
-        }
+        m_StartEndTextDisplay.SetGameLost(true);
     }
 
-    switch(direction)
-    {
-    case 1: //left
-        p.setX(pac_x-1);
-        p.setY(pac_y);
-        m_Pacman.SetDirection(direction);
+    m_Scene.update();
 
-        if(m_PacMap.IsPointAvailable(p))
-        {
-            pac_x = pac_x - 1;
-        }
-
-        break;
-
-    case 2: //up
-        p.setX(pac_x);
-        p.setY(pac_y-1);
-        m_Pacman.SetDirection(direction);
-
-        if(m_PacMap.IsPointAvailable(p))
-        {
-            pac_y= pac_y - 1;
-        }
-
-        break;
-
-    case 3: //down
-        p.setX(pac_x);
-        p.setY(pac_y+1);
-        m_Pacman.SetDirection(direction);
-
-        if(m_PacMap.IsPointAvailable(p))
-        {
-            pac_y= pac_y + 1;
-        }
-
-        break;
-
-    case 4: //right
-        p.setX(pac_x+1);
-        p.setY(pac_y);
-        m_Pacman.SetDirection(direction);
-
-        if(m_PacMap.IsPointAvailable(p))
-        {
-            pac_x = pac_x + 1;
-        }
-
-        break;
-    }
-
-    if(pac_x==0 && pac_y==318) //teleportation when reached left boundary of middle horizontal line
-    {
-        pac_x=613;
-    }
-
-    if(pac_x==614 && pac_y==318) //teleportation when reached right boundary of middle horizontal line
-    {
-        pac_x=1;
-    }
-
-    m_Pacman.SetPacX(pac_x);
-    m_Pacman.SetPacY(pac_y);
-}
-
-/*Supports pacman movement using WSAD and directional keys*/
-void GameWindow::keyPressEvent(QKeyEvent *event)
-{
-    int nextdirection=m_Pacman.GetNextDirection();
-
-    switch(event->key())
-    {
-    case Qt::Key_Left:
-        nextdirection=1;
-        break;
-    case Qt::Key_A:
-        nextdirection=1;
-        break;
-
-    case Qt::Key_Right:
-        nextdirection=4;
-        break;
-    case Qt::Key_D:
-        nextdirection=4;
-        break;
-
-    case Qt::Key_Down:
-        nextdirection=3;
-        break;
-    case Qt::Key_S:
-        nextdirection=3;
-        break;
-
-    case Qt::Key_Up:
-        nextdirection=2;
-        break;
-    case Qt::Key_W:
-        nextdirection=2;
-        break;
-
-    case Qt::Key_Space:
-        if(!m_Playing && m_ReadyToRestart == false)
-        {
-            m_Playing = true;
-            StartGame();
-        }
-        if(!m_Playing && m_ReadyToRestart == true)
-        {
-            m_ReadyToRestart = false;
-            m_Playing = true;
-            RestartGame();
-        }
-
-    default:
-        break;
-    }
-    m_Pacman.SetNextDirection(nextdirection);
+    m_GameState = GameState::GameStopped;
 }
 
 void GameWindow::CheckCollision()
@@ -442,11 +280,16 @@ void GameWindow::Updater()
     int pac_y = m_Pacman.GetPacY();
 
     if(m_CollisionDetectionDelay >= 500)
+    {
         CheckCollision();
+    }
     else
+    {
         m_CollisionDetectionDelay++;
+    }
 
-    PacmanMove();  //changes position of pacman
+    /*Changes position of pacman*/
+    m_Pacman.Move();
 
     for(int i=0;i<m_FoodballPositions.size();i++)
     {
@@ -484,7 +327,7 @@ void GameWindow::Updater()
             m_Score += 100;
             m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
 
-            m_ScareState = 0;
+            Ghost::SetAllGhostsScareState(0);
 
             m_Ghost1.SetIsScared(true);
             m_Ghost2.SetIsScared(true);
@@ -506,14 +349,14 @@ void GameWindow::Updater()
 
     if(Ghost::GetAllGhostsScared())
     {
-        m_ScareState+=1;
+        Ghost::IncrementAllGhostsScareState();
 
-        if(m_ScareState==1)
+        if(Ghost::GetAllGhostsScareState()==1)
         {
             m_GhostsTimer.setInterval(50);
         }
 
-        if(m_ScareState==750)
+        if(Ghost::GetAllGhostsScareState()==750)
         {
             m_Ghost1.SetScaredWhite(true);
             m_Ghost2.SetScaredWhite(true);
@@ -521,7 +364,7 @@ void GameWindow::Updater()
             m_Ghost4.SetScaredWhite(true);
         }
 
-        if(m_ScareState==1000)
+        if(Ghost::GetAllGhostsScareState()==1000)
         {
             Ghost::SetAllGhostsScared(false);
 
@@ -535,16 +378,16 @@ void GameWindow::Updater()
             m_Ghost3.SetScaredWhite(false);
             m_Ghost4.SetScaredWhite(false);
 
-            m_ScareState = 0;
+            Ghost::SetAllGhostsScareState(0);
             m_GhostsTimer.setInterval(4);
         }
     }
 
-    m_Pacman.Advance();
-    m_Ghost1.Advance();
-    m_Ghost2.Advance();
-    m_Ghost3.Advance();
-    m_Ghost4.Advance();
+    m_Pacman.AdvanceAnimation();
+    m_Ghost1.AdvanceAnimation();
+    m_Ghost2.AdvanceAnimation();
+    m_Ghost3.AdvanceAnimation();
+    m_Ghost4.AdvanceAnimation();
 
     m_Scene.update(m_Scene.sceneRect());
 }
@@ -613,7 +456,7 @@ void GameWindow::GhostUpdater()
                 m_Ghost1.SetGhostY(m_Ghost1Y);
                 p1.setX(m_Ghost1X);
                 p1.setY(m_Ghost1Y);
-                if(m_PacMap.GetPacmanPaths().contains(p1))
+                if(m_PacMap.GetPathPoints().contains(p1))
                 {
                     m_Ghost1.SetGhostStart(true);
                 }
@@ -639,7 +482,7 @@ void GameWindow::GhostUpdater()
                 m_Ghost2.SetGhostY(m_Ghost2Y);
                 p2.setX(m_Ghost2X);
                 p2.setY(m_Ghost2Y);
-                if(m_PacMap.GetPacmanPaths().contains(p2))
+                if(m_PacMap.GetPathPoints().contains(p2))
                 {
                     m_Ghost2.SetGhostStart(true);
                 }
@@ -665,7 +508,7 @@ void GameWindow::GhostUpdater()
                 m_Ghost3.SetGhostY(m_Ghost3Y);
                 p3.setX(m_Ghost3X);
                 p3.setY(m_Ghost3Y);
-                if(m_PacMap.GetPacmanPaths().contains(p3))
+                if(m_PacMap.GetPathPoints().contains(p3))
                 {
                     m_Ghost3.SetGhostStart(true);
                 }
@@ -691,7 +534,7 @@ void GameWindow::GhostUpdater()
                 m_Ghost4.SetGhostY(m_Ghost4Y);
                 p4.setX(m_Ghost4X);
                 p4.setY(m_Ghost4Y);
-                if(m_PacMap.GetPacmanPaths().contains(p4))
+                if(m_PacMap.GetPathPoints().contains(p4))
                 {
                     m_Ghost4.SetGhostStart(true);
                 }
@@ -708,7 +551,63 @@ void GameWindow::GhostUpdater()
     }
 }
 
+void GameWindow::ClearGameplayScene()
+{
+    m_Scene.clear();
+}
+
 GameWindow::~GameWindow()
 {
     delete m_pUi;
+}
+
+/*Supports pacman movement using WSAD and directional keys*/
+void GameWindow::keyPressEvent(QKeyEvent *event)
+{
+    int nextdirection=m_Pacman.GetNextDirection();
+
+    switch(event->key())
+    {
+    case Qt::Key_Left:
+        nextdirection=1;
+        break;
+    case Qt::Key_A:
+        nextdirection=1;
+        break;
+
+    case Qt::Key_Right:
+        nextdirection=4;
+        break;
+    case Qt::Key_D:
+        nextdirection=4;
+        break;
+
+    case Qt::Key_Down:
+        nextdirection=3;
+        break;
+    case Qt::Key_S:
+        nextdirection=3;
+        break;
+
+    case Qt::Key_Up:
+        nextdirection=2;
+        break;
+    case Qt::Key_W:
+        nextdirection=2;
+        break;
+
+    case Qt::Key_Space:
+        if(m_GameState == GameState::BeforeFirstRun)
+        {
+            StartGame();
+        }
+        if(m_GameState == GameState::GameStopped)
+        {
+            RestartGame();
+        }
+
+    default:
+        break;
+    }
+    m_Pacman.SetNextDirection(nextdirection);
 }

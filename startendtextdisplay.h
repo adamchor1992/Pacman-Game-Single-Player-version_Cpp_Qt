@@ -1,23 +1,23 @@
-#ifndef TEXTSTARTEND_H
-#define TEXTSTARTEND_H
+#ifndef STARTENDTEXTDISPLAY_H
+#define STARTENDTEXTDISPLAY_H
 
 #include <QPainter>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 
-class TextStartEnd : public QGraphicsItem
+class StartEndTextDisplay : public QGraphicsItem
 {
 public:
-    TextStartEnd();
+    StartEndTextDisplay();
     void SetScore(int score);
     void SetGameWon(bool gameWon);
     void SetGameLost(bool gameLost);
     bool m_GameWon, m_GameLost, m_Playing;
     int m_Score;
-    int m_X, m_Y, m_W, m_H;
+    int m_X, m_Y, m_Width, m_Height;
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 };
 
-#endif // TEXTSTARTEND_H
+#endif // STARTENDTEXTDISPLAY_H

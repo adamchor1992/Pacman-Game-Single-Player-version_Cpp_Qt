@@ -1,40 +1,40 @@
-#include "textstartend.h"
+#include "startendtextdisplay.h"
 
-TextStartEnd::TextStartEnd()
+StartEndTextDisplay::StartEndTextDisplay()
 {
     m_GameWon=false;
     m_GameLost=false;
 
-    m_W=600;
-    m_H=200;
-    m_X=614/2-m_W/2;
-    m_Y=714/2-m_H/2;
+    m_Width=600;
+    m_Height=200;
+    m_X=614/2-m_Width/2;
+    m_Y=714/2-m_Height/2;
 
     m_Score=0;
     m_Playing=false;
 }
 
-QRectF TextStartEnd::boundingRect() const
-{
-    return QRect(m_X, m_Y, m_W, m_H);
-}
-
-void TextStartEnd::SetScore(int score)
+void StartEndTextDisplay::SetScore(int score)
 {
     m_Score = score;
 }
 
-void TextStartEnd::SetGameWon(bool gameWon)
+void StartEndTextDisplay::SetGameWon(bool gameWon)
 {
     m_GameWon = gameWon;
 }
 
-void TextStartEnd::SetGameLost(bool gameLost)
+void StartEndTextDisplay::SetGameLost(bool gameLost)
 {
     m_GameLost = gameLost;
 }
 
-void TextStartEnd::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+QRectF StartEndTextDisplay::boundingRect() const
+{
+    return QRect(m_X, m_Y, m_Width, m_Height);
+}
+
+void StartEndTextDisplay::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     QPen pen_red(Qt::red);
     QPen pen_yellow(Qt::yellow);

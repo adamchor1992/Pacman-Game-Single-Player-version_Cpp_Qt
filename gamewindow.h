@@ -6,7 +6,7 @@
 #include "powerball.h"
 #include "foodball.h"
 #include "ghost.h"
-#include "textstartend.h"
+#include "startendtextdisplay.h"
 #include "sounds.h"
 #include <QDialog>
 #include <QtCore>
@@ -30,10 +30,10 @@ public:
     void GenerateAndPopulateMap();
     void GenerateAndPlacePacman();
     void GenerateAndPlaceGhosts();
+    void GenerateAndPlaceScoreDisplay();
     void ResetMap();
     void ResetPacman();
     void ResetGhosts();
-    void ShowScore();
     void StartGame();
     void RestartGame();
     void HideSceneItems();
@@ -53,7 +53,7 @@ public slots:
 private:
     Ui::GameWindow *m_pUi;
     QGraphicsScene m_Scene;
-    TextStartEnd m_TextStartEnd;
+    StartEndTextDisplay m_StartEndTextDisplay;
     QTimer m_Timer;
     QTimer m_GhostsTimer;
     Map m_PacMap;
@@ -68,22 +68,25 @@ private:
     int m_Score;
     int m_FoodballItemsCount;
     int m_CollisionDetectionDelay;
-    int m_ScareState;
-    bool m_ReadyToRestart;
-    bool m_Playing;
     QVector<QPoint> m_PowerballPositions;
     QVector<QPoint> m_FoodballPositions;
     QGraphicsPixmapItem* m_pMapItem;
     QVector<QGraphicsEllipseItem*> m_FoodballGraphicalItemsTable;
     QVector<QGraphicsEllipseItem*> m_PowerballGraphicalItemsTable;
     QGraphicsTextItem* m_pScoreDisplay;
-    QGraphicsTextItem* m_pLivesDisplay;
-    QMediaPlayer* m_pBeginningSound;
-    QMediaPlayer* m_pEatSound1;
-    QMediaPlayer* m_pEatSound2;
-    QMediaPlayer* m_pEatGhostSound;
-    QMediaPlayer* m_pPacmanDeathSound;
+
+    enum class GameState
+    {
+        BeforeFirstRun,
+        GameRunning,
+        GameStopped
+    };
+
+    GameState m_GameState;
+
     void InitializeGameplayAreaScene();
+    void PrepareFirstGameRun();
+    void ClearGameplayScene();
 };
 
 #endif // DIALOG_H

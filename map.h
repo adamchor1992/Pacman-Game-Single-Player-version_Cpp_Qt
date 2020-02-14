@@ -8,17 +8,18 @@ class Map
 {
 public:
     Map();
-    void CreatePathPoints(int beginX, int beginY, int endX, int endY);
     void LoadMapImage();
+    void CreatePathPoints(int beginX, int beginY, int endX, int endY);
+    QPixmap GetMapBackgroundPicture() const {return m_MapBackgroundPixmap;}
+
     static bool IsPointAvailable(QPoint);
-    QPixmap GetMapBackgroundPicture() {return m_MapBackgroundPixmap;}
-    QVector<QPoint> GetPacmanPaths() {return m_PacmanPaths;}
+    static QVector<QPoint>& GetPathPoints() {return m_PathPoints;}
 
     QRectF boundingRect() const;
 
 private:
     QPixmap m_MapBackgroundPixmap;
-    static QVector<QPoint> m_PacmanPaths;
+    static QVector<QPoint> m_PathPoints;
 };
 
 #endif // MAP_H

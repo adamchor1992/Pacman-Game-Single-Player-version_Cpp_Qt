@@ -7,16 +7,19 @@ class Pacman : public QGraphicsItem
 {
 public:
     Pacman();
+    void Reset();
     void LoadPacmanImages();
-    void Advance();
+    void AdvanceAnimation();
     void SetPacX(int);
     void SetPacY(int);
     void SetDirection(int dir);
     void SetNextDirection(int dir);
+    int GetDirection() const {return m_Direction;}
+    int GetNextDirection() const {return m_NextDirection;}
+    void Move();
+
     static int GetPacX() {return m_PacX;}
     static int GetPacY() {return m_PacY;}
-    int GetDirection() {return m_Direction;}
-    int GetNextDirection() {return m_NextDirection;}
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
