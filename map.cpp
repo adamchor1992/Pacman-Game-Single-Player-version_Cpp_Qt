@@ -1,5 +1,7 @@
 #include "map.h"
 
+QVector<QPoint> Map::m_PacmanPaths;
+
 Map::Map()
 {
     LoadMapImage();

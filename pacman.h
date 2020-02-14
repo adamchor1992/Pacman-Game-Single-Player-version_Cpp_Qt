@@ -13,8 +13,8 @@ public:
     void SetPacY(int);
     void SetDirection(int dir);
     void SetNextDirection(int dir);
-    int GetPacX() {return m_PacX;}
-    int GetPacY() {return m_PacY;}
+    static int GetPacX() {return m_PacX;}
+    static int GetPacY() {return m_PacY;}
     int GetDirection() {return m_Direction;}
     int GetNextDirection() {return m_NextDirection;}
 
@@ -22,8 +22,8 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
-    int m_PacX;
-    int m_PacY;
+    static int m_PacX;
+    static int m_PacY;
     int m_Direction;
     int m_NextDirection;
     int m_AnimeState;

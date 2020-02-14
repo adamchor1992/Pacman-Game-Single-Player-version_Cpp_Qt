@@ -34,15 +34,6 @@ public:
     void ResetPacman();
     void ResetGhosts();
     void ShowScore();
-    void GhostPlayerMove();
-    void GhostMove1();
-    void GhostMove2();
-    void GhostMove3();
-    void GhostMove4();
-    void MoveGhostInStartingRect1();
-    void MoveGhostInStartingRect2();
-    void MoveGhostInStartingRect3();
-    void MoveGhostInStartingRect4();
     void StartGame();
     void RestartGame();
     void HideSceneItems();
@@ -78,10 +69,8 @@ private:
     int m_FoodballItemsCount;
     int m_CollisionDetectionDelay;
     int m_ScareState;
-    int m_StartTimer;
-    bool m_GhostMoving1, m_GhostMoving2, m_GhostMoving3, m_GhostMoving4;
-    bool m_GhostStart1, m_GhostStart2, m_GhostStart3, m_GhostStart4;
-    bool m_Start, m_Playing, m_Scared, m_AllGhostsStarted, m_ReadyToRestart;
+    bool m_ReadyToRestart;
+    bool m_Playing;
     QVector<QPoint> m_PowerballPositions;
     QVector<QPoint> m_FoodballPositions;
     QGraphicsPixmapItem* m_pMapItem;

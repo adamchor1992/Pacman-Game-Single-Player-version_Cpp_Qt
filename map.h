@@ -10,7 +10,7 @@ public:
     Map();
     void CreatePathPoints(int beginX, int beginY, int endX, int endY);
     void LoadMapImage();
-    bool IsPointAvailable(QPoint);
+    static bool IsPointAvailable(QPoint);
     QPixmap GetMapBackgroundPicture() {return m_MapBackgroundPixmap;}
     QVector<QPoint> GetPacmanPaths() {return m_PacmanPaths;}
 
@@ -18,7 +18,7 @@ public:
 
 private:
     QPixmap m_MapBackgroundPixmap;
-    QVector<QPoint> m_PacmanPaths;
+    static QVector<QPoint> m_PacmanPaths;
 };
 
 #endif // MAP_H

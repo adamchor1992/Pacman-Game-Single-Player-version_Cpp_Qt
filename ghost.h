@@ -7,10 +7,12 @@ class Ghost : public QGraphicsItem
 {
 public:
     Ghost();
+    void Reset();
     void LoadGhostImages();
     void Advance();
-    void SetGhostX(int);
-    void SetGhostY(int);
+    void SetGhostX(int x){m_GhostX=x;}
+    void SetGhostY(int y){m_GhostY=y;}
+    void SetGhostStart(bool ghostStart) {m_GhostStart=ghostStart;}
     void SetIsScared(bool option) {m_IsScared=option;}
     void SetScaredWhite(bool option) {m_ScaredWhite=option;}
     void SetGhostDirection(int dir) {m_GhostDirection=dir;}
@@ -22,6 +24,16 @@ public:
     int GetNextGhostDirection() {return m_NextGhostDirection;}
     bool GetIsScared() {return m_IsScared;}
     bool GetScaredWhite() {return m_ScaredWhite;}
+    bool GetGhostStart() {return m_GhostStart;}
+    static bool GetAllGhostsScared(){return m_AllGhostScared;}
+    static void SetAllGhostsScared(bool allGhostsScared){m_AllGhostScared = allGhostsScared;}
+    static bool GetAllGhostsStarted(){return m_AllGhostsStarted;}
+    static void SetAllGhostsStarted(bool allGhostsStarted){m_AllGhostsStarted = allGhostsStarted;}
+    static int GetGhostsStartTimer(){return m_GhostsStartTimer;}
+    static void IncrementGhostsStartTimer(){++m_GhostsStartTimer;}
+
+    void Move();
+    void MoveInStartingRect();
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -41,6 +53,12 @@ private:
     bool m_IsScared;
     bool m_ScaredWhite;
     bool m_Hidden;
+    bool m_GhostMoving;
+    bool m_GhostStart;
+
+    static bool m_AllGhostScared;
+    static bool m_AllGhostsStarted;
+    static int m_GhostsStartTimer;
 
     int m_AnimeState;
     int m_AnimationModifyFactor;

@@ -3,6 +3,9 @@
 #include <QGraphicsPixmapItem>
 #include <QPainter>
 
+int Pacman::m_PacX{};
+int Pacman::m_PacY{};
+
 Pacman::Pacman()
 {
     m_AnimeState = 0;
