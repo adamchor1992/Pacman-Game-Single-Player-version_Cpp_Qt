@@ -53,9 +53,7 @@ public slots:
 private:
     Ui::GameWindow *m_pUi;
     QGraphicsScene m_Scene;
-    StartEndTextDisplay m_StartEndTextDisplay;
-    QTimer m_Timer;
-    QTimer m_GhostsTimer;
+
     Map m_PacMap;
     PowerBall m_Powerball;
     FoodBall m_Foodball;
@@ -64,12 +62,19 @@ private:
     Ghost m_Ghost2;
     Ghost m_Ghost3;
     Ghost m_Ghost4;
+    StartEndTextDisplay m_StartEndTextDisplay;
+
     Sounds m_Sounds;
+    QTimer m_Timer;
+    QTimer m_GhostsTimer;
+
     int m_Score;
     int m_FoodballItemsCount;
     int m_CollisionDetectionDelay;
+
     QVector<QPoint> m_PowerballPositions;
     QVector<QPoint> m_FoodballPositions;
+
     QGraphicsPixmapItem* m_pMapItem;
     QVector<QGraphicsEllipseItem*> m_FoodballGraphicalItemsTable;
     QVector<QGraphicsEllipseItem*> m_PowerballGraphicalItemsTable;
