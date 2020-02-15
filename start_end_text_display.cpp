@@ -1,4 +1,4 @@
-#include "startendtextdisplay.h"
+#include "start_end_text_display.h"
 
 StartEndTextDisplay::StartEndTextDisplay()
 {

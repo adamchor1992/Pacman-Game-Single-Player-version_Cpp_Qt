@@ -1,8 +1,5 @@
-#include "gamewindow.h"
+#include "game_window.h"
 #include "ui_gamewindow.h"
-#include "map.h"
-#include "powerball.h"
-#include <QGraphicsScene>
 
 GameWindow::GameWindow(QWidget *parent) : QDialog(parent), m_pUi(new Ui::GameWindow)
 {
@@ -33,7 +30,8 @@ void GameWindow::PrepareFirstGameRun()
     GenerateAndPlaceGhosts();
     GenerateAndPlaceScoreDisplay();
 
-    m_CollisionWithGhostDetectionDelay = 0; //delay collision detection after game restart
+    /*Delay collision detection after game restart*/
+    m_CollisionWithGhostDetectionDelay = 0;
 
     m_Scene.addItem(&m_StartEndTextDisplay);
 }
@@ -95,7 +93,7 @@ void GameWindow::GenerateAndPlaceGhosts()
     m_Ghost2.SetGhostColor("red");
     m_Ghost3.SetGhostColor("blue");
 
-    Ghost::SetAllGhostsStarted(false);
+    Ghost::SetAllGhostsStartedFreeMovement(false);
 
     m_Scene.addItem(&m_Ghost1);
     m_Scene.addItem(&m_Ghost2);
@@ -118,9 +116,6 @@ void GameWindow::StartGame()
 {
     m_Sounds.m_BeginningSound.play();
 
-    //ClearGameplayScene();
-
-    //m_Scene.removeItem(&m_StartEndTextDisplay);
     m_StartEndTextDisplay.hide();
 
     connect(&m_Timer, SIGNAL(timeout()), this,SLOT(Updater()));
@@ -131,7 +126,8 @@ void GameWindow::StartGame()
 
     m_GameState = GameState::GameRunning;
 
-    setFocus(); //gives the keyboard input focus to this widget
+    /*Gives keyboard input focus to this widget*/
+    setFocus();
 }
 
 void GameWindow::RestartGame()
@@ -159,7 +155,8 @@ void GameWindow::RestartGame()
 
     m_GameState = GameState::GameRunning;
 
-    this->setFocus(); //gives the keyboard input focus to this widget
+    /*Gives keyboard input focus to this widget*/
+    this->setFocus();
 }
 
 void GameWindow::ClearVariablesAndContainers()
@@ -234,7 +231,7 @@ void GameWindow::CheckCollisionWithGhost()
             m_Sounds.m_EatGhostSound.play();
             m_Score+=200;
             m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
-            m_Ghost1.SetGhostX(307);
+            m_Ghost1.SetGhostX(Ghost::STARTING_X);
             m_Ghost1.SetGhostY(252);
             m_Ghost1.SetIsScared(false);
         }
@@ -243,7 +240,7 @@ void GameWindow::CheckCollisionWithGhost()
             m_Sounds.m_EatGhostSound.play();
             m_Score+=200;
             m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
-            m_Ghost2.SetGhostX(307);
+            m_Ghost2.SetGhostX(Ghost::STARTING_X);
             m_Ghost2.SetGhostY(252);
             m_Ghost2.SetIsScared(false);
         }
@@ -252,7 +249,7 @@ void GameWindow::CheckCollisionWithGhost()
             m_Sounds.m_EatGhostSound.play();
             m_Score+=200;
             m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
-            m_Ghost3.SetGhostX(307);
+            m_Ghost3.SetGhostX(Ghost::STARTING_X);
             m_Ghost3.SetGhostY(252);
             m_Ghost3.SetIsScared(false);
         }
@@ -261,7 +258,7 @@ void GameWindow::CheckCollisionWithGhost()
             m_Sounds.m_EatGhostSound.play();
             m_Score+=200;
             m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
-            m_Ghost4.SetGhostX(307);
+            m_Ghost4.SetGhostX(Ghost::STARTING_X);
             m_Ghost4.SetGhostY(252);
             m_Ghost4.SetIsScared(false);
         }
@@ -414,7 +411,7 @@ void GameWindow::GhostUpdater()
     int m_Ghost4X = m_Ghost4.GetGhostX();
     int m_Ghost4Y = m_Ghost4.GetGhostY();
 
-    if(Ghost::GetAllGhostsStarted())
+    if(Ghost::GetAllGhostsStartedFreeMovement())
     {
         m_Ghost1.Move();
         m_Ghost2.Move();
@@ -423,148 +420,167 @@ void GameWindow::GhostUpdater()
     }
     else
     {
-        if(!m_Ghost1.GetGhostStarted())
+        if(!m_Ghost1.GetGhostStartedFreeMovement())
+        {
             m_Ghost1.MoveInStartingRect();
+        }
         else
+        {
             m_Ghost1.Move();
+        }
 
-        if(!m_Ghost2.GetGhostStarted())
+        if(!m_Ghost2.GetGhostStartedFreeMovement())
+        {
             m_Ghost2.MoveInStartingRect();
+        }
         else
+        {
             m_Ghost2.Move();
+        }
 
-        if(!m_Ghost3.GetGhostStarted())
+        if(!m_Ghost3.GetGhostStartedFreeMovement())
+        {
             m_Ghost3.MoveInStartingRect();
+        }
         else
+        {
             m_Ghost3.Move();
+        }
 
-        if(!m_Ghost4.GetGhostStarted())
+        if(!m_Ghost4.GetGhostStartedFreeMovement())
+        {
             m_Ghost4.MoveInStartingRect();
+        }
         else
+        {
             m_Ghost4.Move();
+        }
 
-        if(m_Ghost1.GetGhostX()==300 || m_Ghost2.GetGhostX()==300 || m_Ghost3.GetGhostX()==300 || m_Ghost4.GetGhostX()==300) //substitute of timer to be implemented for every ghost do differentiate start time
+        /*Substitute of timer implemented for every ghost to differentiate their start time*/
+        if(m_Ghost1.GetGhostX()==300 ||
+                m_Ghost2.GetGhostX()==300 ||
+                m_Ghost3.GetGhostX()==300 ||
+                m_Ghost4.GetGhostX()==300)
         {
             Ghost::IncrementGhostsStartTimer();
         }
 
-        if(Ghost::GetGhostsStartTimer()>=3) // ghost 1 starts
+        /*Ghost 1 starts*/
+        if(Ghost::GetGhostsStartTimer()>=3)
         {
-            QPoint p1;
-            if(m_Ghost1X>307)
+            if(m_Ghost1X>Ghost::STARTING_X)
             {
                 m_Ghost1X-=1;
             }
-            else if(m_Ghost1X<307)
+            else if(m_Ghost1X<Ghost::STARTING_X)
             {
                 m_Ghost1X+=1;
             }
 
-            if(!m_Ghost1.GetGhostStarted())
+            if(!m_Ghost1.GetGhostStartedFreeMovement())
             {
                 m_Ghost1Y-=1;
                 m_Ghost1.SetGhostX(m_Ghost1X);
                 m_Ghost1.SetGhostY(m_Ghost1Y);
-                p1.setX(m_Ghost1X);
-                p1.setY(m_Ghost1Y);
-                if(m_PacMap.GetPathPoints().contains(p1))
+
+                QPoint point(m_Ghost1X, m_Ghost1Y);
+
+                if(m_PacMap.GetPathPoints().contains(point))
                 {
-                    m_Ghost1.SetGhostStarted(true);
+                    m_Ghost1.SetGhostStartedFreeMovement(true);
                 }
             }
         }
 
-        if(Ghost::GetGhostsStartTimer()>=6) // ghost 2 starts
+        /*Ghost 2 starts*/
+        if(Ghost::GetGhostsStartTimer()>=6)
         {
-            QPoint p2;
-            if(m_Ghost2X>307)
+            if(m_Ghost2X>Ghost::STARTING_X)
             {
                 m_Ghost2X-=1;
             }
-            else if(m_Ghost2X<307)
+            else if(m_Ghost2X<Ghost::STARTING_X)
             {
                 m_Ghost2X+=1;
             }
 
-            if(!m_Ghost2.GetGhostStarted())
+            if(!m_Ghost2.GetGhostStartedFreeMovement())
             {
                 m_Ghost2Y-=1;
                 m_Ghost2.SetGhostX(m_Ghost2X);
                 m_Ghost2.SetGhostY(m_Ghost2Y);
-                p2.setX(m_Ghost2X);
-                p2.setY(m_Ghost2Y);
-                if(m_PacMap.GetPathPoints().contains(p2))
+
+                QPoint point(m_Ghost2X, m_Ghost2Y);
+
+                if(m_PacMap.GetPathPoints().contains(point))
                 {
-                    m_Ghost2.SetGhostStarted(true);
+                    m_Ghost2.SetGhostStartedFreeMovement(true);
                 }
             }
         }
 
-        if(Ghost::GetGhostsStartTimer()>=9) // ghost 3 starts
+        /*Ghost 3 starts*/
+        if(Ghost::GetGhostsStartTimer()>=9)
         {
-            QPoint p3;
-            if(m_Ghost3X>307)
+            if(m_Ghost3X>Ghost::STARTING_X)
             {
                 m_Ghost3X-=1;
             }
-            else if(m_Ghost3X<307)
+            else if(m_Ghost3X<Ghost::STARTING_X)
             {
                 m_Ghost3X+=1;
             }
 
-            if(!m_Ghost3.GetGhostStarted())
+            if(!m_Ghost3.GetGhostStartedFreeMovement())
             {
                 m_Ghost3Y-=1;
                 m_Ghost3.SetGhostX(m_Ghost3X);
                 m_Ghost3.SetGhostY(m_Ghost3Y);
-                p3.setX(m_Ghost3X);
-                p3.setY(m_Ghost3Y);
-                if(m_PacMap.GetPathPoints().contains(p3))
+
+                QPoint point(m_Ghost3X, m_Ghost3Y);
+
+                if(m_PacMap.GetPathPoints().contains(point))
                 {
-                    m_Ghost3.SetGhostStarted(true);
+                    m_Ghost3.SetGhostStartedFreeMovement(true);
                 }
             }
         }
 
-        if(Ghost::GetGhostsStartTimer()>=12) // ghost 4 starts
+        /*Ghost 4 starts*/
+        if(Ghost::GetGhostsStartTimer()>=12)
         {
-            QPoint p4;
-            if(m_Ghost4X>307)
+            if(m_Ghost4X>Ghost::STARTING_X)
             {
                 m_Ghost4X-=1;
             }
-            else if(m_Ghost4X<307)
+            else if(m_Ghost4X<Ghost::STARTING_X)
             {
                 m_Ghost4X+=1;
             }
 
-            if(!m_Ghost4.GetGhostStarted())
+            if(!m_Ghost4.GetGhostStartedFreeMovement())
             {
                 m_Ghost4Y-=1;
                 m_Ghost4.SetGhostX(m_Ghost4X);
                 m_Ghost4.SetGhostY(m_Ghost4Y);
-                p4.setX(m_Ghost4X);
-                p4.setY(m_Ghost4Y);
-                if(m_PacMap.GetPathPoints().contains(p4))
+
+                QPoint point(m_Ghost4X, m_Ghost4Y);
+
+                if(m_PacMap.GetPathPoints().contains(point))
                 {
-                    m_Ghost4.SetGhostStarted(true);
+                    m_Ghost4.SetGhostStartedFreeMovement(true);
                 }
             }
         }
 
-        if(m_Ghost1.GetGhostStarted()&&
-                m_Ghost2.GetGhostStarted()&&
-                m_Ghost3.GetGhostStarted()&&
-                m_Ghost4.GetGhostStarted())
+        if(m_Ghost1.GetGhostStartedFreeMovement()&&
+                m_Ghost2.GetGhostStartedFreeMovement()&&
+                m_Ghost3.GetGhostStartedFreeMovement()&&
+                m_Ghost4.GetGhostStartedFreeMovement())
         {
-            Ghost::SetAllGhostsStarted(true);
+            Ghost::SetAllGhostsStartedFreeMovement(true);
         }
     }
-}
-
-void GameWindow::ClearGameplayScene()
-{
-    m_Scene.clear();
 }
 
 GameWindow::~GameWindow()
@@ -575,36 +591,28 @@ GameWindow::~GameWindow()
 /*Supports pacman movement using WSAD and directional keys*/
 void GameWindow::keyPressEvent(QKeyEvent *event)
 {
-    int nextdirection=m_Pacman.GetNextDirection();
+    Direction nextDirection =m_Pacman.GetNextDirection();
 
     switch(event->key())
     {
     case Qt::Key_Left:
-        nextdirection=1;
-        break;
     case Qt::Key_A:
-        nextdirection=1;
+        nextDirection=Direction::left;
         break;
 
     case Qt::Key_Right:
-        nextdirection=4;
-        break;
     case Qt::Key_D:
-        nextdirection=4;
+        nextDirection=Direction::right;
         break;
 
     case Qt::Key_Down:
-        nextdirection=3;
-        break;
     case Qt::Key_S:
-        nextdirection=3;
+        nextDirection=Direction::down;
         break;
 
     case Qt::Key_Up:
-        nextdirection=2;
-        break;
     case Qt::Key_W:
-        nextdirection=2;
+        nextDirection=Direction::up;
         break;
 
     case Qt::Key_Space:
@@ -620,5 +628,6 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
     default:
         break;
     }
-    m_Pacman.SetNextDirection(nextdirection);
+
+    m_Pacman.SetNextDirection(nextDirection);
 }

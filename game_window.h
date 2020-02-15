@@ -1,18 +1,19 @@
 #ifndef DIALOG_H
 #define DIALOG_H
 
-#include "map.h"
-#include "pacman.h"
-#include "powerball.h"
-#include "foodball.h"
-#include "ghost.h"
-#include "startendtextdisplay.h"
-#include "sounds.h"
 #include <QDialog>
 #include <QtCore>
 #include <QtGui>
 #include <QMediaPlayer>
 #include <QGraphicsScene>
+
+#include "game_map.h"
+#include "pacman.h"
+#include "powerball.h"
+#include "foodball.h"
+#include "ghost.h"
+#include "start_end_text_display.h"
+#include "sounds.h"
 
 namespace Ui
 {
@@ -91,7 +92,6 @@ private:
 
     void InitializeGameplayAreaScene();
     void PrepareFirstGameRun();
-    void ClearGameplayScene();
     void CheckCollisionWithFoodball(QPoint& pacmanPosition);
     void CheckCollisionWithPowerball(QPoint& pacmanPosition);
     void CheckCollisionWithFoodball();

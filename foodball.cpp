@@ -1,5 +1,5 @@
 #include "foodball.h"
-#include "map.h"
+#include "game_map.h"
 
 FoodBall::FoodBall()
 {

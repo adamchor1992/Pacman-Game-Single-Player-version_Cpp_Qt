@@ -1,9 +1,9 @@
 #include "ghost.h"
-#include "map.h"
+#include "game_map.h"
 #include "pacman.h"
 
 bool Ghost::m_AllGhostScared = false;
-bool Ghost::m_AllGhostsStarted = false;
+bool Ghost::m_AllGhostsStartedFreeMovement = false;
 int Ghost::m_GhostsStartTimer = 0;
 int Ghost::m_AllGhostsScaredState = 0;
 
@@ -16,17 +16,17 @@ Ghost::Ghost()
     m_ScaredWhite=false;
     m_AllGhostsScaredState=0;
     m_GhostMoving = false;
-    m_GhostStarted = false;
+    m_GhostStartedFreeMovement = false;
     m_GhostsStartTimer = 0;
 
-    SetGhostX(307);
-    SetGhostY(318);
-    SetGhostX(307);
-    SetGhostY(318);
-    SetGhostX(307);
-    SetGhostY(318);
-    SetGhostX(307);
-    SetGhostY(318);
+    SetGhostX(STARTING_X);
+    SetGhostY(STARTING_Y);
+    SetGhostX(STARTING_X);
+    SetGhostY(STARTING_Y);
+    SetGhostX(STARTING_X);
+    SetGhostY(STARTING_Y);
+    SetGhostX(STARTING_X);
+    SetGhostY(STARTING_Y);
 
     LoadGhostImages();
 }
@@ -39,17 +39,17 @@ void Ghost::Reset()
     m_IsScared=false;
     m_ScaredWhite=false;
     m_GhostMoving = false;
-    m_GhostStarted = false;
+    m_GhostStartedFreeMovement = false;
     m_GhostsStartTimer = 0;
 
-    SetGhostX(307);
-    SetGhostY(318);
-    SetGhostX(307);
-    SetGhostY(318);
-    SetGhostX(307);
-    SetGhostY(318);
-    SetGhostX(307);
-    SetGhostY(318);
+    SetGhostX(STARTING_X);
+    SetGhostY(STARTING_Y);
+    SetGhostX(STARTING_X);
+    SetGhostY(STARTING_Y);
+    SetGhostX(STARTING_X);
+    SetGhostY(STARTING_Y);
+    SetGhostX(STARTING_X);
+    SetGhostY(STARTING_Y);
 }
 
 void Ghost::LoadGhostImages()
@@ -273,11 +273,13 @@ void Ghost::Move()
         break;
     }
 
+    /*Teleportation when reached left boundary of middle horizontal line*/
     if(m_GhostX<=0)
     {
         m_GhostX=613;
         m_GhostY=318;
     }
+    /*Teleportation when reached right boundary of middle horizontal line*/
     else if(m_GhostX>=614)
     {
         m_GhostX=1;
@@ -293,7 +295,7 @@ void Ghost::MoveInStartingRect()
 {
     int const horizontalMovementOffset = 50;
 
-    if(m_GhostX==307-horizontalMovementOffset || m_GhostX==307+horizontalMovementOffset)
+    if(m_GhostX == STARTING_X - horizontalMovementOffset || m_GhostX == STARTING_X + horizontalMovementOffset)
     {
         if(m_GhostDirection==Direction::right)
         {
@@ -319,11 +321,19 @@ void Ghost::MoveInStartingRect()
 
 QRectF Ghost::boundingRect() const
 {
-    return QRect(m_GhostX-15, m_GhostY-15, 20, 20);
+    int const ghostRadius=30;
+    int const offsetX=-15;
+    int const offsetY=-15;
+
+    return QRect(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius);
 }
 
 void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    int const ghostRadius=30;
+    int const offsetX=-15;
+    int const offsetY=-15;
+
     if(!m_IsScared)
     {
         switch(m_GhostDirection)
@@ -331,44 +341,44 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         case Direction::left:
             if(m_AnimeState==0)
             {
-                painter->drawPixmap(m_GhostX-15, m_GhostY-15,30,30, m_Left1);
+                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY,ghostRadius, ghostRadius, m_Left1);
             }
             else
             {
-                painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_Left2);
+                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Left2);
             }
             break;
 
         case Direction::right:
             if(m_AnimeState==0)
             {
-                painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_Right1);
+                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Right1);
             }
             else
             {
-                painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_Right2);
+                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Right2);
             }
             break;
 
         case Direction::down:
             if(m_AnimeState==0)
             {
-                painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_Down1);
+                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Down1);
             }
             else
             {
-                painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_Down2);
+                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Down2);
             }
             break;
 
         case Direction::up:
             if(m_AnimeState==0)
             {
-                painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_Up1);
+                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Up1);
             }
             else
             {
-                painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_Up2);
+                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Up2);
             }
             break;
 
@@ -382,22 +392,22 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         {
             if(m_AnimeState==0)
             {
-                painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_ScaredWhitePix);
+                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_ScaredWhitePix);
             }
             else
             {
-                painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_ScaredWhite1);
+                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_ScaredWhite1);
             }
         }
         else
         {
             if(m_AnimeState==0)
             {
-                painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_ScaredBlue);
+                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_ScaredBlue);
             }
             else
             {
-                painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_ScaredBlue1);
+                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_ScaredBlue1);
             }
         }
     }

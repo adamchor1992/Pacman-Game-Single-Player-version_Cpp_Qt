@@ -1,4 +1,4 @@
-#include "map.h"
+#include "game_map.h"
 
 QVector<QPoint> Map::m_PathPoints;
 

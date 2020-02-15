@@ -25,25 +25,26 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    game_map.cpp \
+    game_window.cpp \
         main.cpp \
-    map.cpp \
     pacman.cpp \
     foodball.cpp \
     powerball.cpp \
     ghost.cpp \
     sounds.cpp \
-    gamewindow.cpp \
-    startendtextdisplay.cpp
+    start_end_text_display.cpp
 
 HEADERS += \
-    map.h \
+    game_map.h \
+    game_window.h \
     pacman.h \
     foodball.h \
     powerball.h \
     ghost.h \
     sounds.h \
-    gamewindow.h \
-    startendtextdisplay.h
+    start_end_text_display.h \
+    utilities.h
 
 FORMS += \
     gamewindow.ui

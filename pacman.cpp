@@ -1,4 +1,4 @@
-#include "map.h"
+#include "game_map.h"
 #include "pacman.h"
 #include <QGraphicsPixmapItem>
 #include <QPainter>
@@ -8,9 +8,14 @@ int Pacman::m_PacY{};
 
 Pacman::Pacman()
 {
+    LoadPacmanImages();
+
     m_AnimeState = 0;
     m_AnimationModifyFactor = 6;
-    LoadPacmanImages();
+
+    SetDirection(Direction::left); //pacman moves left after game start
+    SetPacX(startingX);
+    SetPacY(startingY);
 }
 
 void Pacman::Reset()
@@ -18,9 +23,9 @@ void Pacman::Reset()
     m_AnimeState = 0;
     m_AnimationModifyFactor = 6;
 
-    SetDirection(1); //pacman moves left after game start
-    SetPacX(320);
-    SetPacY(514);
+    SetDirection(Direction::left); //pacman moves left after game start
+    SetPacX(startingX);
+    SetPacY(startingY);
 }
 
 void Pacman::AdvanceAnimation()
@@ -68,217 +73,224 @@ void Pacman::SetPacY(int y)
     m_PacY=y;
 }
 
-void Pacman::SetDirection(int dir)
+void Pacman::SetDirection(Direction direction)
 {
-    m_Direction=dir;
+    m_Direction=direction;
 }
 
-void Pacman::SetNextDirection(int dir)
+void Pacman::SetNextDirection(Direction direction)
 {
-    m_NextDirection=dir;
+    m_NextDirection=direction;
 }
 
 void Pacman::Move()
 {
-    QPoint p;
+    /*Path point which is tested for validity*/
+    QPoint point;
 
-    int pac_x = GetPacX();
-    int pac_y = GetPacY();
-    int direction = GetDirection();
-    int nextdirection = GetNextDirection();
-
-    if(nextdirection!=direction)
+    if(m_NextDirection!=m_Direction)
     {
-        switch(nextdirection)
+        switch(m_NextDirection)
         {
-        case 1: //left
-            p.setX(pac_x-1);
-            p.setY(pac_y);
+        case Direction::left:
+            point.setX(m_PacX-1);
+            point.setY(m_PacY);
 
-            if(Map::IsPointAvailable(p))
+            if(Map::IsPointAvailable(point))
             {
-                direction=nextdirection;
-                nextdirection=0;
+                m_Direction=m_NextDirection;
+                m_NextDirection=Direction::none;
             }
             break;
 
-        case 2: //up
-            p.setX(pac_x);
-            p.setY(pac_y-1);
-            if(Map::IsPointAvailable(p))
+        case Direction::up:
+            point.setX(m_PacX);
+            point.setY(m_PacY-1);
+            if(Map::IsPointAvailable(point))
             {
-                direction=nextdirection;
-                nextdirection=0;
+                m_Direction=m_NextDirection;
+                m_NextDirection=Direction::none;
             }
             break;
 
-        case 3: //down
-            p.setX(pac_x);
-            p.setY(pac_y+1);
-            if(Map::IsPointAvailable(p))
+        case Direction::down:
+            point.setX(m_PacX);
+            point.setY(m_PacY+1);
+            if(Map::IsPointAvailable(point))
             {
-                direction=nextdirection;
-                nextdirection=0;
+                m_Direction=m_NextDirection;
+                m_NextDirection=Direction::none;
             }
             break;
 
-        case 4: //right
-            p.setX(pac_x+1);
-            p.setY(pac_y);
-            if(Map::IsPointAvailable(p))
+        case Direction::right:
+            point.setX(m_PacX+1);
+            point.setY(m_PacY);
+            if(Map::IsPointAvailable(point))
             {
-                direction=nextdirection;
-                nextdirection=0;
+                m_Direction=m_NextDirection;
+                m_NextDirection=Direction::none;
             }
+            break;
+
+        case Direction::none:
             break;
         }
     }
 
-    switch(direction)
+    switch(m_Direction)
     {
-    case 1: //left
-        p.setX(pac_x-1);
-        p.setY(pac_y);
-        SetDirection(direction);
+    case Direction::left:
+        point.setX(m_PacX-1);
+        point.setY(m_PacY);
 
-        if(Map::IsPointAvailable(p))
+        if(Map::IsPointAvailable(point))
         {
-            pac_x = pac_x - 1;
+            m_PacX = m_PacX - 1;
         }
-
         break;
 
-    case 2: //up
-        p.setX(pac_x);
-        p.setY(pac_y-1);
-        SetDirection(direction);
+    case Direction::up:
+        point.setX(m_PacX);
+        point.setY(m_PacY-1);
 
-        if(Map::IsPointAvailable(p))
+        if(Map::IsPointAvailable(point))
         {
-            pac_y= pac_y - 1;
+            m_PacY= m_PacY - 1;
         }
-
         break;
 
-    case 3: //down
-        p.setX(pac_x);
-        p.setY(pac_y+1);
-        SetDirection(direction);
+    case Direction::down:
+        point.setX(m_PacX);
+        point.setY(m_PacY+1);
 
-        if(Map::IsPointAvailable(p))
+        if(Map::IsPointAvailable(point))
         {
-            pac_y= pac_y + 1;
+            m_PacY= m_PacY + 1;
         }
-
         break;
 
-    case 4: //right
-        p.setX(pac_x+1);
-        p.setY(pac_y);
-        SetDirection(direction);
+    case Direction::right:
+        point.setX(m_PacX+1);
+        point.setY(m_PacY);
 
-        if(Map::IsPointAvailable(p))
+        if(Map::IsPointAvailable(point))
         {
-            pac_x = pac_x + 1;
+            m_PacX = m_PacX + 1;
         }
+        break;
 
+    case Direction::none:
         break;
     }
 
-    if(pac_x==0 && pac_y==318) //teleportation when reached left boundary of middle horizontal line
+    /*Teleportation when reached left boundary of middle horizontal line*/
+    if(m_PacX<=0)
     {
-        pac_x=613;
+        m_PacX=613;
     }
 
-    if(pac_x==614 && pac_y==318) //teleportation when reached right boundary of middle horizontal line
+    /*Teleportation when reached right boundary of middle horizontal line*/
+    if(m_PacX>=614)
     {
-        pac_x=1;
+        m_PacX=1;
     }
-
-    SetPacX(pac_x);
-    SetPacY(pac_y);
 }
 
 QRectF Pacman::boundingRect() const
 {
-    return QRect(m_PacX-15, m_PacY-15, 20, 20);
+    int const pacmanRadius=30;
+    int const offsetX=-15;
+    int const offsetY=-15;
+
+    return QRect(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius);
 }
 
 void Pacman::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    int const pacmanRadius=30;
+    int const offsetX=-15;
+    int const offsetY=-15;
+
     switch(m_Direction)
     {
-        case 1:
-            if(m_AnimeState<2*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Left1);
-            }
-            else if(m_AnimeState<4*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Left2);
-            }
-            else if(m_AnimeState<6*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Left3);
-            }
-            else if(m_AnimeState<8*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Left4);
-            }
-            break;
-        case 4:
-            if(m_AnimeState<2*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Right1);
-            }
-            else if(m_AnimeState<4*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Right2);
-            }
-            else if(m_AnimeState<6*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Right3);
-            }
-            else if(m_AnimeState<8*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Right4);
-            }
-            break;
-        case 3:
-            if(m_AnimeState<2*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Down1);
-            }
-            else if(m_AnimeState<4*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Down2);
-            }
-            else if(m_AnimeState<6*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Down3);
-            }
-            else if(m_AnimeState<8*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Down4);
-            }
-            break;
-        case 2:
-            if(m_AnimeState<2*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Up1);
-            }
-            else if(m_AnimeState<4*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Up2);
-            }
-            else if(m_AnimeState<6*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Up3);
-            }
-            else if(m_AnimeState<8*m_AnimationModifyFactor)
-            {
-                painter->drawPixmap(m_PacX-15, m_PacY-15, 30, 30, m_Up4);
-            }
-            break;
+    case Direction::left:
+        if(m_AnimeState<2*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Left1);
+        }
+        else if(m_AnimeState<4*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Left2);
+        }
+        else if(m_AnimeState<6*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Left3);
+        }
+        else if(m_AnimeState<8*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Left4);
+        }
+        break;
+
+    case Direction::right:
+        if(m_AnimeState<2*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Right1);
+        }
+        else if(m_AnimeState<4*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Right2);
+        }
+        else if(m_AnimeState<6*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Right3);
+        }
+        else if(m_AnimeState<8*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Right4);
+        }
+        break;
+
+    case Direction::down:
+        if(m_AnimeState<2*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Down1);
+        }
+        else if(m_AnimeState<4*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Down2);
+        }
+        else if(m_AnimeState<6*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Down3);
+        }
+        else if(m_AnimeState<8*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Down4);
+        }
+        break;
+
+    case Direction::up:
+        if(m_AnimeState<2*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Up1);
+        }
+        else if(m_AnimeState<4*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Up2);
+        }
+        else if(m_AnimeState<6*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Up3);
+        }
+        else if(m_AnimeState<8*m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Up4);
+        }
+        break;
+
+    case Direction::none:
+        break;
     }
 }
