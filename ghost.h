@@ -5,6 +5,9 @@
 
 class Ghost : public QGraphicsItem
 {
+    /*Forward declaration*/
+    enum class Direction;
+
 public:
     Ghost();
     void Reset();
@@ -12,19 +15,24 @@ public:
     void AdvanceAnimation();
     void SetGhostX(int x){m_GhostX=x;}
     void SetGhostY(int y){m_GhostY=y;}
-    void SetGhostStart(bool ghostStart) {m_GhostStart=ghostStart;}
+    void SetGhostStarted(bool ghostStarted) {m_GhostStarted=ghostStarted;}
     void SetIsScared(bool option) {m_IsScared=option;}
     void SetScaredWhite(bool option) {m_ScaredWhite=option;}
-    void SetGhostDirection(int dir) {m_GhostDirection=dir;}
-    void SetNextGhostDirection(int dir) {m_NextGhostDirection=dir;}
+    void SetGhostDirection(Direction direction) {m_GhostDirection=direction;}
+    void SetNextGhostDirection(Direction direction) {m_NextGhostDirection=direction;}
     void SetGhostColor(QString col);
     int GetGhostX() const {return m_GhostX;}
     int GetGhostY() const {return m_GhostY;}
-    int GetGhostDirection() const {return m_GhostDirection;}
-    int GetNextGhostDirection() const {return m_NextGhostDirection;}
+    QPoint GetGhostPosition() const {return QPoint(m_GhostX, m_GhostY);}
+    void IncrementGhostX(){++m_GhostX;}
+    void IncrementGhostY(){++m_GhostY;}
+    void DecrementGhostX(){--m_GhostX;}
+    void DecrementGhostY(){--m_GhostY;}
+    Direction GetGhostDirection() const {return m_GhostDirection;}
+    Direction GetNextGhostDirection() const {return m_NextGhostDirection;}
     bool GetIsScared() const {return m_IsScared;}
     bool GetScaredWhite() const {return m_ScaredWhite;}
-    bool GetGhostStart() const {return m_GhostStart;}
+    bool GetGhostStarted() const {return m_GhostStarted;}
     void Move();
     void MoveInStartingRect();
 
@@ -57,12 +65,22 @@ private:
     bool m_ScaredWhite;
     bool m_Hidden;
     bool m_GhostMoving;
-    bool m_GhostStart;
+    bool m_GhostStarted;
     int m_AnimeState;
     int m_AnimationModifyFactor;
     int m_GhostX, m_GhostY;
-    int m_GhostDirection;
-    int m_NextGhostDirection;
+
+    enum class Direction
+    {
+        none=0,
+        left=1,
+        up=2,
+        down=3,
+        right=4
+    };
+
+    Direction m_GhostDirection;
+    Direction m_NextGhostDirection;
 
     static int m_AllGhostsScaredState;
     static bool m_AllGhostScared;

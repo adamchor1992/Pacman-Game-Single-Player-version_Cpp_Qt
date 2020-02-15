@@ -33,7 +33,7 @@ void GameWindow::PrepareFirstGameRun()
     GenerateAndPlaceGhosts();
     GenerateAndPlaceScoreDisplay();
 
-    m_CollisionDetectionDelay = 0; //delay collision detection after game restart
+    m_CollisionWithGhostDetectionDelay = 0; //delay collision detection after game restart
 
     m_Scene.addItem(&m_StartEndTextDisplay);
 }
@@ -46,7 +46,7 @@ void GameWindow::GenerateAndPopulateMap()
     m_PowerballPositions = m_Powerball.GetPowerBallPositions();
     m_FoodballPositions = m_Foodball.GetFoodBallPositions();
 
-   int const powerballRadius = 15;
+    int const powerballRadius = 15;
 
     for(int i=0; i<m_PowerballPositions.size();i++)
     {
@@ -198,7 +198,7 @@ void GameWindow::HideSceneItems()
     }
 }
 
-void GameWindow::EndGame(int win)
+void GameWindow::EndGame(bool win)
 {
     HideSceneItems();
 
@@ -207,7 +207,7 @@ void GameWindow::EndGame(int win)
     m_StartEndTextDisplay.SetScore(m_Score);
     m_Score=0;
 
-    if(win==1)
+    if(win)
     {
         m_StartEndTextDisplay.SetGameWon(true);
     }
@@ -222,7 +222,7 @@ void GameWindow::EndGame(int win)
     m_GameState = GameState::GameStopped;
 }
 
-void GameWindow::CheckCollision()
+void GameWindow::CheckCollisionWithGhost()
 {
     if(m_Pacman.collidesWithItem(&m_Ghost1) ||
             m_Pacman.collidesWithItem(&m_Ghost2) ||
@@ -269,31 +269,18 @@ void GameWindow::CheckCollision()
         {
             m_Timer.stop();
             m_GhostsTimer.stop();
-            EndGame(0);
+            EndGame(false);
         }
     }
 }
 
-void GameWindow::Updater()
+void GameWindow::CheckCollisionWithFoodball()
 {
-    int pac_x = m_Pacman.GetPacX();
-    int pac_y = m_Pacman.GetPacY();
-
-    if(m_CollisionDetectionDelay >= 500)
-    {
-        CheckCollision();
-    }
-    else
-    {
-        m_CollisionDetectionDelay++;
-    }
-
-    /*Changes position of pacman*/
-    m_Pacman.Move();
+    QPoint pacmanPosition(m_Pacman.GetPacX(), m_Pacman.GetPacY());
 
     for(int i=0;i<m_FoodballPositions.size();i++)
     {
-        if(pac_x==m_FoodballPositions.at(i).x() && pac_y==m_FoodballPositions.at(i).y())
+        if(pacmanPosition == m_FoodballPositions.at(i))
         {
             m_FoodballPositions.remove(i);
             m_FoodballGraphicalItemsTable.at(i)->hide();
@@ -315,10 +302,15 @@ void GameWindow::Updater()
             m_FoodballItemsCount--;
         }
     }
+}
+
+void GameWindow::CheckCollisionWithPowerball()
+{
+    QPoint pacmanPosition(m_Pacman.GetPacX(), m_Pacman.GetPacY());
 
     for(int i=0;i<m_PowerballPositions.size();i++)
     {
-        if(pac_x==m_PowerballPositions.at(i).x() && pac_y==m_PowerballPositions.at(i).y())
+        if(pacmanPosition == m_PowerballPositions.at(i))
         {
             m_PowerballPositions.remove(i);
             m_PowerballGraphicalItemsTable.at(i)->hide();
@@ -339,12 +331,31 @@ void GameWindow::Updater()
             m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
         }
     }
+}
+
+void GameWindow::Updater()
+{
+    /*Changes position of pacman*/
+    m_Pacman.Move();
+
+    if(m_CollisionWithGhostDetectionDelay >= 500)
+    {
+        CheckCollisionWithGhost();
+    }
+    else
+    {
+        m_CollisionWithGhostDetectionDelay++;
+    }
+
+    CheckCollisionWithFoodball();
+
+    CheckCollisionWithPowerball();
 
     if(m_FoodballItemsCount==0)
     {
         m_Timer.stop();
         m_GhostsTimer.stop();
-        EndGame(1);
+        EndGame(true);
     }
 
     if(Ghost::GetAllGhostsScared())
@@ -412,27 +423,27 @@ void GameWindow::GhostUpdater()
     }
     else
     {
-        if(!m_Ghost1.GetGhostStart())
+        if(!m_Ghost1.GetGhostStarted())
             m_Ghost1.MoveInStartingRect();
         else
             m_Ghost1.Move();
 
-        if(!m_Ghost2.GetGhostStart())
+        if(!m_Ghost2.GetGhostStarted())
             m_Ghost2.MoveInStartingRect();
         else
             m_Ghost2.Move();
 
-        if(!m_Ghost3.GetGhostStart())
+        if(!m_Ghost3.GetGhostStarted())
             m_Ghost3.MoveInStartingRect();
         else
             m_Ghost3.Move();
 
-        if(!m_Ghost4.GetGhostStart())
+        if(!m_Ghost4.GetGhostStarted())
             m_Ghost4.MoveInStartingRect();
         else
             m_Ghost4.Move();
 
-        if(m_Ghost1X==300 || m_Ghost2X==300 || m_Ghost3X==300 || m_Ghost4X==300) //substitute of timer to be implemented for every ghost do differentiate start time
+        if(m_Ghost1.GetGhostX()==300 || m_Ghost2.GetGhostX()==300 || m_Ghost3.GetGhostX()==300 || m_Ghost4.GetGhostX()==300) //substitute of timer to be implemented for every ghost do differentiate start time
         {
             Ghost::IncrementGhostsStartTimer();
         }
@@ -449,7 +460,7 @@ void GameWindow::GhostUpdater()
                 m_Ghost1X+=1;
             }
 
-            if(!m_Ghost1.GetGhostStart())
+            if(!m_Ghost1.GetGhostStarted())
             {
                 m_Ghost1Y-=1;
                 m_Ghost1.SetGhostX(m_Ghost1X);
@@ -458,7 +469,7 @@ void GameWindow::GhostUpdater()
                 p1.setY(m_Ghost1Y);
                 if(m_PacMap.GetPathPoints().contains(p1))
                 {
-                    m_Ghost1.SetGhostStart(true);
+                    m_Ghost1.SetGhostStarted(true);
                 }
             }
         }
@@ -475,7 +486,7 @@ void GameWindow::GhostUpdater()
                 m_Ghost2X+=1;
             }
 
-            if(!m_Ghost2.GetGhostStart())
+            if(!m_Ghost2.GetGhostStarted())
             {
                 m_Ghost2Y-=1;
                 m_Ghost2.SetGhostX(m_Ghost2X);
@@ -484,7 +495,7 @@ void GameWindow::GhostUpdater()
                 p2.setY(m_Ghost2Y);
                 if(m_PacMap.GetPathPoints().contains(p2))
                 {
-                    m_Ghost2.SetGhostStart(true);
+                    m_Ghost2.SetGhostStarted(true);
                 }
             }
         }
@@ -501,7 +512,7 @@ void GameWindow::GhostUpdater()
                 m_Ghost3X+=1;
             }
 
-            if(!m_Ghost3.GetGhostStart())
+            if(!m_Ghost3.GetGhostStarted())
             {
                 m_Ghost3Y-=1;
                 m_Ghost3.SetGhostX(m_Ghost3X);
@@ -510,7 +521,7 @@ void GameWindow::GhostUpdater()
                 p3.setY(m_Ghost3Y);
                 if(m_PacMap.GetPathPoints().contains(p3))
                 {
-                    m_Ghost3.SetGhostStart(true);
+                    m_Ghost3.SetGhostStarted(true);
                 }
             }
         }
@@ -527,7 +538,7 @@ void GameWindow::GhostUpdater()
                 m_Ghost4X+=1;
             }
 
-            if(!m_Ghost4.GetGhostStart())
+            if(!m_Ghost4.GetGhostStarted())
             {
                 m_Ghost4Y-=1;
                 m_Ghost4.SetGhostX(m_Ghost4X);
@@ -536,15 +547,15 @@ void GameWindow::GhostUpdater()
                 p4.setY(m_Ghost4Y);
                 if(m_PacMap.GetPathPoints().contains(p4))
                 {
-                    m_Ghost4.SetGhostStart(true);
+                    m_Ghost4.SetGhostStarted(true);
                 }
             }
         }
 
-        if(m_Ghost1.GetGhostStart()&&
-                m_Ghost2.GetGhostStart()&&
-                m_Ghost3.GetGhostStart()&&
-                m_Ghost4.GetGhostStart())
+        if(m_Ghost1.GetGhostStarted()&&
+                m_Ghost2.GetGhostStarted()&&
+                m_Ghost3.GetGhostStarted()&&
+                m_Ghost4.GetGhostStarted())
         {
             Ghost::SetAllGhostsStarted(true);
         }
@@ -605,7 +616,7 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
         {
             RestartGame();
         }
-
+        break;
     default:
         break;
     }

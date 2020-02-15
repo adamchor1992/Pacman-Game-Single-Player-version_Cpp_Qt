@@ -11,12 +11,12 @@ Ghost::Ghost()
 {
     m_AnimeState= 0;
     m_AnimationModifyFactor= 6;
-    m_GhostDirection=1;
+    m_GhostDirection=Direction::left;
     m_IsScared=false;
     m_ScaredWhite=false;
     m_AllGhostsScaredState=0;
     m_GhostMoving = false;
-    m_GhostStart = false;
+    m_GhostStarted = false;
     m_GhostsStartTimer = 0;
 
     SetGhostX(307);
@@ -35,11 +35,11 @@ void Ghost::Reset()
 {
     m_AnimeState= 0;
     m_AnimationModifyFactor= 6;
-    m_GhostDirection=1;
+    m_GhostDirection=Direction::left;
     m_IsScared=false;
     m_ScaredWhite=false;
     m_GhostMoving = false;
-    m_GhostStart = false;
+    m_GhostStarted = false;
     m_GhostsStartTimer = 0;
 
     SetGhostX(307);
@@ -126,30 +126,30 @@ void Ghost::Move()
 
     if(!m_GhostMoving)
     {
-        m_GhostDirection=(qrand()%4)+1;
+        m_GhostDirection=static_cast<Direction>((qrand()%4)+1);
     }
     else
     {
-        if((m_GhostDirection==4 &&m_GhostY<pac_y) || (m_GhostDirection==1 && m_GhostY>pac_y))
+        if((m_GhostDirection==Direction::right && m_GhostY<pac_y) || (m_GhostDirection==Direction::left && m_GhostY>pac_y))
         {
-            if(m_GhostDirection==1 && m_GhostY>pac_y)
+            if(m_GhostDirection==Direction::left && m_GhostY>pac_y)
             {
-                m_NextGhostDirection=2;
+                m_NextGhostDirection=Direction::up;
             }
-            else if(m_GhostDirection==4 &&m_GhostY<pac_y)
+            else if(m_GhostDirection==Direction::right &&m_GhostY<pac_y)
             {
-                m_NextGhostDirection=3;
+                m_NextGhostDirection=Direction::down;
             }
         }
-        else if((m_GhostDirection==3 && m_GhostX<pac_x) || (m_GhostDirection==2 && m_GhostX>pac_x))
+        else if((m_GhostDirection==Direction::down && m_GhostX<pac_x) || (m_GhostDirection==Direction::up && m_GhostX>pac_x))
         {
-            if(m_GhostDirection==2 && m_GhostX>pac_x)
+            if(m_GhostDirection==Direction::up && m_GhostX>pac_x)
             {
-                m_NextGhostDirection=1;
+                m_NextGhostDirection=Direction::left;
             }
-            else if(m_GhostDirection==3 && m_GhostX<pac_x)
+            else if(m_GhostDirection==Direction::down && m_GhostX<pac_x)
             {
-                m_NextGhostDirection=4;
+                m_NextGhostDirection=Direction::right;
             }
         }
     }
@@ -158,56 +158,57 @@ void Ghost::Move()
     {
         switch(m_NextGhostDirection)
         {
-        case 1:
+        case Direction::left:
             p.setX(m_GhostX-1);
             p.setY(m_GhostY);
 
             if(Map::IsPointAvailable(p))
             {
                 m_GhostDirection=m_NextGhostDirection;
-                m_NextGhostDirection=0;
+                m_NextGhostDirection=Direction::none;
             }
-
             break;
 
-        case 4:
+        case Direction::right:
             p.setX(m_GhostX+1);
             p.setY(m_GhostY);
 
             if(Map::IsPointAvailable(p))
             {
                 m_GhostDirection=m_NextGhostDirection;
-                m_NextGhostDirection=0;
+                m_NextGhostDirection=Direction::none;
             }
-
             break;
-        case 3:
+
+        case Direction::down:
             p.setX(m_GhostX);
             p.setY(m_GhostY+1);
             if(Map::IsPointAvailable(p))
             {
                 m_GhostDirection=m_NextGhostDirection;
-                m_NextGhostDirection=0;
+                m_NextGhostDirection=Direction::none;
             }
-
             break;
-        case 2:
+
+        case Direction::up:
             p.setX(m_GhostX);
             p.setY(m_GhostY-1);
 
             if(Map::IsPointAvailable(p))
             {
                 m_GhostDirection=m_NextGhostDirection;
-                m_NextGhostDirection=0;
+                m_NextGhostDirection=Direction::none;
             }
+            break;
 
+        case Direction::none:
             break;
         }
     }
 
     switch(m_GhostDirection)
     {
-    case 1:
+    case Direction::left:
         p.setX(m_GhostX-1);
         p.setY(m_GhostY);
         SetGhostDirection(m_GhostDirection);
@@ -221,10 +222,9 @@ void Ghost::Move()
         {
             m_GhostMoving=false;
         }
-
         break;
 
-    case 4:
+    case Direction::right:
         SetGhostDirection(m_GhostDirection);
         p.setX(m_GhostX+1);
         p.setY(m_GhostY);
@@ -237,10 +237,9 @@ void Ghost::Move()
         {
             m_GhostMoving=false;
         }
-
         break;
 
-    case 3:
+    case Direction::down:
         SetGhostDirection(m_GhostDirection);
         p.setX(m_GhostX);
         p.setY(m_GhostY+1);
@@ -253,9 +252,9 @@ void Ghost::Move()
         {
             m_GhostMoving=false;
         }
-
         break;
-    case 2:
+
+    case Direction::up:
         SetGhostDirection(m_GhostDirection);
         p.setX(m_GhostX);
         p.setY(m_GhostY-1);
@@ -268,7 +267,9 @@ void Ghost::Move()
         {
             m_GhostMoving=false;
         }
+        break;
 
+    case Direction::none:
         break;
     }
 
@@ -290,34 +291,30 @@ void Ghost::Move()
 
 void Ghost::MoveInStartingRect()
 {
-    int m_Ghost1X = GetGhostX();
-    int m_Ghost1Y = GetGhostY();
-    int m_Ghost1Dir = GetGhostDirection();
+    int const horizontalMovementOffset = 50;
 
-    if(m_Ghost1X==307-50 || m_Ghost1X==307+50)
+    if(m_GhostX==307-horizontalMovementOffset || m_GhostX==307+horizontalMovementOffset)
     {
-        if(m_Ghost1Dir==4)
+        if(m_GhostDirection==Direction::right)
         {
-            m_Ghost1Dir=1; //go left
+            /*Go left*/
+            m_GhostDirection=Direction::left;
         }
         else
         {
-            m_Ghost1Dir=4; //go right
+            /*Go right*/
+            m_GhostDirection=Direction::right;
         }
     }
 
-    if(m_Ghost1Dir==4)
+    if(m_GhostDirection==Direction::right)
     {
-        m_Ghost1X+=1;
+        m_GhostX+=1;
     }
     else
     {
-        m_Ghost1X-=1;
+        m_GhostX-=1;
     }
-
-    SetGhostX(m_Ghost1X);
-    SetGhostY(m_Ghost1Y);
-    SetGhostDirection(m_Ghost1Dir);
 }
 
 QRectF Ghost::boundingRect() const
@@ -331,7 +328,7 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     {
         switch(m_GhostDirection)
         {
-        case 1:
+        case Direction::left:
             if(m_AnimeState==0)
             {
                 painter->drawPixmap(m_GhostX-15, m_GhostY-15,30,30, m_Left1);
@@ -341,7 +338,8 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
                 painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_Left2);
             }
             break;
-        case 4:
+
+        case Direction::right:
             if(m_AnimeState==0)
             {
                 painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_Right1);
@@ -351,7 +349,8 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
                 painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_Right2);
             }
             break;
-        case 3:
+
+        case Direction::down:
             if(m_AnimeState==0)
             {
                 painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_Down1);
@@ -361,7 +360,8 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
                 painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_Down2);
             }
             break;
-        case 2:
+
+        case Direction::up:
             if(m_AnimeState==0)
             {
                 painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_Up1);
@@ -370,6 +370,9 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
             {
                 painter->drawPixmap(m_GhostX-15, m_GhostY-15, 30, 30, m_Up2);
             }
+            break;
+
+        case Direction::none:
             break;
         }
     }

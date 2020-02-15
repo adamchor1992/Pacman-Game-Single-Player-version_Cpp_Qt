@@ -40,8 +40,8 @@ public:
     void ClearVariablesAndContainers();
     void PacmanMove();
     void RespawnGhost();
-    void CheckCollision();
-    void EndGame(int win);
+    void CheckCollisionWithGhost();
+    void EndGame(bool win);
     ~GameWindow();
 
     void keyPressEvent(QKeyEvent *event);
@@ -70,7 +70,7 @@ private:
 
     int m_Score;
     int m_FoodballItemsCount;
-    int m_CollisionDetectionDelay;
+    int m_CollisionWithGhostDetectionDelay;
 
     QVector<QPoint> m_PowerballPositions;
     QVector<QPoint> m_FoodballPositions;
@@ -92,6 +92,10 @@ private:
     void InitializeGameplayAreaScene();
     void PrepareFirstGameRun();
     void ClearGameplayScene();
+    void CheckCollisionWithFoodball(QPoint& pacmanPosition);
+    void CheckCollisionWithPowerball(QPoint& pacmanPosition);
+    void CheckCollisionWithFoodball();
+    void CheckCollisionWithPowerball();
 };
 
 #endif // DIALOG_H
