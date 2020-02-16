@@ -14,10 +14,12 @@ Ghost::Ghost()
     m_GhostDirection=Direction::left;
     m_IsScared=false;
     m_ScaredWhite=false;
-    m_AllGhostsScaredState=0;
     m_GhostMoving = false;
     m_GhostStartedFreeMovement = false;
+    m_AllGhostsScaredState=0;
+    m_AllGhostScared=false;
     m_GhostsStartTimer = 0;
+    m_AllGhostsStartedFreeMovement=false;
 
     SetGhostX(STARTING_X);
     SetGhostY(STARTING_Y);
@@ -40,7 +42,10 @@ void Ghost::Reset()
     m_ScaredWhite=false;
     m_GhostMoving = false;
     m_GhostStartedFreeMovement = false;
+    m_AllGhostsScaredState=0;
+    m_AllGhostScared=false;
     m_GhostsStartTimer = 0;
+    m_AllGhostsStartedFreeMovement=false;
 
     SetGhostX(STARTING_X);
     SetGhostY(STARTING_Y);

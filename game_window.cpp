@@ -27,14 +27,14 @@ void GameWindow::InitializeGameplayAreaScene()
 
 void GameWindow::PrepareFirstGameRun()
 {
-    PopulateMapWithBalls();
     SetGhostColors();
-    GenerateAndPlaceScoreDisplay();
+
+    AddGraphicalItemsToScene();
+
+    PopulateMapWithBalls();
 
     /*Delay collision detection after game restart*/
     m_CollisionWithGhostDetectionDelay = 0;
-
-    AddGraphicalItemsToScene();
 }
 
 void GameWindow::PopulateMapWithBalls()
@@ -63,6 +63,16 @@ void GameWindow::PopulateMapWithBalls()
                                                                            foodballRadius));
     }
 
+    for(auto& powerballGraphicalItem : m_PowerballGraphicalItemsTable)
+    {
+        m_Scene.addItem(powerballGraphicalItem.get());
+    }
+
+    for(auto& foodballGraphicalItem : m_FoodballGraphicalItemsTable)
+    {
+        m_Scene.addItem(foodballGraphicalItem.get());
+    }
+
     m_FoodballItemsCount=foodballPositions.size();
 }
 
@@ -89,15 +99,7 @@ void GameWindow::AddGraphicalItemsToScene()
     /*Add background map picture*/
     m_pMapItem = m_Scene.addPixmap(m_GameMap.GetMapBackgroundPicture());
 
-    for(auto& powerballGraphicalItem : m_PowerballGraphicalItemsTable)
-    {
-        m_Scene.addItem(powerballGraphicalItem.get());
-    }
-
-    for(auto& foodballGraphicalItem : m_FoodballGraphicalItemsTable)
-    {
-        m_Scene.addItem(foodballGraphicalItem.get());
-    }
+    GenerateAndPlaceScoreDisplay();
 
     m_Scene.addItem(&m_Pacman);
 
@@ -130,23 +132,24 @@ void GameWindow::StartGame()
 void GameWindow::RestartGame()
 {
     m_Pacman.Reset();
-
     m_Ghost1.Reset();
     m_Ghost2.Reset();
     m_Ghost3.Reset();
     m_Ghost4.Reset();
 
+    m_pMapItem->show();
     m_Pacman.show();
     m_Ghost1.show();
     m_Ghost2.show();
     m_Ghost3.show();
     m_Ghost4.show();
 
-    AddGraphicalItemsToScene();
-
     PopulateMapWithBalls();
     SetGhostColors();
-    GenerateAndPlaceScoreDisplay();
+
+    m_Score=0;
+    m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
+    m_pScoreDisplay->show();
 
     m_Sounds.m_BeginningSound.play();
 
@@ -172,12 +175,12 @@ void GameWindow::HideSceneItems()
     m_pMapItem->hide();
     m_pScoreDisplay->hide();
 
-    m_Scene.removeItem(&m_Pacman);
+    m_Pacman.hide();
 
-    m_Scene.removeItem(&m_Ghost1);
-    m_Scene.removeItem(&m_Ghost2);
-    m_Scene.removeItem(&m_Ghost3);
-    m_Scene.removeItem(&m_Ghost4);
+    m_Ghost1.hide();
+    m_Ghost2.hide();
+    m_Ghost3.hide();
+    m_Ghost4.hide();
 }
 
 void GameWindow::EndGame(bool win)
@@ -186,12 +189,9 @@ void GameWindow::EndGame(bool win)
 
     HideSceneItems();
 
-    m_Scene.addItem(&m_StartEndTextDisplay);
-
     m_StartEndTextDisplay.show();
     m_StartEndTextDisplay.SetScore(m_Score);
     m_StartEndTextDisplay.SetScore(m_Score);
-    m_Score=0;
 
     if(win)
     {

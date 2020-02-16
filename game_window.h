@@ -70,8 +70,6 @@ private:
     int m_CollisionWithGhostDetectionDelay;
 
     QGraphicsPixmapItem* m_pMapItem;
-    //QVector<Foodball> m_FoodballGraphicalItemsTable;
-    //QVector<std::unique_ptr<Powerball>> m_PowerballGraphicalItemsTable;
 
     std::vector<std::unique_ptr<Foodball>> m_FoodballGraphicalItemsTable;
     std::vector<std::unique_ptr<Powerball>> m_PowerballGraphicalItemsTable;
