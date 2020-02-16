@@ -13,7 +13,8 @@ Pacman::Pacman()
     m_AnimeState = 0;
     m_AnimationModifyFactor = 6;
 
-    SetDirection(Direction::left); //pacman moves left after game start
+    SetDirection(Direction::left);
+    SetNextDirection(Direction::none);
     SetPacX(startingX);
     SetPacY(startingY);
 }
@@ -23,7 +24,8 @@ void Pacman::Reset()
     m_AnimeState = 0;
     m_AnimationModifyFactor = 6;
 
-    SetDirection(Direction::left); //pacman moves left after game start
+    SetDirection(Direction::left);
+    SetNextDirection(Direction::none);
     SetPacX(startingX);
     SetPacY(startingY);
 }
@@ -96,7 +98,7 @@ void Pacman::Move()
             point.setX(m_PacX-1);
             point.setY(m_PacY);
 
-            if(Map::IsPointAvailable(point))
+            if(GameMap::IsPointAvailable(point))
             {
                 m_Direction=m_NextDirection;
                 m_NextDirection=Direction::none;
@@ -106,7 +108,7 @@ void Pacman::Move()
         case Direction::up:
             point.setX(m_PacX);
             point.setY(m_PacY-1);
-            if(Map::IsPointAvailable(point))
+            if(GameMap::IsPointAvailable(point))
             {
                 m_Direction=m_NextDirection;
                 m_NextDirection=Direction::none;
@@ -116,7 +118,7 @@ void Pacman::Move()
         case Direction::down:
             point.setX(m_PacX);
             point.setY(m_PacY+1);
-            if(Map::IsPointAvailable(point))
+            if(GameMap::IsPointAvailable(point))
             {
                 m_Direction=m_NextDirection;
                 m_NextDirection=Direction::none;
@@ -126,7 +128,7 @@ void Pacman::Move()
         case Direction::right:
             point.setX(m_PacX+1);
             point.setY(m_PacY);
-            if(Map::IsPointAvailable(point))
+            if(GameMap::IsPointAvailable(point))
             {
                 m_Direction=m_NextDirection;
                 m_NextDirection=Direction::none;
@@ -144,7 +146,7 @@ void Pacman::Move()
         point.setX(m_PacX-1);
         point.setY(m_PacY);
 
-        if(Map::IsPointAvailable(point))
+        if(GameMap::IsPointAvailable(point))
         {
             m_PacX = m_PacX - 1;
         }
@@ -154,7 +156,7 @@ void Pacman::Move()
         point.setX(m_PacX);
         point.setY(m_PacY-1);
 
-        if(Map::IsPointAvailable(point))
+        if(GameMap::IsPointAvailable(point))
         {
             m_PacY= m_PacY - 1;
         }
@@ -164,7 +166,7 @@ void Pacman::Move()
         point.setX(m_PacX);
         point.setY(m_PacY+1);
 
-        if(Map::IsPointAvailable(point))
+        if(GameMap::IsPointAvailable(point))
         {
             m_PacY= m_PacY + 1;
         }
@@ -174,7 +176,7 @@ void Pacman::Move()
         point.setX(m_PacX+1);
         point.setY(m_PacY);
 
-        if(Map::IsPointAvailable(point))
+        if(GameMap::IsPointAvailable(point))
         {
             m_PacX = m_PacX + 1;
         }

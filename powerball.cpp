@@ -1,17 +1,25 @@
 #include "powerball.h"
 #include <QPoint>
 #include <QVector>
+#include <QPainter>
 
-PowerBall::PowerBall()
+Powerball::Powerball(int x, int y, int width, int height)
 {
-    QPoint powerball1Position = QPoint(35,75);
-    QPoint powerball2Position = QPoint(579,75);
-    QPoint powerball3Position = QPoint(35,514);
-    QPoint powerball4Position = QPoint(579,514);
-
-    m_PowerballPositions.push_back(powerball1Position);
-    m_PowerballPositions.push_back(powerball2Position);
-    m_PowerballPositions.push_back(powerball3Position);
-    m_PowerballPositions.push_back(powerball4Position);
+    m_X = x;
+    m_Y = y;
+    m_Width = width;
+    m_Height = height;
 }
 
+QRectF Powerball::boundingRect() const
+{
+    return QRect(m_X, m_Y, m_Width, m_Height);
+}
+
+void Powerball::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(QBrush(Qt::white));
+
+    painter->drawEllipse(m_X, m_Y, m_Width, m_Height);
+}

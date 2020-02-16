@@ -3,16 +3,21 @@
 
 #include <QVector>
 #include <QPoint>
+#include <QGraphicsItem>
 
-class FoodBall
+class Foodball : public QGraphicsItem
 {
 public:
-    FoodBall();
-    void CreateFoodballPositionsVector();
-    QVector<QPoint> GetFoodBallPositions() const {return m_FoodballPositions;}
+    Foodball(int x, int y, int width, int height);
+
+    virtual QRectF boundingRect() const;
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr);
 
 private:
-    QVector<QPoint> m_FoodballPositions;
+    int m_X;
+    int m_Y;
+    int m_Width;
+    int m_Height;
 };
 
 #endif // FOODBALL_H

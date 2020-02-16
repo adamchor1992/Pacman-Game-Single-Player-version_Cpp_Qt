@@ -39,36 +39,44 @@ void GameWindow::PrepareFirstGameRun()
 void GameWindow::GenerateAndPopulateMap()
 {
     /*Add background map picture*/
-    m_pMapItem = m_Scene.addPixmap(m_PacMap.GetMapBackgroundPicture());
+    m_pMapItem = m_Scene.addPixmap(m_GameMap.GetMapBackgroundPicture());
 
-    m_PowerballPositions = m_Powerball.GetPowerBallPositions();
-    m_FoodballPositions = m_Foodball.GetFoodBallPositions();
+    m_PowerballPositions = m_GameMap.GetPowerBallPositions();
+    m_FoodballPositions = m_GameMap.GetFoodBallPositions();
 
     int const powerballRadius = 15;
 
-    for(int i=0; i<m_PowerballPositions.size();i++)
+    for(auto powerballPosition : m_PowerballPositions)
     {
-        m_PowerballGraphicalItemsTable.push_back(m_Scene.addEllipse(m_PowerballPositions.at(i).x()-5,
-                                                                    m_PowerballPositions.at(i).y()-8,
-                                                                    powerballRadius,
-                                                                    powerballRadius,
-                                                                    QPen(Qt::NoPen),
-                                                                    QBrush(Qt::white)));
+        m_PowerballGraphicalItemsTable.emplace_back(std::make_unique<Powerball>(powerballPosition.x(),
+                                                                                powerballPosition.y(),
+                                                                                powerballRadius,
+                                                                                powerballRadius));
     }
 
-    m_FoodballItemsCount=m_FoodballPositions.size();
+    for(auto& powerballGraphicalItem : m_PowerballGraphicalItemsTable)
+    {
+        qDebug() << "Dodaje element";
+        m_Scene.addItem(powerballGraphicalItem.get());
+    }
 
     int const foodballRadius = 7;
 
-    for(int i=0;i<m_FoodballPositions.size();i++)
+    for(auto foodballPosition : m_FoodballPositions)
     {
-        m_FoodballGraphicalItemsTable.push_back(m_Scene.addEllipse(m_FoodballPositions.at(i).x(),
-                                                                   m_FoodballPositions.at(i).y(),
-                                                                   foodballRadius,
-                                                                   foodballRadius,
-                                                                   QPen(Qt::NoPen),
-                                                                   QBrush(Qt::white)));
+        m_FoodballGraphicalItemsTable.emplace_back(std::make_unique<Foodball>(foodballPosition.x(),
+                                                                              foodballPosition.y(),
+                                                                              foodballRadius,
+                                                                              foodballRadius));
     }
+
+    for(auto& foodballGraphicalItem : m_FoodballGraphicalItemsTable)
+    {
+        qDebug() << "Dodaje element";
+        m_Scene.addItem(foodballGraphicalItem.get());
+    }
+
+    m_FoodballItemsCount=m_FoodballPositions.size();
 }
 
 void GameWindow::GenerateAndPlacePacman()
@@ -161,10 +169,10 @@ void GameWindow::RestartGame()
 
 void GameWindow::ClearVariablesAndContainers()
 {
-    m_PowerballGraphicalItemsTable.clear();
-    m_FoodballGraphicalItemsTable.clear();
-    m_PowerballGraphicalItemsTable.squeeze();
-    m_FoodballGraphicalItemsTable.squeeze();
+    //    m_PowerballGraphicalItemsTable.clear();
+    //    m_FoodballGraphicalItemsTable.clear();
+    //    m_PowerballGraphicalItemsTable.squeeze();
+    //    m_FoodballGraphicalItemsTable.squeeze();
 }
 
 void GameWindow::HideSceneItems()
@@ -184,15 +192,15 @@ void GameWindow::HideSceneItems()
     m_Scene.removeItem(&m_Ghost3);
     m_Scene.removeItem(&m_Ghost4);
 
-    for(int i=0; i<m_FoodballGraphicalItemsTable.size();i++)
-    {
-        m_FoodballGraphicalItemsTable.at(i)->hide();
-    }
+    //    for(int i=0; i<m_FoodballGraphicalItemsTable.size();i++)
+    //    {
+    //        m_FoodballGraphicalItemsTable.at(i).hide();
+    //    }
 
-    for(int i=0; i<m_PowerballGraphicalItemsTable.size();i++)
-    {
-        m_PowerballGraphicalItemsTable.at(i)->hide();
-    }
+    //    for(int i=0; i<m_PowerballGraphicalItemsTable.size();i++)
+    //    {
+    //        m_PowerballGraphicalItemsTable.at(i).hide();
+    //    }
 }
 
 void GameWindow::EndGame(bool win)
@@ -273,61 +281,61 @@ void GameWindow::CheckCollisionWithGhost()
 
 void GameWindow::CheckCollisionWithFoodball()
 {
-    QPoint pacmanPosition(m_Pacman.GetPacX(), m_Pacman.GetPacY());
+    //    QPoint pacmanPosition(m_Pacman.GetPacX(), m_Pacman.GetPacY());
 
-    for(int i=0;i<m_FoodballPositions.size();i++)
-    {
-        if(pacmanPosition == m_FoodballPositions.at(i))
-        {
-            m_FoodballPositions.remove(i);
-            m_FoodballGraphicalItemsTable.at(i)->hide();
-            m_FoodballGraphicalItemsTable.remove(i);
+    //    for(int i=0;i<m_FoodballPositions.size();i++)
+    //    {
+    //        if(pacmanPosition == m_FoodballPositions.at(i))
+    //        {
+    //            m_FoodballPositions.remove(i);
+    //            m_FoodballGraphicalItemsTable.at(i)->hide();
+    //            m_FoodballGraphicalItemsTable.remove(i);
 
-            if(m_Sounds.m_EatSound1.state()==QMediaPlayer::StoppedState)
-            {
-                m_Sounds.m_EatSound1.play();
-            }
+    //            if(m_Sounds.m_EatSound1.state()==QMediaPlayer::StoppedState)
+    //            {
+    //                m_Sounds.m_EatSound1.play();
+    //            }
 
-            if(m_Sounds.m_EatSound1.state()==QMediaPlayer::PlayingState)
-            {
-                m_Sounds.m_EatSound2.play();
-            }
+    //            if(m_Sounds.m_EatSound1.state()==QMediaPlayer::PlayingState)
+    //            {
+    //                m_Sounds.m_EatSound2.play();
+    //            }
 
-            m_Score++;
-            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
+    //            m_Score++;
+    //            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
 
-            m_FoodballItemsCount--;
-        }
-    }
+    //            m_FoodballItemsCount--;
+    //        }
+    //    }
 }
 
 void GameWindow::CheckCollisionWithPowerball()
 {
-    QPoint pacmanPosition(m_Pacman.GetPacX(), m_Pacman.GetPacY());
+    //    QPoint pacmanPosition(m_Pacman.GetPacX(), m_Pacman.GetPacY());
 
-    for(int i=0;i<m_PowerballPositions.size();i++)
-    {
-        if(pacmanPosition == m_PowerballPositions.at(i))
-        {
-            m_PowerballPositions.remove(i);
-            m_PowerballGraphicalItemsTable.at(i)->hide();
-            m_PowerballGraphicalItemsTable.remove(i);
+    //    for(int i=0;i<m_PowerballPositions.size();i++)
+    //    {
+    //        if(pacmanPosition == m_PowerballPositions.at(i))
+    //        {
+    //            m_PowerballPositions.remove(i);
+    //            m_PowerballGraphicalItemsTable.at(i)->hide();
+    //            m_PowerballGraphicalItemsTable.remove(i);
 
-            m_Score += 100;
-            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
+    //            m_Score += 100;
+    //            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
 
-            Ghost::SetAllGhostsScareState(0);
+    //            Ghost::SetAllGhostsScareState(0);
 
-            m_Ghost1.SetIsScared(true);
-            m_Ghost2.SetIsScared(true);
-            m_Ghost3.SetIsScared(true);
-            m_Ghost4.SetIsScared(true);
+    //            m_Ghost1.SetIsScared(true);
+    //            m_Ghost2.SetIsScared(true);
+    //            m_Ghost3.SetIsScared(true);
+    //            m_Ghost4.SetIsScared(true);
 
-            Ghost::SetAllGhostsScared(true);
+    //            Ghost::SetAllGhostsScared(true);
 
-            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
-        }
-    }
+    //            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
+    //        }
+    //    }
 }
 
 void GameWindow::Updater()
@@ -344,16 +352,16 @@ void GameWindow::Updater()
         m_CollisionWithGhostDetectionDelay++;
     }
 
-    CheckCollisionWithFoodball();
+    //CheckCollisionWithFoodball();
 
-    CheckCollisionWithPowerball();
+    //CheckCollisionWithPowerball();
 
-    if(m_FoodballItemsCount==0)
-    {
-        m_Timer.stop();
-        m_GhostsTimer.stop();
-        EndGame(true);
-    }
+    //    if(m_FoodballItemsCount==0)
+    //    {
+    //        m_Timer.stop();
+    //        m_GhostsTimer.stop();
+    //        EndGame(true);
+    //    }
 
     if(Ghost::GetAllGhostsScared())
     {
@@ -485,7 +493,7 @@ void GameWindow::GhostUpdater()
 
                 QPoint point(m_Ghost1X, m_Ghost1Y);
 
-                if(m_PacMap.GetPathPoints().contains(point))
+                if(m_GameMap.GetPathPoints().contains(point))
                 {
                     m_Ghost1.SetGhostStartedFreeMovement(true);
                 }
@@ -512,7 +520,7 @@ void GameWindow::GhostUpdater()
 
                 QPoint point(m_Ghost2X, m_Ghost2Y);
 
-                if(m_PacMap.GetPathPoints().contains(point))
+                if(m_GameMap.GetPathPoints().contains(point))
                 {
                     m_Ghost2.SetGhostStartedFreeMovement(true);
                 }
@@ -539,7 +547,7 @@ void GameWindow::GhostUpdater()
 
                 QPoint point(m_Ghost3X, m_Ghost3Y);
 
-                if(m_PacMap.GetPathPoints().contains(point))
+                if(m_GameMap.GetPathPoints().contains(point))
                 {
                     m_Ghost3.SetGhostStartedFreeMovement(true);
                 }
@@ -566,7 +574,7 @@ void GameWindow::GhostUpdater()
 
                 QPoint point(m_Ghost4X, m_Ghost4Y);
 
-                if(m_PacMap.GetPathPoints().contains(point))
+                if(m_GameMap.GetPathPoints().contains(point))
                 {
                     m_Ghost4.SetGhostStartedFreeMovement(true);
                 }

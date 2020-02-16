@@ -162,7 +162,7 @@ void Ghost::Move()
             p.setX(m_GhostX-1);
             p.setY(m_GhostY);
 
-            if(Map::IsPointAvailable(p))
+            if(GameMap::IsPointAvailable(p))
             {
                 m_GhostDirection=m_NextGhostDirection;
                 m_NextGhostDirection=Direction::none;
@@ -173,7 +173,7 @@ void Ghost::Move()
             p.setX(m_GhostX+1);
             p.setY(m_GhostY);
 
-            if(Map::IsPointAvailable(p))
+            if(GameMap::IsPointAvailable(p))
             {
                 m_GhostDirection=m_NextGhostDirection;
                 m_NextGhostDirection=Direction::none;
@@ -183,7 +183,7 @@ void Ghost::Move()
         case Direction::down:
             p.setX(m_GhostX);
             p.setY(m_GhostY+1);
-            if(Map::IsPointAvailable(p))
+            if(GameMap::IsPointAvailable(p))
             {
                 m_GhostDirection=m_NextGhostDirection;
                 m_NextGhostDirection=Direction::none;
@@ -194,7 +194,7 @@ void Ghost::Move()
             p.setX(m_GhostX);
             p.setY(m_GhostY-1);
 
-            if(Map::IsPointAvailable(p))
+            if(GameMap::IsPointAvailable(p))
             {
                 m_GhostDirection=m_NextGhostDirection;
                 m_NextGhostDirection=Direction::none;
@@ -213,7 +213,7 @@ void Ghost::Move()
         p.setY(m_GhostY);
         SetGhostDirection(m_GhostDirection);
 
-        if(Map::IsPointAvailable(p))
+        if(GameMap::IsPointAvailable(p))
         {
             m_GhostX-=1;
             m_GhostMoving=true;
@@ -228,7 +228,7 @@ void Ghost::Move()
         SetGhostDirection(m_GhostDirection);
         p.setX(m_GhostX+1);
         p.setY(m_GhostY);
-        if(Map::IsPointAvailable(p))
+        if(GameMap::IsPointAvailable(p))
         {
             m_GhostX+=1;
             m_GhostMoving=true;
@@ -243,7 +243,7 @@ void Ghost::Move()
         SetGhostDirection(m_GhostDirection);
         p.setX(m_GhostX);
         p.setY(m_GhostY+1);
-        if(Map::IsPointAvailable(p))
+        if(GameMap::IsPointAvailable(p))
         {
             m_GhostY+=1;
             m_GhostMoving=true;
@@ -258,7 +258,7 @@ void Ghost::Move()
         SetGhostDirection(m_GhostDirection);
         p.setX(m_GhostX);
         p.setY(m_GhostY-1);
-        if(Map::IsPointAvailable(p))
+        if(GameMap::IsPointAvailable(p))
         {
             m_GhostY-=1;
             m_GhostMoving=true;

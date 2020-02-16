@@ -1,8 +1,8 @@
 #include "game_map.h"
 
-QVector<QPoint> Map::m_PathPoints;
+QVector<QPoint> GameMap::m_PathPoints;
 
-Map::Map()
+GameMap::GameMap()
 {
     LoadMapImage();
 
@@ -92,14 +92,17 @@ Map::Map()
     CreatePathPoints(579, 35, 579, 187);
     CreatePathPoints(579, 449, 579, 514);
     CreatePathPoints(579, 580, 579, 645);
+
+    CreateFoodballPositionsVector();
+    CreatePowerballPositionsVector();
 }
 
-void Map::LoadMapImage()
+void GameMap::LoadMapImage()
 {
     m_MapBackgroundPixmap.load(":/images/map.png");
 }
 
-void Map::CreatePathPoints(int startX, int startY, int endX, int endY) //only left-right and up-down lines
+void GameMap::CreatePathPoints(int startX, int startY, int endX, int endY) //only left-right and up-down lines
 {
     QPoint p;
 
@@ -156,7 +159,7 @@ void Map::CreatePathPoints(int startX, int startY, int endX, int endY) //only le
 }
 
 /*Checks if given point is accessible for Pacman (is present in m_PacmanPaths vector)*/
-bool Map::IsPointAvailable(QPoint point)
+bool GameMap::IsPointAvailable(QPoint point)
 {
     for(int i=0;i<m_PathPoints.size();i++)
     {
@@ -168,7 +171,59 @@ bool Map::IsPointAvailable(QPoint point)
     return false;
 }
 
-QRectF Map::boundingRect() const //sets map bounding rect which will be updated and redrawn every timer cycle
+void GameMap::CreateFoodballPositionsVector()
+{
+    int const COORDINATES_COUNT = 10;
+
+    /*Coordinates (x,y) where foodballs will be placed*/
+    int verticalLines_x[COORDINATES_COUNT]={35,79,144,209,274,340,406,470,536,579};
+    int horizontalLines_y[COORDINATES_COUNT]={35,121,187,252,318,384,449,514,580,645};
+
+    for(int i=0;i<COORDINATES_COUNT;i++)
+    {
+        for(int j=0;j<COORDINATES_COUNT;j++)
+        {
+            QPoint foodballPoint(verticalLines_x[i],horizontalLines_y[j]);
+
+            /*Check if point is on path*/
+            if(GameMap::GetPathPoints().contains(foodballPoint))
+            {
+                /*Skip points where powerballs are*/
+                if((foodballPoint.x()==35 && foodballPoint.y()==75) ||
+                        (foodballPoint.x()==579 && foodballPoint.y()==75) ||
+                        (foodballPoint.x()==35 && foodballPoint.y()==514) ||
+                        (foodballPoint.x()==579 && foodballPoint.y()==514))
+                {
+                    continue;
+                }
+
+                /*Check if the point is already in the vector*/
+                if(m_FoodballPositions.contains(foodballPoint))
+                {
+                    continue;
+                }
+
+                m_FoodballPositions.push_back(QPoint(verticalLines_x[i],horizontalLines_y[j]));
+            }
+        }
+    }
+}
+
+void GameMap::CreatePowerballPositionsVector()
+{
+    QPoint powerball1Position = QPoint(35,75);
+    QPoint powerball2Position = QPoint(579,75);
+    QPoint powerball3Position = QPoint(35,514);
+    QPoint powerball4Position = QPoint(579,514);
+
+    m_PowerballPositions.push_back(powerball1Position);
+    m_PowerballPositions.push_back(powerball2Position);
+    m_PowerballPositions.push_back(powerball3Position);
+    m_PowerballPositions.push_back(powerball4Position);
+}
+
+
+QRectF GameMap::boundingRect() const //sets map bounding rect which will be updated and redrawn every timer cycle
 {
     return QRect(0,0,614,740);
 }

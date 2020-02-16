@@ -55,9 +55,7 @@ private:
     Ui::GameWindow *m_pUi;
     QGraphicsScene m_Scene;
 
-    Map m_PacMap;
-    PowerBall m_Powerball;
-    FoodBall m_Foodball;
+    GameMap m_GameMap;
     Pacman m_Pacman;
     Ghost m_Ghost1;
     Ghost m_Ghost2;
@@ -77,8 +75,12 @@ private:
     QVector<QPoint> m_FoodballPositions;
 
     QGraphicsPixmapItem* m_pMapItem;
-    QVector<QGraphicsEllipseItem*> m_FoodballGraphicalItemsTable;
-    QVector<QGraphicsEllipseItem*> m_PowerballGraphicalItemsTable;
+    //QVector<Foodball> m_FoodballGraphicalItemsTable;
+    //QVector<std::unique_ptr<Powerball>> m_PowerballGraphicalItemsTable;
+
+    std::vector<std::unique_ptr<Foodball>> m_FoodballGraphicalItemsTable;
+    std::vector<std::unique_ptr<Powerball>> m_PowerballGraphicalItemsTable;
+
     QGraphicsTextItem* m_pScoreDisplay;
 
     enum class GameState
