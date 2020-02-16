@@ -2,6 +2,7 @@
 #include <QPoint>
 #include <QVector>
 #include <QPainter>
+#include <QDebug>
 
 Powerball::Powerball(int x, int y, int width, int height)
 {
@@ -9,6 +10,11 @@ Powerball::Powerball(int x, int y, int width, int height)
     m_Y = y;
     m_Width = width;
     m_Height = height;
+}
+
+Powerball::~Powerball()
+{
+    qDebug() << "Destructor";
 }
 
 QRectF Powerball::boundingRect() const

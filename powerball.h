@@ -9,6 +9,7 @@ class Powerball : public QGraphicsItem
 {
 public:
     Powerball(int x, int y, int width, int height);
+    ~Powerball();
 
     virtual QRectF boundingRect() const;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr);

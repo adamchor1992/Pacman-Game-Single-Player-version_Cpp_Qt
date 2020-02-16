@@ -1,6 +1,8 @@
 #include "game_window.h"
 #include "ui_gamewindow.h"
 
+#include <QList>
+
 GameWindow::GameWindow(QWidget *parent) : QDialog(parent), m_pUi(new Ui::GameWindow)
 {
     m_pUi->setupUi(this);
@@ -56,7 +58,6 @@ void GameWindow::GenerateAndPopulateMap()
 
     for(auto& powerballGraphicalItem : m_PowerballGraphicalItemsTable)
     {
-        qDebug() << "Dodaje element";
         m_Scene.addItem(powerballGraphicalItem.get());
     }
 
@@ -72,7 +73,6 @@ void GameWindow::GenerateAndPopulateMap()
 
     for(auto& foodballGraphicalItem : m_FoodballGraphicalItemsTable)
     {
-        qDebug() << "Dodaje element";
         m_Scene.addItem(foodballGraphicalItem.get());
     }
 
@@ -281,32 +281,68 @@ void GameWindow::CheckCollisionWithGhost()
 
 void GameWindow::CheckCollisionWithFoodball()
 {
-    //    QPoint pacmanPosition(m_Pacman.GetPacX(), m_Pacman.GetPacY());
+    auto iter = std::begin(m_FoodballGraphicalItemsTable); //std::begin is a free function in C++11
 
-    //    for(int i=0;i<m_FoodballPositions.size();i++)
+    for (auto& item : m_FoodballGraphicalItemsTable)
+    {
+        if(m_Pacman.collidesWithItem(item.get()))
+        {
+            m_FoodballGraphicalItemsTable.erase(iter);
+
+            if(m_Sounds.m_EatSound1.state()==QMediaPlayer::StoppedState)
+            {
+                m_Sounds.m_EatSound1.play();
+            }
+
+            if(m_Sounds.m_EatSound1.state()==QMediaPlayer::PlayingState)
+            {
+                m_Sounds.m_EatSound2.play();
+            }
+
+            m_Score++;
+            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
+
+            m_FoodballItemsCount--;
+        }
+
+        ++iter;
+    }
+
+
+    //    for(auto& item : m_FoodballGraphicalItemsTable)
     //    {
-    //        if(pacmanPosition == m_FoodballPositions.at(i))
+    //        if(m_Pacman.collidesWithItem(item.get()))
     //        {
-    //            m_FoodballPositions.remove(i);
-    //            m_FoodballGraphicalItemsTable.at(i)->hide();
-    //            m_FoodballGraphicalItemsTable.remove(i);
-
-    //            if(m_Sounds.m_EatSound1.state()==QMediaPlayer::StoppedState)
-    //            {
-    //                m_Sounds.m_EatSound1.play();
-    //            }
-
-    //            if(m_Sounds.m_EatSound1.state()==QMediaPlayer::PlayingState)
-    //            {
-    //                m_Sounds.m_EatSound2.play();
-    //            }
-
-    //            m_Score++;
-    //            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
-
-    //            m_FoodballItemsCount--;
+    //            item->hide();
+    //            m_FoodballGraphicalItemsTable.er
+    ////            m_FoodballGraphicalItemsTable.erase()
     //        }
     //    }
+
+    //        for(int i=0;i<m_FoodballPositions.size();i++)
+    //        {
+    //            if(pacmanPosition == m_FoodballPositions.at(i))
+    //            {
+    //                m_FoodballPositions.remove(i);
+    //                m_FoodballGraphicalItemsTable.at(i)->hide();
+    //                m_FoodballGraphicalItemsTable.remove(i);
+
+    //                if(m_Sounds.m_EatSound1.state()==QMediaPlayer::StoppedState)
+    //                {
+    //                    m_Sounds.m_EatSound1.play();
+    //                }
+
+    //                if(m_Sounds.m_EatSound1.state()==QMediaPlayer::PlayingState)
+    //                {
+    //                    m_Sounds.m_EatSound2.play();
+    //                }
+
+    //                m_Score++;
+    //                m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
+
+    //                m_FoodballItemsCount--;
+    //            }
+    //        }
 }
 
 void GameWindow::CheckCollisionWithPowerball()
@@ -352,16 +388,16 @@ void GameWindow::Updater()
         m_CollisionWithGhostDetectionDelay++;
     }
 
-    //CheckCollisionWithFoodball();
+    CheckCollisionWithFoodball();
 
-    //CheckCollisionWithPowerball();
+    CheckCollisionWithPowerball();
 
-    //    if(m_FoodballItemsCount==0)
-    //    {
-    //        m_Timer.stop();
-    //        m_GhostsTimer.stop();
-    //        EndGame(true);
-    //    }
+    if(m_FoodballItemsCount==0)
+    {
+        m_Timer.stop();
+        m_GhostsTimer.stop();
+        EndGame(true);
+    }
 
     if(Ghost::GetAllGhostsScared())
     {
