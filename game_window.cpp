@@ -50,7 +50,7 @@ void GameWindow::GenerateAndPopulateMap()
 
     for(auto powerballPosition : m_PowerballPositions)
     {
-        m_PowerballGraphicalItemsTable.emplace_back(std::make_unique<Powerball>(powerballPosition.x(),
+        m_PowerballGraphicalItemsTable.push_back(std::make_unique<Powerball>(powerballPosition.x(),
                                                                                 powerballPosition.y(),
                                                                                 powerballRadius,
                                                                                 powerballRadius));
@@ -65,7 +65,7 @@ void GameWindow::GenerateAndPopulateMap()
 
     for(auto foodballPosition : m_FoodballPositions)
     {
-        m_FoodballGraphicalItemsTable.emplace_back(std::make_unique<Foodball>(foodballPosition.x(),
+        m_FoodballGraphicalItemsTable.push_back(std::make_unique<Foodball>(foodballPosition.x(),
                                                                               foodballPosition.y(),
                                                                               foodballRadius,
                                                                               foodballRadius));
@@ -140,8 +140,6 @@ void GameWindow::StartGame()
 
 void GameWindow::RestartGame()
 {
-    ClearVariablesAndContainers();
-
     m_Pacman.show();
     m_Ghost1.show();
     m_Ghost2.show();
@@ -167,12 +165,10 @@ void GameWindow::RestartGame()
     this->setFocus();
 }
 
-void GameWindow::ClearVariablesAndContainers()
+void GameWindow::ClearContainers()
 {
-    //    m_PowerballGraphicalItemsTable.clear();
-    //    m_FoodballGraphicalItemsTable.clear();
-    //    m_PowerballGraphicalItemsTable.squeeze();
-    //    m_FoodballGraphicalItemsTable.squeeze();
+    m_FoodballGraphicalItemsTable.clear();
+    m_PowerballGraphicalItemsTable.clear();
 }
 
 void GameWindow::HideSceneItems()
@@ -191,20 +187,12 @@ void GameWindow::HideSceneItems()
     m_Scene.removeItem(&m_Ghost2);
     m_Scene.removeItem(&m_Ghost3);
     m_Scene.removeItem(&m_Ghost4);
-
-    //    for(int i=0; i<m_FoodballGraphicalItemsTable.size();i++)
-    //    {
-    //        m_FoodballGraphicalItemsTable.at(i).hide();
-    //    }
-
-    //    for(int i=0; i<m_PowerballGraphicalItemsTable.size();i++)
-    //    {
-    //        m_PowerballGraphicalItemsTable.at(i).hide();
-    //    }
 }
 
 void GameWindow::EndGame(bool win)
 {
+    ClearContainers();
+
     HideSceneItems();
 
     m_StartEndTextDisplay.show();
@@ -281,11 +269,11 @@ void GameWindow::CheckCollisionWithGhost()
 
 void GameWindow::CheckCollisionWithFoodball()
 {
-    auto iter = std::begin(m_FoodballGraphicalItemsTable); //std::begin is a free function in C++11
+    auto iter = std::begin(m_FoodballGraphicalItemsTable);
 
-    for (auto& item : m_FoodballGraphicalItemsTable)
+    for (auto& foodballGraphicalItem : m_FoodballGraphicalItemsTable)
     {
-        if(m_Pacman.collidesWithItem(item.get()))
+        if(m_Pacman.collidesWithItem(foodballGraphicalItem.get()))
         {
             m_FoodballGraphicalItemsTable.erase(iter);
 
@@ -303,75 +291,52 @@ void GameWindow::CheckCollisionWithFoodball()
             m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
 
             m_FoodballItemsCount--;
+
+            return;
         }
 
         ++iter;
     }
-
-
-    //    for(auto& item : m_FoodballGraphicalItemsTable)
-    //    {
-    //        if(m_Pacman.collidesWithItem(item.get()))
-    //        {
-    //            item->hide();
-    //            m_FoodballGraphicalItemsTable.er
-    ////            m_FoodballGraphicalItemsTable.erase()
-    //        }
-    //    }
-
-    //        for(int i=0;i<m_FoodballPositions.size();i++)
-    //        {
-    //            if(pacmanPosition == m_FoodballPositions.at(i))
-    //            {
-    //                m_FoodballPositions.remove(i);
-    //                m_FoodballGraphicalItemsTable.at(i)->hide();
-    //                m_FoodballGraphicalItemsTable.remove(i);
-
-    //                if(m_Sounds.m_EatSound1.state()==QMediaPlayer::StoppedState)
-    //                {
-    //                    m_Sounds.m_EatSound1.play();
-    //                }
-
-    //                if(m_Sounds.m_EatSound1.state()==QMediaPlayer::PlayingState)
-    //                {
-    //                    m_Sounds.m_EatSound2.play();
-    //                }
-
-    //                m_Score++;
-    //                m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
-
-    //                m_FoodballItemsCount--;
-    //            }
-    //        }
 }
 
 void GameWindow::CheckCollisionWithPowerball()
 {
-    //    QPoint pacmanPosition(m_Pacman.GetPacX(), m_Pacman.GetPacY());
+    auto iter = std::begin(m_PowerballGraphicalItemsTable);
 
-    //    for(int i=0;i<m_PowerballPositions.size();i++)
-    //    {
-    //        if(pacmanPosition == m_PowerballPositions.at(i))
-    //        {
-    //            m_PowerballPositions.remove(i);
-    //            m_PowerballGraphicalItemsTable.at(i)->hide();
-    //            m_PowerballGraphicalItemsTable.remove(i);
+    for (auto& powerballGraphicalItem : m_PowerballGraphicalItemsTable)
+    {
+        if(m_Pacman.collidesWithItem(powerballGraphicalItem.get()))
+        {
+            m_PowerballGraphicalItemsTable.erase(iter);
 
-    //            m_Score += 100;
-    //            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
+            if(m_Sounds.m_EatSound1.state()==QMediaPlayer::StoppedState)
+            {
+                m_Sounds.m_EatSound1.play();
+            }
 
-    //            Ghost::SetAllGhostsScareState(0);
+            if(m_Sounds.m_EatSound1.state()==QMediaPlayer::PlayingState)
+            {
+                m_Sounds.m_EatSound2.play();
+            }
 
-    //            m_Ghost1.SetIsScared(true);
-    //            m_Ghost2.SetIsScared(true);
-    //            m_Ghost3.SetIsScared(true);
-    //            m_Ghost4.SetIsScared(true);
+            Ghost::SetAllGhostsScareState(0);
 
-    //            Ghost::SetAllGhostsScared(true);
+            m_Ghost1.SetIsScared(true);
+            m_Ghost2.SetIsScared(true);
+            m_Ghost3.SetIsScared(true);
+            m_Ghost4.SetIsScared(true);
 
-    //            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
-    //        }
-    //    }
+            Ghost::SetAllGhostsScared(true);
+
+            m_Score += 100;
+
+            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
+
+            return;
+        }
+
+        ++iter;
+    }
 }
 
 void GameWindow::Updater()

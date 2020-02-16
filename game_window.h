@@ -38,7 +38,7 @@ public:
     void StartGame();
     void RestartGame();
     void HideSceneItems();
-    void ClearVariablesAndContainers();
+    void ClearContainers();
     void PacmanMove();
     void RespawnGhost();
     void CheckCollisionWithGhost();
