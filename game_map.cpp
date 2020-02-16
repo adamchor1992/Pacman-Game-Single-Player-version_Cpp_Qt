@@ -159,7 +159,7 @@ void GameMap::CreatePathPoints(int startX, int startY, int endX, int endY) //onl
 }
 
 /*Checks if given point is accessible for Pacman (is present in m_PacmanPaths vector)*/
-bool GameMap::IsPointAvailable(QPoint point)
+bool GameMap::IsPointAvailable(QPoint const& point)
 {
     for(int i=0;i<m_PathPoints.size();i++)
     {

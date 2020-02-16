@@ -27,86 +27,50 @@ void GameWindow::InitializeGameplayAreaScene()
 
 void GameWindow::PrepareFirstGameRun()
 {
-    GenerateAndPopulateMap();
-    GenerateAndPlacePacman();
-    GenerateAndPlaceGhosts();
+    PopulateMapWithBalls();
+    SetGhostColors();
     GenerateAndPlaceScoreDisplay();
 
     /*Delay collision detection after game restart*/
     m_CollisionWithGhostDetectionDelay = 0;
 
-    m_Scene.addItem(&m_StartEndTextDisplay);
+    AddGraphicalItemsToScene();
 }
 
-void GameWindow::GenerateAndPopulateMap()
-{
-    /*Add background map picture*/
-    m_pMapItem = m_Scene.addPixmap(m_GameMap.GetMapBackgroundPicture());
-
-    m_PowerballPositions = m_GameMap.GetPowerBallPositions();
-    m_FoodballPositions = m_GameMap.GetFoodBallPositions();
+void GameWindow::PopulateMapWithBalls()
+{  
+    /*Get generated foodball nad powerball positions from GameMap object*/
+    QVector<QPoint> const powerballPositions = m_GameMap.GetPowerballPositions();
+    QVector<QPoint> const foodballPositions = m_GameMap.GetFoodballPositions();
 
     int const powerballRadius = 15;
 
-    for(auto powerballPosition : m_PowerballPositions)
+    for(auto powerballPosition : powerballPositions)
     {
         m_PowerballGraphicalItemsTable.push_back(std::make_unique<Powerball>(powerballPosition.x(),
-                                                                                powerballPosition.y(),
-                                                                                powerballRadius,
-                                                                                powerballRadius));
-    }
-
-    for(auto& powerballGraphicalItem : m_PowerballGraphicalItemsTable)
-    {
-        m_Scene.addItem(powerballGraphicalItem.get());
+                                                                             powerballPosition.y(),
+                                                                             powerballRadius,
+                                                                             powerballRadius));
     }
 
     int const foodballRadius = 7;
 
-    for(auto foodballPosition : m_FoodballPositions)
+    for(auto foodballPosition : foodballPositions)
     {
         m_FoodballGraphicalItemsTable.push_back(std::make_unique<Foodball>(foodballPosition.x(),
-                                                                              foodballPosition.y(),
-                                                                              foodballRadius,
-                                                                              foodballRadius));
+                                                                           foodballPosition.y(),
+                                                                           foodballRadius,
+                                                                           foodballRadius));
     }
 
-    for(auto& foodballGraphicalItem : m_FoodballGraphicalItemsTable)
-    {
-        m_Scene.addItem(foodballGraphicalItem.get());
-    }
-
-    m_FoodballItemsCount=m_FoodballPositions.size();
+    m_FoodballItemsCount=foodballPositions.size();
 }
 
-void GameWindow::GenerateAndPlacePacman()
+void GameWindow::SetGhostColors()
 {
-    m_Pacman.Reset();
-
-    m_Scene.addItem(&m_Pacman);
-}
-
-void GameWindow::GenerateAndPlaceGhosts()
-{
-    Ghost::SetAllGhostsScared(false);
-
-    Ghost::SetAllGhostsScareState(0);
-
-    m_Ghost1.Reset();
-    m_Ghost2.Reset();
-    m_Ghost3.Reset();
-    m_Ghost4.Reset();
-
     m_Ghost1.SetGhostColor("orange");
     m_Ghost2.SetGhostColor("red");
     m_Ghost3.SetGhostColor("blue");
-
-    Ghost::SetAllGhostsStartedFreeMovement(false);
-
-    m_Scene.addItem(&m_Ghost1);
-    m_Scene.addItem(&m_Ghost2);
-    m_Scene.addItem(&m_Ghost3);
-    m_Scene.addItem(&m_Ghost4);
 }
 
 void GameWindow::GenerateAndPlaceScoreDisplay()
@@ -118,6 +82,31 @@ void GameWindow::GenerateAndPlaceScoreDisplay()
     m_pScoreDisplay->setDefaultTextColor(Qt::white);
     m_pScoreDisplay->setFont(QFont("Arial", 40));
     m_pScoreDisplay->setPos(0,671);
+}
+
+void GameWindow::AddGraphicalItemsToScene()
+{
+    /*Add background map picture*/
+    m_pMapItem = m_Scene.addPixmap(m_GameMap.GetMapBackgroundPicture());
+
+    for(auto& powerballGraphicalItem : m_PowerballGraphicalItemsTable)
+    {
+        m_Scene.addItem(powerballGraphicalItem.get());
+    }
+
+    for(auto& foodballGraphicalItem : m_FoodballGraphicalItemsTable)
+    {
+        m_Scene.addItem(foodballGraphicalItem.get());
+    }
+
+    m_Scene.addItem(&m_Pacman);
+
+    m_Scene.addItem(&m_Ghost1);
+    m_Scene.addItem(&m_Ghost2);
+    m_Scene.addItem(&m_Ghost3);
+    m_Scene.addItem(&m_Ghost4);
+
+    m_Scene.addItem(&m_StartEndTextDisplay);
 }
 
 void GameWindow::StartGame()
@@ -140,16 +129,23 @@ void GameWindow::StartGame()
 
 void GameWindow::RestartGame()
 {
+    m_Pacman.Reset();
+
+    m_Ghost1.Reset();
+    m_Ghost2.Reset();
+    m_Ghost3.Reset();
+    m_Ghost4.Reset();
+
     m_Pacman.show();
     m_Ghost1.show();
     m_Ghost2.show();
     m_Ghost3.show();
     m_Ghost4.show();
 
-    GenerateAndPopulateMap();
-    GenerateAndPlacePacman();
-    GenerateAndPlaceGhosts();
+    AddGraphicalItemsToScene();
 
+    PopulateMapWithBalls();
+    SetGhostColors();
     GenerateAndPlaceScoreDisplay();
 
     m_Sounds.m_BeginningSound.play();
@@ -162,7 +158,7 @@ void GameWindow::RestartGame()
     m_GameState = GameState::GameRunning;
 
     /*Gives keyboard input focus to this widget*/
-    this->setFocus();
+    setFocus();
 }
 
 void GameWindow::ClearContainers()
@@ -176,13 +172,8 @@ void GameWindow::HideSceneItems()
     m_pMapItem->hide();
     m_pScoreDisplay->hide();
 
-    m_Pacman.hide();
     m_Scene.removeItem(&m_Pacman);
 
-    m_Ghost1.hide();
-    m_Ghost2.hide();
-    m_Ghost3.hide();
-    m_Ghost4.hide();
     m_Scene.removeItem(&m_Ghost1);
     m_Scene.removeItem(&m_Ghost2);
     m_Scene.removeItem(&m_Ghost3);
@@ -194,6 +185,8 @@ void GameWindow::EndGame(bool win)
     ClearContainers();
 
     HideSceneItems();
+
+    m_Scene.addItem(&m_StartEndTextDisplay);
 
     m_StartEndTextDisplay.show();
     m_StartEndTextDisplay.SetScore(m_Score);

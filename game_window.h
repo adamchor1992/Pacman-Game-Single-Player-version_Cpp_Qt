@@ -27,10 +27,8 @@ class GameWindow : public QDialog
 public:
     explicit GameWindow(QWidget* parent = nullptr);
     void GenerateMap();
-    void PopulateMap();
-    void GenerateAndPopulateMap();
-    void GenerateAndPlacePacman();
-    void GenerateAndPlaceGhosts();
+    void PopulateMapWithBalls();
+    void SetGhostColors();
     void GenerateAndPlaceScoreDisplay();
     void ResetMap();
     void ResetPacman();
@@ -71,9 +69,6 @@ private:
     int m_FoodballItemsCount;
     int m_CollisionWithGhostDetectionDelay;
 
-    QVector<QPoint> m_PowerballPositions;
-    QVector<QPoint> m_FoodballPositions;
-
     QGraphicsPixmapItem* m_pMapItem;
     //QVector<Foodball> m_FoodballGraphicalItemsTable;
     //QVector<std::unique_ptr<Powerball>> m_PowerballGraphicalItemsTable;
@@ -98,6 +93,7 @@ private:
     void CheckCollisionWithPowerball(QPoint& pacmanPosition);
     void CheckCollisionWithFoodball();
     void CheckCollisionWithPowerball();
+    void AddGraphicalItemsToScene();
 };
 
 #endif // DIALOG_H

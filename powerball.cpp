@@ -12,11 +12,6 @@ Powerball::Powerball(int x, int y, int width, int height)
     m_Height = height;
 }
 
-Powerball::~Powerball()
-{
-    qDebug() << "Destructor";
-}
-
 QRectF Powerball::boundingRect() const
 {
     return QRect(m_X, m_Y, m_Width, m_Height);

@@ -7,13 +7,13 @@
 class GameMap
 {
 public:
-    static bool IsPointAvailable(QPoint);
-    static QVector<QPoint>& GetPathPoints() {return m_PathPoints;}
+    static bool IsPointAvailable(QPoint const& point);
+    static QVector<QPoint> const& GetPathPoints() {return m_PathPoints;}
 
     void CreateFoodballPositionsVector();
     void CreatePowerballPositionsVector();
-    QVector<QPoint> GetFoodBallPositions() const {return m_FoodballPositions;}
-    QVector<QPoint> GetPowerBallPositions() const {return m_PowerballPositions;}
+    QVector<QPoint> const& GetFoodballPositions() const {return m_FoodballPositions;}
+    QVector<QPoint> const& GetPowerballPositions() const {return m_PowerballPositions;}
 
     GameMap();
     void LoadMapImage();
