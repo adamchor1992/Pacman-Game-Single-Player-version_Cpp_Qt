@@ -25,6 +25,7 @@ public:
     void Reset();
     void LoadGhostImages();
     void AdvanceAnimation();
+    void Respawn();
     void SetGhostX(int x){m_GhostX=x;}
     void SetGhostY(int y){m_GhostY=y;}
     void SetGhostStartedFreeMovement(bool ghostStartedFreeMovement) {m_GhostStartedFreeMovement=ghostStartedFreeMovement;}

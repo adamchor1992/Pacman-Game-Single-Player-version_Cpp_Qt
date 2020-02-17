@@ -1,8 +1,6 @@
 #include "game_window.h"
 #include "ui_gamewindow.h"
 
-#include <QList>
-
 GameWindow::GameWindow(QWidget *parent) : QDialog(parent), m_pUi(new Ui::GameWindow)
 {
     m_pUi->setupUi(this);
@@ -83,23 +81,10 @@ void GameWindow::SetGhostColors()
     m_Ghost3.SetGhostColor("blue");
 }
 
-void GameWindow::GenerateAndPlaceScoreDisplay()
-{
-    m_Score=0;
-
-    m_pScoreDisplay = m_Scene.addText("Score: " + QString::number(m_Score));
-
-    m_pScoreDisplay->setDefaultTextColor(Qt::white);
-    m_pScoreDisplay->setFont(QFont("Arial", 40));
-    m_pScoreDisplay->setPos(0,671);
-}
-
 void GameWindow::AddGraphicalItemsToScene()
 {
     /*Add background map picture*/
     m_pMapItem = m_Scene.addPixmap(m_GameMap.GetMapBackgroundPicture());
-
-    GenerateAndPlaceScoreDisplay();
 
     m_Scene.addItem(&m_Pacman);
 
@@ -109,6 +94,7 @@ void GameWindow::AddGraphicalItemsToScene()
     m_Scene.addItem(&m_Ghost4);
 
     m_Scene.addItem(&m_StartEndTextDisplay);
+    m_Scene.addItem(&m_ScoreDisplay);
 }
 
 void GameWindow::StartGame()
@@ -147,9 +133,8 @@ void GameWindow::RestartGame()
     PopulateMapWithBalls();
     SetGhostColors();
 
-    m_Score=0;
-    m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
-    m_pScoreDisplay->show();
+    m_ScoreDisplay.resetScore();
+    m_ScoreDisplay.show();
 
     m_Sounds.m_BeginningSound.play();
 
@@ -173,7 +158,7 @@ void GameWindow::ClearContainers()
 void GameWindow::HideSceneItems()
 {
     m_pMapItem->hide();
-    m_pScoreDisplay->hide();
+    m_ScoreDisplay.hide();
 
     m_Pacman.hide();
 
@@ -190,8 +175,7 @@ void GameWindow::EndGame(bool win)
     HideSceneItems();
 
     m_StartEndTextDisplay.show();
-    m_StartEndTextDisplay.SetScore(m_Score);
-    m_StartEndTextDisplay.SetScore(m_Score);
+    m_StartEndTextDisplay.SetScore(m_ScoreDisplay.getScore());
 
     if(win)
     {
@@ -218,38 +202,26 @@ void GameWindow::CheckCollisionWithGhost()
         if(m_Pacman.collidesWithItem(&m_Ghost1) && m_Ghost1.GetIsScared())
         {
             m_Sounds.m_EatGhostSound.play();
-            m_Score+=200;
-            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
-            m_Ghost1.SetGhostX(Ghost::STARTING_X);
-            m_Ghost1.SetGhostY(252);
-            m_Ghost1.SetIsScared(false);
+            m_ScoreDisplay.IncreaseScore(200);
+            m_Ghost1.Respawn();
         }
         else if(m_Pacman.collidesWithItem(&m_Ghost2) && m_Ghost2.GetIsScared())
         {
             m_Sounds.m_EatGhostSound.play();
-            m_Score+=200;
-            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
-            m_Ghost2.SetGhostX(Ghost::STARTING_X);
-            m_Ghost2.SetGhostY(252);
-            m_Ghost2.SetIsScared(false);
+            m_ScoreDisplay.IncreaseScore(200);
+            m_Ghost2.Respawn();
         }
         else if(m_Pacman.collidesWithItem(&m_Ghost3) && m_Ghost3.GetIsScared())
         {
             m_Sounds.m_EatGhostSound.play();
-            m_Score+=200;
-            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
-            m_Ghost3.SetGhostX(Ghost::STARTING_X);
-            m_Ghost3.SetGhostY(252);
-            m_Ghost3.SetIsScared(false);
+            m_ScoreDisplay.IncreaseScore(200);
+            m_Ghost3.Respawn();
         }
         else if(m_Pacman.collidesWithItem(&m_Ghost4) && m_Ghost4.GetIsScared())
         {
             m_Sounds.m_EatGhostSound.play();
-            m_Score+=200;
-            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
-            m_Ghost4.SetGhostX(Ghost::STARTING_X);
-            m_Ghost4.SetGhostY(252);
-            m_Ghost4.SetIsScared(false);
+            m_ScoreDisplay.IncreaseScore(200);
+            m_Ghost4.Respawn();
         }
         else
         {
@@ -280,8 +252,7 @@ void GameWindow::CheckCollisionWithFoodball()
                 m_Sounds.m_EatSound2.play();
             }
 
-            m_Score++;
-            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
+            m_ScoreDisplay.IncreaseScore(1);
 
             m_FoodballItemsCount--;
 
@@ -321,9 +292,7 @@ void GameWindow::CheckCollisionWithPowerball()
 
             Ghost::SetAllGhostsScared(true);
 
-            m_Score += 100;
-
-            m_pScoreDisplay->setPlainText("Score: " + QString::number(m_Score));
+            m_ScoreDisplay.IncreaseScore(100);
 
             return;
         }

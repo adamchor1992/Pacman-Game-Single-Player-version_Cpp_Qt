@@ -85,6 +85,13 @@ void Ghost::AdvanceAnimation()
     }
 }
 
+void Ghost::Respawn()
+{
+    SetGhostX(Ghost::STARTING_X);
+    SetGhostY(252);
+    SetIsScared(false);
+}
+
 void Ghost::SetGhostColor(QString col)
 {
     if(col=="blue")

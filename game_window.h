@@ -13,6 +13,7 @@
 #include "foodball.h"
 #include "ghost.h"
 #include "start_end_text_display.h"
+#include "score_display.h"
 #include "sounds.h"
 
 namespace Ui
@@ -29,7 +30,6 @@ public:
     void GenerateMap();
     void PopulateMapWithBalls();
     void SetGhostColors();
-    void GenerateAndPlaceScoreDisplay();
     void ResetMap();
     void ResetPacman();
     void ResetGhosts();
@@ -38,7 +38,6 @@ public:
     void HideSceneItems();
     void ClearContainers();
     void PacmanMove();
-    void RespawnGhost();
     void CheckCollisionWithGhost();
     void EndGame(bool win);
     ~GameWindow();
@@ -60,12 +59,12 @@ private:
     Ghost m_Ghost3;
     Ghost m_Ghost4;
     StartEndTextDisplay m_StartEndTextDisplay;
+    ScoreDisplay m_ScoreDisplay;
 
     Sounds m_Sounds;
     QTimer m_Timer;
     QTimer m_GhostsTimer;
 
-    int m_Score;
     int m_FoodballItemsCount;
     int m_CollisionWithGhostDetectionDelay;
 
@@ -73,8 +72,6 @@ private:
 
     std::vector<std::unique_ptr<Foodball>> m_FoodballGraphicalItemsTable;
     std::vector<std::unique_ptr<Powerball>> m_PowerballGraphicalItemsTable;
-
-    QGraphicsTextItem* m_pScoreDisplay;
 
     enum class GameState
     {
