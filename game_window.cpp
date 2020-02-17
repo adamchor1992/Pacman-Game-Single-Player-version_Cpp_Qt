@@ -30,9 +30,6 @@ void GameWindow::PrepareFirstGameRun()
     AddGraphicalItemsToScene();
 
     PopulateMapWithBalls();
-
-    /*Delay collision detection after game restart*/
-    m_CollisionWithGhostDetectionDelay = 0;
 }
 
 void GameWindow::PopulateMapWithBalls()
@@ -306,14 +303,7 @@ void GameWindow::Updater()
     /*Changes position of pacman*/
     m_Pacman.Move();
 
-    if(m_CollisionWithGhostDetectionDelay >= 500)
-    {
-        CheckCollisionWithGhost();
-    }
-    else
-    {
-        m_CollisionWithGhostDetectionDelay++;
-    }
+    CheckCollisionWithGhost();
 
     CheckCollisionWithFoodball();
 

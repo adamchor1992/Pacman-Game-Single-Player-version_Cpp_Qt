@@ -66,7 +66,6 @@ private:
     QTimer m_GhostsTimer;
 
     int m_FoodballItemsCount;
-    int m_CollisionWithGhostDetectionDelay;
 
     QGraphicsPixmapItem* m_pMapItem;
 
