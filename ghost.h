@@ -53,6 +53,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
+    static int ghostNumber;
     static int m_AllGhostsScaredState;
     static bool m_AllGhostScared;
     static bool m_AllGhostsStartedFreeMovement;

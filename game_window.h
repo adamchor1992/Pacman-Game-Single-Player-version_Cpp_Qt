@@ -29,7 +29,6 @@ public:
     explicit GameWindow(QWidget* parent = nullptr);
     void GenerateMap();
     void PopulateMapWithBalls();
-    void SetGhostColors();
     void ResetMap();
     void ResetPacman();
     void ResetGhosts();
@@ -43,6 +42,8 @@ public:
     ~GameWindow();
 
     void keyPressEvent(QKeyEvent *event);
+
+    void MoveOutOfTheStartingBox();
 
 public slots:
     void Updater();
@@ -88,6 +89,7 @@ private:
     void CheckCollisionWithFoodball();
     void CheckCollisionWithPowerball();
     void AddGraphicalItemsToScene();
+    void MoveOutOfTheStartingBox(Ghost &ghost, int ghostX, int ghostY);
 };
 
 #endif // DIALOG_H

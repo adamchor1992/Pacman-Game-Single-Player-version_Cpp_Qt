@@ -6,6 +6,7 @@ bool Ghost::m_AllGhostScared = false;
 bool Ghost::m_AllGhostsStartedFreeMovement = false;
 int Ghost::m_GhostsStartTimer = 0;
 int Ghost::m_AllGhostsScaredState = 0;
+int Ghost::ghostNumber = 0;
 
 Ghost::Ghost()
 {
@@ -31,6 +32,22 @@ Ghost::Ghost()
     SetGhostY(STARTING_Y);
 
     LoadGhostImages();
+
+    /*Each ghost has unique color*/
+    switch(ghostNumber)
+    {
+    case 0:
+        SetGhostColor("orange");
+        break;
+    case 1:
+        SetGhostColor("red");
+        break;
+    case 2:
+        SetGhostColor("blue");
+        break;
+    }
+
+    ++ghostNumber;
 }
 
 void Ghost::Reset()

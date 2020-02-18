@@ -25,8 +25,6 @@ void GameWindow::InitializeGameplayAreaScene()
 
 void GameWindow::PrepareFirstGameRun()
 {
-    SetGhostColors();
-
     AddGraphicalItemsToScene();
 
     PopulateMapWithBalls();
@@ -69,13 +67,6 @@ void GameWindow::PopulateMapWithBalls()
     }
 
     m_FoodballItemsCount=foodballPositions.size();
-}
-
-void GameWindow::SetGhostColors()
-{
-    m_Ghost1.SetGhostColor("orange");
-    m_Ghost2.SetGhostColor("red");
-    m_Ghost3.SetGhostColor("blue");
 }
 
 void GameWindow::AddGraphicalItemsToScene()
@@ -128,7 +119,6 @@ void GameWindow::RestartGame()
     m_Ghost4.show();
 
     PopulateMapWithBalls();
-    SetGhostColors();
 
     m_ScoreDisplay.resetScore();
     m_ScoreDisplay.show();
@@ -361,16 +351,42 @@ void GameWindow::Updater()
     m_Scene.update(m_Scene.sceneRect());
 }
 
+void GameWindow::MoveOutOfTheStartingBox(Ghost& ghost, int ghostX, int ghostY)
+{
+    if(ghostX>Ghost::STARTING_X)
+    {
+        ghostX-=1;
+    }
+    else if(ghostX<Ghost::STARTING_X)
+    {
+        ghostX+=1;
+    }
+
+    if(!ghost.GetGhostStartedFreeMovement())
+    {
+        ghostY-=1;
+        ghost.SetGhostX(ghostX);
+        ghost.SetGhostY(ghostY);
+
+        QPoint point(ghostX, ghostY);
+
+        if(m_GameMap.GetPathPoints().contains(point))
+        {
+            ghost.SetGhostStartedFreeMovement(true);
+        }
+    }
+}
+
 void GameWindow::GhostUpdater()
 {
-    int m_Ghost1X = m_Ghost1.GetGhostX();
-    int m_Ghost1Y = m_Ghost1.GetGhostY();
-    int m_Ghost2X = m_Ghost2.GetGhostX();
-    int m_Ghost2Y = m_Ghost2.GetGhostY();
-    int m_Ghost3X = m_Ghost3.GetGhostX();
-    int m_Ghost3Y = m_Ghost3.GetGhostY();
-    int m_Ghost4X = m_Ghost4.GetGhostX();
-    int m_Ghost4Y = m_Ghost4.GetGhostY();
+    int ghost1X = m_Ghost1.GetGhostX();
+    int ghost1Y = m_Ghost1.GetGhostY();
+    int ghost2X = m_Ghost2.GetGhostX();
+    int ghost2Y = m_Ghost2.GetGhostY();
+    int ghost3X = m_Ghost3.GetGhostX();
+    int ghost3Y = m_Ghost3.GetGhostY();
+    int ghost4X = m_Ghost4.GetGhostX();
+    int ghost4Y = m_Ghost4.GetGhostY();
 
     if(Ghost::GetAllGhostsStartedFreeMovement())
     {
@@ -429,109 +445,25 @@ void GameWindow::GhostUpdater()
         /*Ghost 1 starts*/
         if(Ghost::GetGhostsStartTimer()>=3)
         {
-            if(m_Ghost1X>Ghost::STARTING_X)
-            {
-                m_Ghost1X-=1;
-            }
-            else if(m_Ghost1X<Ghost::STARTING_X)
-            {
-                m_Ghost1X+=1;
-            }
-
-            if(!m_Ghost1.GetGhostStartedFreeMovement())
-            {
-                m_Ghost1Y-=1;
-                m_Ghost1.SetGhostX(m_Ghost1X);
-                m_Ghost1.SetGhostY(m_Ghost1Y);
-
-                QPoint point(m_Ghost1X, m_Ghost1Y);
-
-                if(m_GameMap.GetPathPoints().contains(point))
-                {
-                    m_Ghost1.SetGhostStartedFreeMovement(true);
-                }
-            }
+            MoveOutOfTheStartingBox(m_Ghost1, ghost1X, ghost1Y);
         }
 
         /*Ghost 2 starts*/
         if(Ghost::GetGhostsStartTimer()>=6)
         {
-            if(m_Ghost2X>Ghost::STARTING_X)
-            {
-                m_Ghost2X-=1;
-            }
-            else if(m_Ghost2X<Ghost::STARTING_X)
-            {
-                m_Ghost2X+=1;
-            }
-
-            if(!m_Ghost2.GetGhostStartedFreeMovement())
-            {
-                m_Ghost2Y-=1;
-                m_Ghost2.SetGhostX(m_Ghost2X);
-                m_Ghost2.SetGhostY(m_Ghost2Y);
-
-                QPoint point(m_Ghost2X, m_Ghost2Y);
-
-                if(m_GameMap.GetPathPoints().contains(point))
-                {
-                    m_Ghost2.SetGhostStartedFreeMovement(true);
-                }
-            }
+            MoveOutOfTheStartingBox(m_Ghost2, ghost2X, ghost2Y);
         }
 
         /*Ghost 3 starts*/
         if(Ghost::GetGhostsStartTimer()>=9)
         {
-            if(m_Ghost3X>Ghost::STARTING_X)
-            {
-                m_Ghost3X-=1;
-            }
-            else if(m_Ghost3X<Ghost::STARTING_X)
-            {
-                m_Ghost3X+=1;
-            }
-
-            if(!m_Ghost3.GetGhostStartedFreeMovement())
-            {
-                m_Ghost3Y-=1;
-                m_Ghost3.SetGhostX(m_Ghost3X);
-                m_Ghost3.SetGhostY(m_Ghost3Y);
-
-                QPoint point(m_Ghost3X, m_Ghost3Y);
-
-                if(m_GameMap.GetPathPoints().contains(point))
-                {
-                    m_Ghost3.SetGhostStartedFreeMovement(true);
-                }
-            }
+            MoveOutOfTheStartingBox(m_Ghost3, ghost3X, ghost3Y);
         }
 
         /*Ghost 4 starts*/
         if(Ghost::GetGhostsStartTimer()>=12)
         {
-            if(m_Ghost4X>Ghost::STARTING_X)
-            {
-                m_Ghost4X-=1;
-            }
-            else if(m_Ghost4X<Ghost::STARTING_X)
-            {
-                m_Ghost4X+=1;
-            }
-
-            if(!m_Ghost4.GetGhostStartedFreeMovement())
-            {
-                m_Ghost4Y-=1;
-                m_Ghost4.SetGhostX(m_Ghost4X);
-                m_Ghost4.SetGhostY(m_Ghost4Y);
-
-                QPoint point(m_Ghost4X, m_Ghost4Y);
-
-                if(m_GameMap.GetPathPoints().contains(point))
-                {
-                    m_Ghost4.SetGhostStartedFreeMovement(true);
-                }
-            }
+            MoveOutOfTheStartingBox(m_Ghost4, ghost4X, ghost4Y);
         }
 
         if(m_Ghost1.GetGhostStartedFreeMovement()&&
