@@ -1,7 +1,7 @@
 #include "game_window.h"
 #include "ui_gamewindow.h"
 
-GameWindow::GameWindow(QWidget *parent) : QDialog(parent), m_pUi(new Ui::GameWindow), m_FoodballItemsCount(0), m_pMapItem(nullptr)
+GameWindow::GameWindow(QWidget *parent) : QDialog(parent), m_pUi(new Ui::GameWindow)
 {
     m_pUi->setupUi(this);
 

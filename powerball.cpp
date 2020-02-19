@@ -17,7 +17,7 @@ QRectF Powerball::boundingRect() const
     return QRect(m_X, m_Y, m_Width, m_Height);
 }
 
-void Powerball::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Powerball::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     painter->setPen(Qt::NoPen);
     painter->setBrush(QBrush(Qt::white));

@@ -50,9 +50,9 @@ private:
     QTimer m_Timer;
     QTimer m_GhostsTimer;
 
-    int m_FoodballItemsCount;
+    int m_FoodballItemsCount{0};
 
-    QGraphicsPixmapItem* m_pMapItem;
+    QGraphicsPixmapItem* m_pMapItem{nullptr};
 
     std::vector<std::unique_ptr<Foodball>> m_FoodballGraphicalItemsTable;
     std::vector<std::unique_ptr<Powerball>> m_PowerballGraphicalItemsTable;

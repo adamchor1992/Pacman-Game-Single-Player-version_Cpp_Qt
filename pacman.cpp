@@ -13,10 +13,10 @@ Pacman::Pacman()
     m_AnimationState = 0;
     m_AnimationModifyFactor = 6;
 
-    SetDirection(Direction::left);
-    SetNextDirection(Direction::none);
-    SetPacX(STARTING_X);
-    SetPacY(STARTING_Y);
+    m_Direction=Direction::left;
+    m_NextDirection=Direction::none;
+    m_PacX=STARTING_X;
+    m_PacY=STARTING_Y;
 }
 
 void Pacman::Reset()
@@ -24,10 +24,10 @@ void Pacman::Reset()
     m_AnimationState = 0;
     m_AnimationModifyFactor = 6;
 
-    SetDirection(Direction::left);
-    SetNextDirection(Direction::none);
-    SetPacX(STARTING_X);
-    SetPacY(STARTING_Y);
+    m_Direction=Direction::left;
+    m_NextDirection=Direction::none;
+    m_PacX=STARTING_X;
+    m_PacY=STARTING_Y;
 }
 
 void Pacman::AdvanceAnimation()
@@ -63,21 +63,6 @@ void Pacman::LoadPacmanImages()
     m_Left2.load(":/pacman/images/pacman_images/pacopen1l.png");
     m_Left3.load(":/pacman/images/pacman_images/pacopen2l.png");
     m_Left4.load(":/pacman/images/pacman_images/pacopen3l.png");
-}
-
-void Pacman::SetPacX(int x)
-{
-    m_PacX=x;
-}
-
-void Pacman::SetPacY(int y)
-{
-    m_PacY=y;
-}
-
-void Pacman::SetDirection(Direction direction)
-{
-    m_Direction=direction;
 }
 
 void Pacman::SetNextDirection(Direction direction)
@@ -208,7 +193,7 @@ QRectF Pacman::boundingRect() const
     return QRect(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius);
 }
 
-void Pacman::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Pacman::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     int const pacmanRadius=30;
     int const offsetX=-15;

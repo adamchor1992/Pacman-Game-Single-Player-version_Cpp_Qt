@@ -6,35 +6,30 @@ bool Ghost::m_AllGhostScared = false;
 bool Ghost::m_AllGhostsStartedFreeMovement = false;
 int Ghost::m_GhostsStartTimer = 0;
 int Ghost::m_AllGhostsScaredState = 0;
-int Ghost::ghostNumber = 0;
+int Ghost::m_GhostNumber = 0;
 
 Ghost::Ghost()
 {
-    m_AnimationState= 0;
-    m_AnimationModifyFactor= 6;
-    m_GhostDirection=Direction::left;
-    m_IsScared=false;
-    m_ScaredWhite=false;
-    m_GhostMoving = false;
-    m_GhostStartedFreeMovement = false;
     m_AllGhostsScaredState=0;
     m_AllGhostScared=false;
     m_GhostsStartTimer = 0;
     m_AllGhostsStartedFreeMovement=false;
 
-    SetGhostX(STARTING_X);
-    SetGhostY(STARTING_Y);
-    SetGhostX(STARTING_X);
-    SetGhostY(STARTING_Y);
-    SetGhostX(STARTING_X);
-    SetGhostY(STARTING_Y);
-    SetGhostX(STARTING_X);
-    SetGhostY(STARTING_Y);
+    m_AnimationState= 0;
+    m_AnimationModifyFactor= 6;
+    m_GhostDirection=Direction::left;
+    m_NextGhostDirection=Direction::none;
+    m_IsScared=false;
+    m_ScaredWhite=false;
+    m_GhostMoving = false;
+    m_GhostStartedFreeMovement = false;
+    m_GhostX = STARTING_X;
+    m_GhostY = STARTING_Y;
 
     LoadGhostImages();
 
     /*Each ghost has unique color*/
-    switch(ghostNumber)
+    switch(m_GhostNumber)
     {
     case 0:
         SetGhostColor("orange");
@@ -47,11 +42,16 @@ Ghost::Ghost()
         break;
     }
 
-    ++ghostNumber;
+    ++m_GhostNumber;
 }
 
 void Ghost::Reset()
 {
+    m_AllGhostsScaredState=0;
+    m_AllGhostScared=false;
+    m_GhostsStartTimer = 0;
+    m_AllGhostsStartedFreeMovement=false;
+
     m_AnimationState= 0;
     m_AnimationModifyFactor= 6;
     m_GhostDirection=Direction::left;
@@ -59,19 +59,9 @@ void Ghost::Reset()
     m_ScaredWhite=false;
     m_GhostMoving = false;
     m_GhostStartedFreeMovement = false;
-    m_AllGhostsScaredState=0;
-    m_AllGhostScared=false;
-    m_GhostsStartTimer = 0;
-    m_AllGhostsStartedFreeMovement=false;
-
-    SetGhostX(STARTING_X);
-    SetGhostY(STARTING_Y);
-    SetGhostX(STARTING_X);
-    SetGhostY(STARTING_Y);
-    SetGhostX(STARTING_X);
-    SetGhostY(STARTING_Y);
-    SetGhostX(STARTING_X);
-    SetGhostY(STARTING_Y);
+    m_NextGhostDirection=Direction::none;
+    m_GhostX = STARTING_X;
+    m_GhostY = STARTING_Y;
 }
 
 void Ghost::LoadGhostImages()
@@ -104,12 +94,12 @@ void Ghost::AdvanceAnimation()
 
 void Ghost::Respawn()
 {
-    SetGhostX(Ghost::STARTING_X);
-    SetGhostY(252);
-    SetIsScared(false);
+    m_GhostX = STARTING_X;
+    m_GhostY = 252;
+    m_IsScared = false;
 }
 
-void Ghost::SetGhostColor(QString col)
+void Ghost::SetGhostColor(const QString& col)
 {
     if(col=="blue")
     {
@@ -240,7 +230,6 @@ void Ghost::Move()
     case Direction::left:
         p.setX(m_GhostX-1);
         p.setY(m_GhostY);
-        SetGhostDirection(m_GhostDirection);
 
         if(GameMap::IsPointAvailable(p))
         {
@@ -254,9 +243,9 @@ void Ghost::Move()
         break;
 
     case Direction::right:
-        SetGhostDirection(m_GhostDirection);
         p.setX(m_GhostX+1);
         p.setY(m_GhostY);
+
         if(GameMap::IsPointAvailable(p))
         {
             m_GhostX+=1;
@@ -269,9 +258,9 @@ void Ghost::Move()
         break;
 
     case Direction::down:
-        SetGhostDirection(m_GhostDirection);
         p.setX(m_GhostX);
         p.setY(m_GhostY+1);
+
         if(GameMap::IsPointAvailable(p))
         {
             m_GhostY+=1;
@@ -284,9 +273,9 @@ void Ghost::Move()
         break;
 
     case Direction::up:
-        SetGhostDirection(m_GhostDirection);
         p.setX(m_GhostX);
         p.setY(m_GhostY-1);
+
         if(GameMap::IsPointAvailable(p))
         {
             m_GhostY-=1;
@@ -314,10 +303,6 @@ void Ghost::Move()
         m_GhostX=1;
         m_GhostY=318;
     }
-
-    SetGhostX(m_GhostX);
-    SetGhostY(m_GhostY);
-    SetNextGhostDirection(m_NextGhostDirection);
 }
 
 void Ghost::MoveInStartingRect()
@@ -362,14 +347,15 @@ void Ghost::MoveOutOfTheStartingBox(int ghostX, int ghostY)
     if(!GetGhostStartedFreeMovement())
     {
         ghostY-=1;
-        SetGhostX(ghostX);
-        SetGhostY(ghostY);
+
+        m_GhostX = ghostX;
+        m_GhostY = ghostY;
 
         QPoint point(ghostX, ghostY);
 
         if(GameMap::GetPathPoints().contains(point))
         {
-            SetGhostStartedFreeMovement(true);
+            m_GhostStartedFreeMovement = true;
         }
     }
 }
@@ -383,7 +369,7 @@ QRectF Ghost::boundingRect() const
     return QRect(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius);
 }
 
-void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     int const ghostRadius=30;
     int const offsetX=-15;

@@ -36,9 +36,6 @@ private:
     Direction m_NextDirection;
 
     void LoadPacmanImages();
-    void SetPacX(int);
-    void SetPacY(int);
-    void SetDirection(Direction direction);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

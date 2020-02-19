@@ -2,13 +2,13 @@
 
 StartEndTextDisplay::StartEndTextDisplay()
 {
-    m_GameWon=false;
-    m_GameLost=false;
-
     m_Width=600;
     m_Height=200;
     m_X=614/2-m_Width/2;
     m_Y=714/2-m_Height/2;
+
+    m_GameWon=false;
+    m_GameLost=false;
 
     m_Score=0;
     m_Playing=false;
@@ -34,7 +34,7 @@ QRectF StartEndTextDisplay::boundingRect() const
     return QRect(m_X, m_Y, m_Width, m_Height);
 }
 
-void StartEndTextDisplay::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void StartEndTextDisplay::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
     QPen pen_red(Qt::red);
     QPen pen_yellow(Qt::yellow);

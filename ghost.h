@@ -31,12 +31,12 @@ public:
     bool GetGhostStartedFreeMovement() const {return m_GhostStartedFreeMovement;}
     int GetGhostX() const {return m_GhostX;}
     int GetGhostY() const {return m_GhostY;}
-    void MoveOutOfTheStartingBox(int ghostX, int ghostY);
     void Move();
+    void MoveOutOfTheStartingBox(int ghostX, int ghostY);
     void MoveInStartingRect();
 
 private:
-    static int ghostNumber;
+    static int m_GhostNumber;
     static int m_AllGhostsScaredState;
     static bool m_AllGhostScared;
     static bool m_AllGhostsStartedFreeMovement;
@@ -54,10 +54,8 @@ private:
 
     bool m_IsScared;
     bool m_ScaredWhite;
-    bool m_Hidden;
     bool m_GhostMoving;
     bool m_GhostStartedFreeMovement;
-    bool m_ReachedPositionOutofStartingBox;
 
     int m_AnimationState;
     int m_AnimationModifyFactor;
@@ -68,12 +66,7 @@ private:
     Direction m_NextGhostDirection;
 
     void LoadGhostImages();
-    void SetGhostX(int x){m_GhostX=x;}
-    void SetGhostY(int y){m_GhostY=y;}
-    void SetGhostStartedFreeMovement(bool ghostStartedFreeMovement) {m_GhostStartedFreeMovement=ghostStartedFreeMovement;}
-    void SetGhostDirection(Direction direction) {m_GhostDirection=direction;}
-    void SetNextGhostDirection(Direction direction) {m_NextGhostDirection=direction;}
-    void SetGhostColor(QString col);
+    void SetGhostColor(const QString& col);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

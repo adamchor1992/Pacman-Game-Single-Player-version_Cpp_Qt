@@ -1,4 +1,5 @@
 #include "game_map.h"
+#include <array>
 
 QVector<QPoint> GameMap::m_PathPoints;
 
@@ -161,9 +162,9 @@ void GameMap::CreatePathPoints(int startX, int startY, int endX, int endY) //onl
 /*Checks if given point is accessible for Pacman (is present in m_PacmanPaths vector)*/
 bool GameMap::IsPointAvailable(QPoint const& point)
 {
-    for(int i=0;i<m_PathPoints.size();i++)
+    for(auto m_PathPoint : m_PathPoints)
     {
-        if(m_PathPoints.at(i)==point)
+        if(m_PathPoint==point)
         {
              return true;
         }
@@ -176,14 +177,14 @@ void GameMap::CreateFoodballPositionsVector()
     int const COORDINATES_COUNT = 10;
 
     /*Coordinates (x,y) where foodballs will be placed*/
-    int verticalLines_x[COORDINATES_COUNT]={35,79,144,209,274,340,406,470,536,579};
-    int horizontalLines_y[COORDINATES_COUNT]={35,121,187,252,318,384,449,514,580,645};
+    std::array<int, COORDINATES_COUNT> verticalLinesXCoordinates={35,79,144,209,274,340,406,470,536,579};
+    std::array<int, COORDINATES_COUNT> horizontalLinesYCoordinates={35,121,187,252,318,384,449,514,580,645};
 
-    for(int i=0;i<COORDINATES_COUNT;i++)
+    for(int i : verticalLinesXCoordinates)
     {
-        for(int j=0;j<COORDINATES_COUNT;j++)
+        for(int j : horizontalLinesYCoordinates)
         {
-            QPoint foodballPoint(verticalLines_x[i],horizontalLines_y[j]);
+            QPoint foodballPoint(i,j);
 
             /*Check if point is on path*/
             if(GameMap::GetPathPoints().contains(foodballPoint))
@@ -203,7 +204,7 @@ void GameMap::CreateFoodballPositionsVector()
                     continue;
                 }
 
-                m_FoodballPositions.push_back(QPoint(verticalLines_x[i],horizontalLines_y[j]));
+                m_FoodballPositions.push_back(QPoint(i,j));
             }
         }
     }
