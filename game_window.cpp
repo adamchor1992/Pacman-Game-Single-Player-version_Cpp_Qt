@@ -87,12 +87,12 @@ void GameWindow::AddGraphicalItemsToScene()
 
 void GameWindow::StartGame()
 {
-    m_Sounds.m_BeginningSound.play();
-
     m_StartEndTextDisplay.hide();
 
     connect(&m_Timer, SIGNAL(timeout()), this,SLOT(Updater()));
     connect(&m_GhostsTimer, SIGNAL(timeout()), this,SLOT(GhostUpdater()));
+
+    m_Sounds.PlayBeginningSound();
 
     m_Timer.start(4);
     m_GhostsTimer.start(4);
@@ -105,6 +105,8 @@ void GameWindow::StartGame()
 
 void GameWindow::RestartGame()
 {
+    PopulateMapWithBalls();
+
     m_Pacman.Reset();
     m_Ghost1.Reset();
     m_Ghost2.Reset();
@@ -118,14 +120,12 @@ void GameWindow::RestartGame()
     m_Ghost3.show();
     m_Ghost4.show();
 
-    PopulateMapWithBalls();
-
     m_ScoreDisplay.resetScore();
     m_ScoreDisplay.show();
 
-    m_Sounds.m_BeginningSound.play();
-
     m_StartEndTextDisplay.hide();
+
+    m_Sounds.PlayBeginningSound();
 
     m_Timer.start(4);
     m_GhostsTimer.start(4);
@@ -170,7 +170,7 @@ void GameWindow::EndGame(bool win)
     }
     else
     {
-        m_Sounds.m_PacmanDeathSound.play();
+        m_Sounds.PlayPacmanDeathSound();
         m_StartEndTextDisplay.SetGameLost(true);
     }
 
@@ -188,25 +188,25 @@ void GameWindow::CheckCollisionWithGhost()
     {
         if(m_Pacman.collidesWithItem(&m_Ghost1) && m_Ghost1.GetIsScared())
         {
-            m_Sounds.m_EatGhostSound.play();
+            m_Sounds.PlayEatGhostSound();
             m_ScoreDisplay.IncreaseScore(200);
             m_Ghost1.Respawn();
         }
         else if(m_Pacman.collidesWithItem(&m_Ghost2) && m_Ghost2.GetIsScared())
         {
-            m_Sounds.m_EatGhostSound.play();
+            m_Sounds.PlayEatGhostSound();
             m_ScoreDisplay.IncreaseScore(200);
             m_Ghost2.Respawn();
         }
         else if(m_Pacman.collidesWithItem(&m_Ghost3) && m_Ghost3.GetIsScared())
         {
-            m_Sounds.m_EatGhostSound.play();
+            m_Sounds.PlayEatGhostSound();
             m_ScoreDisplay.IncreaseScore(200);
             m_Ghost3.Respawn();
         }
         else if(m_Pacman.collidesWithItem(&m_Ghost4) && m_Ghost4.GetIsScared())
         {
-            m_Sounds.m_EatGhostSound.play();
+            m_Sounds.PlayEatGhostSound();
             m_ScoreDisplay.IncreaseScore(200);
             m_Ghost4.Respawn();
         }
@@ -229,15 +229,7 @@ void GameWindow::CheckCollisionWithFoodball()
         {
             m_FoodballGraphicalItemsTable.erase(iter);
 
-            if(m_Sounds.m_EatSound1.state()==QMediaPlayer::StoppedState)
-            {
-                m_Sounds.m_EatSound1.play();
-            }
-
-            if(m_Sounds.m_EatSound1.state()==QMediaPlayer::PlayingState)
-            {
-                m_Sounds.m_EatSound2.play();
-            }
+            m_Sounds.PlayEatFoodballSound1();
 
             m_ScoreDisplay.IncreaseScore(1);
 
@@ -260,15 +252,7 @@ void GameWindow::CheckCollisionWithPowerball()
         {
             m_PowerballGraphicalItemsTable.erase(iter);
 
-            if(m_Sounds.m_EatSound1.state()==QMediaPlayer::StoppedState)
-            {
-                m_Sounds.m_EatSound1.play();
-            }
-
-            if(m_Sounds.m_EatSound1.state()==QMediaPlayer::PlayingState)
-            {
-                m_Sounds.m_EatSound2.play();
-            }
+            m_Sounds.PlayEatFoodballSound1();
 
             Ghost::SetAllGhostsScareState(0);
 

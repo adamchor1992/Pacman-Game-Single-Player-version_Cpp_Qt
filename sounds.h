@@ -3,16 +3,23 @@
 
 #include <QMediaPlayer>
 
-struct Sounds
+class Sounds
 {
+public:
     Sounds();
+    void PlayBeginningSound();
+    void PlayEatFoodballSound1();
+    void PlayEatGhostSound();
+    void PlayPacmanDeathSound();
+    void PlaySirenSound();
 
+private:
     QMediaPlayer m_BeginningSound;
-    QMediaPlayer m_EatSound1;
-    QMediaPlayer m_EatSound2;
+    QMediaPlayer m_EatFoodballSound1;
+    QMediaPlayer m_EatFoodballSound2;
     QMediaPlayer m_EatGhostSound;
     QMediaPlayer m_PacmanDeathSound;
-    QMediaPlayer m_PacmanSiren;
+    QMediaPlayer m_Siren;
 };
 
 #endif // SOUNDS_H
