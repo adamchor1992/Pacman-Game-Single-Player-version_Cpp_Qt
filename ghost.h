@@ -75,8 +75,8 @@ private:
     void SetNextGhostDirection(Direction direction) {m_NextGhostDirection=direction;}
     void SetGhostColor(QString col);
 
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 };
 
 #endif // GHOST_H

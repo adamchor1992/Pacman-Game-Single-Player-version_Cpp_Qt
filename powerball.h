@@ -10,14 +10,14 @@ class Powerball : public QGraphicsItem
 public:
     Powerball(int x, int y, int width, int height);
 
-    virtual QRectF boundingRect() const;
-    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr);
-
 private:
     int m_X;
     int m_Y;
     int m_Width;
     int m_Height;
+
+    virtual QRectF boundingRect() const override;
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 };
 
 #endif // POWERBALL_H

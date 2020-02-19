@@ -23,7 +23,7 @@ private:
     QVector<QPoint> m_PowerballPositions;
 
     void LoadMapImage();
-    void CreatePathPoints(int beginX, int beginY, int endX, int endY);
+    void CreatePathPoints(int startX, int startY, int endX, int endY);
     void CreateFoodballPositionsVector();
     void CreatePowerballPositionsVector();
 

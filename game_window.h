@@ -27,7 +27,7 @@ class GameWindow : public QDialog
 
 public:
     explicit GameWindow(QWidget* parent = nullptr);
-    ~GameWindow();
+    ~GameWindow() override;
 
 private slots:
     void Updater();
@@ -84,7 +84,7 @@ private:
     void CheckCollisionWithFoodball();
     void CheckCollisionWithPowerball();
 
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
 };
 
 #endif // DIALOG_H
