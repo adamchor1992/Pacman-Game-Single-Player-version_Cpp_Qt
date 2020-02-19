@@ -7,10 +7,10 @@ class ScoreDisplay : public QGraphicsItem
 {
 public:
     ScoreDisplay();
-    void setScore(int score);
+    void SetScore(int score);
     void IncreaseScore(int score){m_Score+=score;}
-    void resetScore(){m_Score=0;}
-    int getScore() {return m_Score;}
+    void ResetScore(){m_Score=0;}
+    int GetScore() {return m_Score;}
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);

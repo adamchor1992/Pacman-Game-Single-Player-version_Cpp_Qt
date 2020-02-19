@@ -12,22 +12,14 @@ public:
 
     Pacman();
     void Reset();
-    void LoadPacmanImages();
     void AdvanceAnimation();
-    void SetPacX(int);
-    void SetPacY(int);
-    void SetDirection(Direction direction);
     void SetNextDirection(Direction direction);
-    Direction GetDirection() const {return m_Direction;}
     Direction GetNextDirection() const {return m_NextDirection;}
     void Move();
 
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-
 private:
-    static int const startingX = 320;
-    static int const startingY = 514;
+    static int const STARTING_X = 320;
+    static int const STARTING_Y = 514;
     static int m_PacX;
     static int m_PacY;
 
@@ -37,11 +29,19 @@ private:
     QPixmap m_Down1, m_Down2, m_Down3, m_Down4;
     QPixmap m_Right1, m_Right2, m_Right3, m_Right4;
 
-    int m_AnimeState;
+    int m_AnimationState;
     int m_AnimationModifyFactor;
 
     Direction m_Direction;
     Direction m_NextDirection;
+
+    void LoadPacmanImages();
+    void SetPacX(int);
+    void SetPacY(int);
+    void SetDirection(Direction direction);
+
+    QRectF boundingRect() const;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 };
 
 #endif // PACMAN_H

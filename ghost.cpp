@@ -10,7 +10,7 @@ int Ghost::ghostNumber = 0;
 
 Ghost::Ghost()
 {
-    m_AnimeState= 0;
+    m_AnimationState= 0;
     m_AnimationModifyFactor= 6;
     m_GhostDirection=Direction::left;
     m_IsScared=false;
@@ -52,7 +52,7 @@ Ghost::Ghost()
 
 void Ghost::Reset()
 {
-    m_AnimeState= 0;
+    m_AnimationState= 0;
     m_AnimationModifyFactor= 6;
     m_GhostDirection=Direction::left;
     m_IsScared=false;
@@ -92,13 +92,13 @@ void Ghost::LoadGhostImages()
 
 void Ghost::AdvanceAnimation()
 {
-    if(m_AnimeState>2)
+    if(m_AnimationState>2)
     {
-        m_AnimeState=0;
+        m_AnimationState=0;
     }
     else
     {
-        m_AnimeState++;
+        m_AnimationState++;
     }
 }
 
@@ -394,7 +394,7 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         switch(m_GhostDirection)
         {
         case Direction::left:
-            if(m_AnimeState==0)
+            if(m_AnimationState==0)
             {
                 painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY,ghostRadius, ghostRadius, m_Left1);
             }
@@ -405,7 +405,7 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
             break;
 
         case Direction::right:
-            if(m_AnimeState==0)
+            if(m_AnimationState==0)
             {
                 painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Right1);
             }
@@ -416,7 +416,7 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
             break;
 
         case Direction::down:
-            if(m_AnimeState==0)
+            if(m_AnimationState==0)
             {
                 painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Down1);
             }
@@ -427,7 +427,7 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
             break;
 
         case Direction::up:
-            if(m_AnimeState==0)
+            if(m_AnimationState==0)
             {
                 painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Up1);
             }
@@ -445,7 +445,7 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     {
         if(m_ScaredWhite)
         {
-            if(m_AnimeState==0)
+            if(m_AnimationState==0)
             {
                 painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_ScaredWhitePix);
             }
@@ -456,7 +456,7 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         }
         else
         {
-            if(m_AnimeState==0)
+            if(m_AnimationState==0)
             {
                 painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_ScaredBlue);
             }

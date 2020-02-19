@@ -10,35 +10,35 @@ Pacman::Pacman()
 {
     LoadPacmanImages();
 
-    m_AnimeState = 0;
+    m_AnimationState = 0;
     m_AnimationModifyFactor = 6;
 
     SetDirection(Direction::left);
     SetNextDirection(Direction::none);
-    SetPacX(startingX);
-    SetPacY(startingY);
+    SetPacX(STARTING_X);
+    SetPacY(STARTING_Y);
 }
 
 void Pacman::Reset()
 {
-    m_AnimeState = 0;
+    m_AnimationState = 0;
     m_AnimationModifyFactor = 6;
 
     SetDirection(Direction::left);
     SetNextDirection(Direction::none);
-    SetPacX(startingX);
-    SetPacY(startingY);
+    SetPacX(STARTING_X);
+    SetPacY(STARTING_Y);
 }
 
 void Pacman::AdvanceAnimation()
 {
-    if(m_AnimeState>8*m_AnimationModifyFactor-2)
+    if(m_AnimationState>8*m_AnimationModifyFactor-2)
     {
-        m_AnimeState=0;
+        m_AnimationState=0;
     }
     else
     {
-        m_AnimeState++;
+        m_AnimationState++;
     }
 }
 
@@ -217,76 +217,76 @@ void Pacman::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     switch(m_Direction)
     {
     case Direction::left:
-        if(m_AnimeState<2*m_AnimationModifyFactor)
+        if(m_AnimationState<2*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Left1);
         }
-        else if(m_AnimeState<4*m_AnimationModifyFactor)
+        else if(m_AnimationState<4*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Left2);
         }
-        else if(m_AnimeState<6*m_AnimationModifyFactor)
+        else if(m_AnimationState<6*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Left3);
         }
-        else if(m_AnimeState<8*m_AnimationModifyFactor)
+        else if(m_AnimationState<8*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Left4);
         }
         break;
 
     case Direction::right:
-        if(m_AnimeState<2*m_AnimationModifyFactor)
+        if(m_AnimationState<2*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Right1);
         }
-        else if(m_AnimeState<4*m_AnimationModifyFactor)
+        else if(m_AnimationState<4*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Right2);
         }
-        else if(m_AnimeState<6*m_AnimationModifyFactor)
+        else if(m_AnimationState<6*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Right3);
         }
-        else if(m_AnimeState<8*m_AnimationModifyFactor)
+        else if(m_AnimationState<8*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Right4);
         }
         break;
 
     case Direction::down:
-        if(m_AnimeState<2*m_AnimationModifyFactor)
+        if(m_AnimationState<2*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Down1);
         }
-        else if(m_AnimeState<4*m_AnimationModifyFactor)
+        else if(m_AnimationState<4*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Down2);
         }
-        else if(m_AnimeState<6*m_AnimationModifyFactor)
+        else if(m_AnimationState<6*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Down3);
         }
-        else if(m_AnimeState<8*m_AnimationModifyFactor)
+        else if(m_AnimationState<8*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Down4);
         }
         break;
 
     case Direction::up:
-        if(m_AnimeState<2*m_AnimationModifyFactor)
+        if(m_AnimationState<2*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Up1);
         }
-        else if(m_AnimeState<4*m_AnimationModifyFactor)
+        else if(m_AnimationState<4*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Up2);
         }
-        else if(m_AnimeState<6*m_AnimationModifyFactor)
+        else if(m_AnimationState<6*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Up3);
         }
-        else if(m_AnimeState<8*m_AnimationModifyFactor)
+        else if(m_AnimationState<8*m_AnimationModifyFactor)
         {
             painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Up4);
         }

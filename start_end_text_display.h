@@ -12,9 +12,16 @@ public:
     void SetScore(int score);
     void SetGameWon(bool gameWon);
     void SetGameLost(bool gameLost);
-    bool m_GameWon, m_GameLost, m_Playing;
+
+private:
+    bool m_GameWon;
+    bool m_GameLost;
+    bool m_Playing;
     int m_Score;
-    int m_X, m_Y, m_Width, m_Height;
+    int m_X;
+    int m_Y;
+    int m_Width;
+    int m_Height;
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);

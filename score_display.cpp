@@ -11,7 +11,7 @@ ScoreDisplay::ScoreDisplay()
     m_Score=0;
 }
 
-void ScoreDisplay::setScore(int score)
+void ScoreDisplay::SetScore(int score)
 {
     m_Score=score;
 }

@@ -129,7 +129,7 @@ void GameWindow::RestartGame()
     m_Ghost3.show();
     m_Ghost4.show();
 
-    m_ScoreDisplay.resetScore();
+    m_ScoreDisplay.ResetScore();
     m_ScoreDisplay.show();
 
     m_StartEndTextDisplay.hide();
@@ -171,7 +171,7 @@ void GameWindow::EndGame(bool win)
     HideSceneItems();
 
     m_StartEndTextDisplay.show();
-    m_StartEndTextDisplay.SetScore(m_ScoreDisplay.getScore());
+    m_StartEndTextDisplay.SetScore(m_ScoreDisplay.GetScore());
 
     if(win)
     {

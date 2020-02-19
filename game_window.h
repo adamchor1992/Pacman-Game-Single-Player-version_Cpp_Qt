@@ -27,27 +27,13 @@ class GameWindow : public QDialog
 
 public:
     explicit GameWindow(QWidget* parent = nullptr);
-    void GenerateMap();
-    void PopulateMapWithBalls();
-    void ResetMap();
-    void ResetPacman();
-    void ResetGhosts();
-    void StartGame();
-    void RestartGame();
-    void HideSceneItems();
-    void ClearContainers();
-    void PacmanMove();
-    void CheckCollisionWithGhost();
-    void EndGame(bool win);
     ~GameWindow();
 
-    void keyPressEvent(QKeyEvent *event);
-
-public slots:
+private slots:
     void Updater();
     void GhostUpdater();
 
-private:
+private:    
     Ui::GameWindow *m_pUi;
     QGraphicsScene m_Scene;
 
@@ -82,14 +68,23 @@ private:
 
     void InitializeGameplayAreaScene();
     void PrepareFirstGameRun();
-    void CheckCollisionWithFoodball(QPoint& pacmanPosition);
-    void CheckCollisionWithPowerball(QPoint& pacmanPosition);
-    void CheckCollisionWithFoodball();
-    void CheckCollisionWithPowerball();
+    void PopulateMapWithBalls();
     void AddGraphicalItemsToScene();
-    void MoveOutOfTheStartingBox(Ghost &ghost, int ghostX, int ghostY);
     void AddPowerballGraphicalItemsToScene();
     void AddFoodballGraphicalItemsToScene();
+
+    void StartGame();
+    void EndGame(bool win);
+    void RestartGame();
+    void HideSceneItems();
+    void ClearContainers();
+    void PacmanMove();
+
+    void CheckCollisionWithGhost();
+    void CheckCollisionWithFoodball();
+    void CheckCollisionWithPowerball();
+
+    void keyPressEvent(QKeyEvent *event);
 };
 
 #endif // DIALOG_H

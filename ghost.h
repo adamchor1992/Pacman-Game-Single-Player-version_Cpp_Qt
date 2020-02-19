@@ -23,35 +23,17 @@ public:
 
     Ghost();
     void Reset();
-    void LoadGhostImages();
-    void AdvanceAnimation();
     void Respawn();
-    void SetGhostX(int x){m_GhostX=x;}
-    void SetGhostY(int y){m_GhostY=y;}
-    void SetGhostStartedFreeMovement(bool ghostStartedFreeMovement) {m_GhostStartedFreeMovement=ghostStartedFreeMovement;}
     void SetIsScared(bool option) {m_IsScared=option;}
     void SetScaredWhite(bool option) {m_ScaredWhite=option;}
-    void SetGhostDirection(Direction direction) {m_GhostDirection=direction;}
-    void SetNextGhostDirection(Direction direction) {m_NextGhostDirection=direction;}
-    void SetGhostColor(QString col);
+    bool GetIsScared() const {return m_IsScared;}
+    void AdvanceAnimation();
+    bool GetGhostStartedFreeMovement() const {return m_GhostStartedFreeMovement;}
     int GetGhostX() const {return m_GhostX;}
     int GetGhostY() const {return m_GhostY;}
-    QPoint GetGhostPosition() const {return QPoint(m_GhostX, m_GhostY);}
-    void IncrementGhostX(){++m_GhostX;}
-    void IncrementGhostY(){++m_GhostY;}
-    void DecrementGhostX(){--m_GhostX;}
-    void DecrementGhostY(){--m_GhostY;}
-    Direction GetGhostDirection() const {return m_GhostDirection;}
-    Direction GetNextGhostDirection() const {return m_NextGhostDirection;}
-    bool GetIsScared() const {return m_IsScared;}
-    bool GetScaredWhite() const {return m_ScaredWhite;}
-    bool GetGhostStartedFreeMovement() const {return m_GhostStartedFreeMovement;}
+    void MoveOutOfTheStartingBox(int ghostX, int ghostY);
     void Move();
     void MoveInStartingRect();
-    void MoveOutOfTheStartingBox(int ghostX, int ghostY);
-
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
     static int ghostNumber;
@@ -77,12 +59,24 @@ private:
     bool m_GhostStartedFreeMovement;
     bool m_ReachedPositionOutofStartingBox;
 
-    int m_AnimeState;
+    int m_AnimationState;
     int m_AnimationModifyFactor;
-    int m_GhostX, m_GhostY;
+    int m_GhostX;
+    int m_GhostY;
 
     Direction m_GhostDirection;
     Direction m_NextGhostDirection;
+
+    void LoadGhostImages();
+    void SetGhostX(int x){m_GhostX=x;}
+    void SetGhostY(int y){m_GhostY=y;}
+    void SetGhostStartedFreeMovement(bool ghostStartedFreeMovement) {m_GhostStartedFreeMovement=ghostStartedFreeMovement;}
+    void SetGhostDirection(Direction direction) {m_GhostDirection=direction;}
+    void SetNextGhostDirection(Direction direction) {m_NextGhostDirection=direction;}
+    void SetGhostColor(QString col);
+
+    QRectF boundingRect() const;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 };
 
 #endif // GHOST_H
