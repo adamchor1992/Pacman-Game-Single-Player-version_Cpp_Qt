@@ -48,6 +48,7 @@ public:
     bool GetGhostStartedFreeMovement() const {return m_GhostStartedFreeMovement;}
     void Move();
     void MoveInStartingRect();
+    void MoveOutOfTheStartingBox(int ghostX, int ghostY);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);

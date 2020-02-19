@@ -43,8 +43,6 @@ public:
 
     void keyPressEvent(QKeyEvent *event);
 
-    void MoveOutOfTheStartingBox();
-
 public slots:
     void Updater();
     void GhostUpdater();
@@ -90,6 +88,8 @@ private:
     void CheckCollisionWithPowerball();
     void AddGraphicalItemsToScene();
     void MoveOutOfTheStartingBox(Ghost &ghost, int ghostX, int ghostY);
+    void AddPowerballGraphicalItemsToScene();
+    void AddFoodballGraphicalItemsToScene();
 };
 
 #endif // DIALOG_H

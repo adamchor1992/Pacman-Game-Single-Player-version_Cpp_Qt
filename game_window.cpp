@@ -36,6 +36,8 @@ void GameWindow::PopulateMapWithBalls()
     QVector<QPoint> const powerballPositions = m_GameMap.GetPowerballPositions();
     QVector<QPoint> const foodballPositions = m_GameMap.GetFoodballPositions();
 
+    m_FoodballItemsCount=foodballPositions.size();
+
     int const powerballRadius = 15;
 
     for(auto powerballPosition : powerballPositions)
@@ -56,17 +58,8 @@ void GameWindow::PopulateMapWithBalls()
                                                                            foodballRadius));
     }
 
-    for(auto& powerballGraphicalItem : m_PowerballGraphicalItemsTable)
-    {
-        m_Scene.addItem(powerballGraphicalItem.get());
-    }
-
-    for(auto& foodballGraphicalItem : m_FoodballGraphicalItemsTable)
-    {
-        m_Scene.addItem(foodballGraphicalItem.get());
-    }
-
-    m_FoodballItemsCount=foodballPositions.size();
+    AddPowerballGraphicalItemsToScene();
+    AddFoodballGraphicalItemsToScene();
 }
 
 void GameWindow::AddGraphicalItemsToScene()
@@ -83,6 +76,22 @@ void GameWindow::AddGraphicalItemsToScene()
 
     m_Scene.addItem(&m_StartEndTextDisplay);
     m_Scene.addItem(&m_ScoreDisplay);
+}
+
+void GameWindow::AddPowerballGraphicalItemsToScene()
+{
+    for(auto& powerballGraphicalItem : m_PowerballGraphicalItemsTable)
+    {
+        m_Scene.addItem(powerballGraphicalItem.get());
+    }
+}
+
+void GameWindow::AddFoodballGraphicalItemsToScene()
+{
+    for(auto& foodballGraphicalItem : m_FoodballGraphicalItemsTable)
+    {
+        m_Scene.addItem(foodballGraphicalItem.get());
+    }
 }
 
 void GameWindow::StartGame()
@@ -335,32 +344,6 @@ void GameWindow::Updater()
     m_Scene.update(m_Scene.sceneRect());
 }
 
-void GameWindow::MoveOutOfTheStartingBox(Ghost& ghost, int ghostX, int ghostY)
-{
-    if(ghostX>Ghost::STARTING_X)
-    {
-        ghostX-=1;
-    }
-    else if(ghostX<Ghost::STARTING_X)
-    {
-        ghostX+=1;
-    }
-
-    if(!ghost.GetGhostStartedFreeMovement())
-    {
-        ghostY-=1;
-        ghost.SetGhostX(ghostX);
-        ghost.SetGhostY(ghostY);
-
-        QPoint point(ghostX, ghostY);
-
-        if(m_GameMap.GetPathPoints().contains(point))
-        {
-            ghost.SetGhostStartedFreeMovement(true);
-        }
-    }
-}
-
 void GameWindow::GhostUpdater()
 {
     int ghost1X = m_Ghost1.GetGhostX();
@@ -429,25 +412,25 @@ void GameWindow::GhostUpdater()
         /*Ghost 1 starts*/
         if(Ghost::GetGhostsStartTimer()>=3)
         {
-            MoveOutOfTheStartingBox(m_Ghost1, ghost1X, ghost1Y);
+            m_Ghost1.MoveOutOfTheStartingBox(ghost1X, ghost1Y);
         }
 
         /*Ghost 2 starts*/
         if(Ghost::GetGhostsStartTimer()>=6)
         {
-            MoveOutOfTheStartingBox(m_Ghost2, ghost2X, ghost2Y);
+            m_Ghost2.MoveOutOfTheStartingBox(ghost2X, ghost2Y);
         }
 
         /*Ghost 3 starts*/
         if(Ghost::GetGhostsStartTimer()>=9)
         {
-            MoveOutOfTheStartingBox(m_Ghost3, ghost3X, ghost3Y);
+            m_Ghost3.MoveOutOfTheStartingBox(ghost3X, ghost3Y);
         }
 
         /*Ghost 4 starts*/
         if(Ghost::GetGhostsStartTimer()>=12)
         {
-            MoveOutOfTheStartingBox(m_Ghost4, ghost4X, ghost4Y);
+            m_Ghost4.MoveOutOfTheStartingBox(ghost4X, ghost4Y);
         }
 
         if(m_Ghost1.GetGhostStartedFreeMovement()&&

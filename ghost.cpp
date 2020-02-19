@@ -348,6 +348,32 @@ void Ghost::MoveInStartingRect()
     }
 }
 
+void Ghost::MoveOutOfTheStartingBox(int ghostX, int ghostY)
+{
+    if(ghostX>Ghost::STARTING_X)
+    {
+        ghostX-=1;
+    }
+    else if(ghostX<Ghost::STARTING_X)
+    {
+        ghostX+=1;
+    }
+
+    if(!GetGhostStartedFreeMovement())
+    {
+        ghostY-=1;
+        SetGhostX(ghostX);
+        SetGhostY(ghostY);
+
+        QPoint point(ghostX, ghostY);
+
+        if(GameMap::GetPathPoints().contains(point))
+        {
+            SetGhostStartedFreeMovement(true);
+        }
+    }
+}
+
 QRectF Ghost::boundingRect() const
 {
     int const ghostRadius=30;
