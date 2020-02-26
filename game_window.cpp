@@ -98,8 +98,8 @@ void GameWindow::StartGame()
 {
     m_StartEndTextDisplay.hide();
 
-    connect(&m_Timer, SIGNAL(timeout()), this,SLOT(Updater()));
-    connect(&m_GhostsTimer, SIGNAL(timeout()), this,SLOT(GhostUpdater()));
+    connect(&m_Timer, &QTimer::timeout, this, &GameWindow::Updater);
+    connect(&m_GhostsTimer, &QTimer::timeout, this, &GameWindow::GhostUpdater);
 
     m_Sounds.PlayBeginningSound();
 
