@@ -27,7 +27,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     game_map.cpp \
     game_window.cpp \
-        main.cpp \
+    main.cpp \
     pacman.cpp \
     foodball.cpp \
     powerball.cpp \
