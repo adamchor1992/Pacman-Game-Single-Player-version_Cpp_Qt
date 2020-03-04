@@ -1,4 +1,4 @@
-# PacMan_git
+# Pacman Single Player
 See screenshot.jpg for quick glance at game window.
 
 Run Pacman.exe to start the game.
