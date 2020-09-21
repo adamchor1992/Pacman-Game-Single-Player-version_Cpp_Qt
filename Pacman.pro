@@ -10,7 +10,7 @@ QT += multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = PacMan_git
+TARGET = Pacman
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
