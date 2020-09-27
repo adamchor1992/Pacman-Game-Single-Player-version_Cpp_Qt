@@ -1,5 +1,4 @@
-#ifndef POWERBALL_H
-#define POWERBALL_H
+#pragma once
 
 #include <QVector>
 #include <QPoint>
@@ -19,5 +18,3 @@ private:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 };
-
-#endif // POWERBALL_H

@@ -1,5 +1,4 @@
-#ifndef SOUNDS_H
-#define SOUNDS_H
+#pragma once
 
 #include <QMediaPlayer>
 
@@ -21,5 +20,3 @@ private:
     QMediaPlayer m_PacmanDeathSound;
     QMediaPlayer m_Siren;
 };
-
-#endif // SOUNDS_H

@@ -1,5 +1,4 @@
-#ifndef STARTENDTEXTDISPLAY_H
-#define STARTENDTEXTDISPLAY_H
+#pragma once
 
 #include <QPainter>
 #include <QGraphicsItem>
@@ -18,13 +17,12 @@ private:
     bool m_GameLost;
     bool m_Playing;
     int m_Score;
-    int m_X;
-    int m_Y;
-    int m_Width;
-    int m_Height;
+
+    const int WIDTH = 600;
+    const int HEIGHT = 200;
+    const int X = 614 / 2 - WIDTH / 2;
+    const int Y = 714 / 2 - HEIGHT / 2;
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 };
-
-#endif // STARTENDTEXTDISPLAY_H

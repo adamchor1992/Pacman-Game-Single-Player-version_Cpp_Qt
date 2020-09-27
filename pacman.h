@@ -1,5 +1,4 @@
-#ifndef PACMAN_H
-#define PACMAN_H
+#pragma once
 
 #include <QGraphicsItem>
 #include "utilities.h"
@@ -7,8 +6,8 @@
 class Pacman : public QGraphicsItem
 {
 public:
-    static int GetPacX() {return m_PacX;}
-    static int GetPacY() {return m_PacY;}
+    static int GetX() {return m_X;}
+    static int GetY() {return m_Y;}
 
     Pacman();
     void Reset();
@@ -18,16 +17,15 @@ public:
     void Move();
 
 private:
-    static int const STARTING_X = 320;
-    static int const STARTING_Y = 514;
-    static int m_PacX;
-    static int m_PacY;
+    static const int STARTING_X = 320;
+    static const int STARTING_Y = 514;
+    static int m_X;
+    static int m_Y;
 
-    QPixmap m_PacmanPixmap;
-    QPixmap m_Left1, m_Left2, m_Left3, m_Left4;
-    QPixmap m_Up1, m_Up2, m_Up3, m_Up4;
-    QPixmap m_Down1, m_Down2, m_Down3, m_Down4;
-    QPixmap m_Right1, m_Right2, m_Right3, m_Right4;
+    QPixmap m_Left1Pixmap, m_Left2Pixmap, m_Left3Pixmap, m_Left4Pixmap;
+    QPixmap m_Up1Pixmap, m_Up2Pixmap, m_Up3Pixmap, m_Up4Pixmap;
+    QPixmap m_Down1Pixmap, m_Down2Pixmap, m_Down3Pixmap, m_Down4Pixmap;
+    QPixmap m_Right1Pixmap, m_Right2Pixmap, m_Right3Pixmap, m_Right4Pixmap;
 
     int m_AnimationState;
     int m_AnimationModifyFactor;
@@ -35,10 +33,8 @@ private:
     Direction m_Direction;
     Direction m_NextDirection;
 
-    void LoadPacmanImages();
+    void LoadImages();
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 };
-
-#endif // PACMAN_H

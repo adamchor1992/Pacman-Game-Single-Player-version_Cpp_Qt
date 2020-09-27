@@ -1,5 +1,4 @@
-#ifndef FOODBALL_H
-#define FOODBALL_H
+#pragma once
 
 #include <QVector>
 #include <QPoint>
@@ -19,5 +18,3 @@ private:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 };
-
-#endif // FOODBALL_H

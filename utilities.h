@@ -1,13 +1,10 @@
-#ifndef UTILITIES_H
-#define UTILITIES_H
+#pragma once
 
 enum class Direction
 {
-    none=0,
-    left=1,
-    up=2,
-    down=3,
-    right=4
+    NONE = 0,
+    LEFT = 1,
+    UP = 2,
+    DOWN = 3,
+    RIGHT = 4
 };
-
-#endif // UTILITIES_H

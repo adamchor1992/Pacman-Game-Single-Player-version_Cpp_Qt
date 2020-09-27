@@ -346,14 +346,14 @@ void GameWindow::Updater()
 
 void GameWindow::GhostUpdater()
 {
-    int ghost1X = m_Ghost1.GetGhostX();
-    int ghost1Y = m_Ghost1.GetGhostY();
-    int ghost2X = m_Ghost2.GetGhostX();
-    int ghost2Y = m_Ghost2.GetGhostY();
-    int ghost3X = m_Ghost3.GetGhostX();
-    int ghost3Y = m_Ghost3.GetGhostY();
-    int ghost4X = m_Ghost4.GetGhostX();
-    int ghost4Y = m_Ghost4.GetGhostY();
+    int ghost1X = m_Ghost1.GetX();
+    int ghost1Y = m_Ghost1.GetY();
+    int ghost2X = m_Ghost2.GetX();
+    int ghost2Y = m_Ghost2.GetY();
+    int ghost3X = m_Ghost3.GetX();
+    int ghost3Y = m_Ghost3.GetY();
+    int ghost4X = m_Ghost4.GetX();
+    int ghost4Y = m_Ghost4.GetY();
 
     if(Ghost::GetAllGhostsStartedFreeMovement())
     {
@@ -401,10 +401,10 @@ void GameWindow::GhostUpdater()
         }
 
         /*Substitute of timer implemented for every ghost to differentiate their start time*/
-        if(m_Ghost1.GetGhostX()==300 ||
-                m_Ghost2.GetGhostX()==300 ||
-                m_Ghost3.GetGhostX()==300 ||
-                m_Ghost4.GetGhostX()==300)
+        if(m_Ghost1.GetX()==300 ||
+                m_Ghost2.GetX()==300 ||
+                m_Ghost3.GetX()==300 ||
+                m_Ghost4.GetX()==300)
         {
             Ghost::IncrementGhostsStartTimer();
         }
@@ -457,22 +457,22 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
     {
     case Qt::Key_Left:
     case Qt::Key_A:
-        nextDirection=Direction::left;
+        nextDirection=Direction::LEFT;
         break;
 
     case Qt::Key_Right:
     case Qt::Key_D:
-        nextDirection=Direction::right;
+        nextDirection=Direction::RIGHT;
         break;
 
     case Qt::Key_Down:
     case Qt::Key_S:
-        nextDirection=Direction::down;
+        nextDirection=Direction::DOWN;
         break;
 
     case Qt::Key_Up:
     case Qt::Key_W:
-        nextDirection=Direction::up;
+        nextDirection=Direction::UP;
         break;
 
     case Qt::Key_Space:

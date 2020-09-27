@@ -1,5 +1,4 @@
-#ifndef MAP_H
-#define MAP_H
+#pragma once
 
 #include <QVector>
 #include <QPixmap>
@@ -29,5 +28,3 @@ private:
 
     QRectF boundingRect() const;
 };
-
-#endif // MAP_H

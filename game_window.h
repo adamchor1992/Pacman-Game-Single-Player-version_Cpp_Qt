@@ -1,5 +1,4 @@
-#ifndef DIALOG_H
-#define DIALOG_H
+#pragma once
 
 #include <QDialog>
 #include <QtCore>
@@ -86,5 +85,3 @@ private:
 
     void keyPressEvent(QKeyEvent *event) override;
 };
-
-#endif // DIALOG_H

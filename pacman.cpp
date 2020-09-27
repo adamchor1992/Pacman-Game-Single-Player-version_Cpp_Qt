@@ -3,20 +3,20 @@
 #include <QGraphicsPixmapItem>
 #include <QPainter>
 
-int Pacman::m_PacX{};
-int Pacman::m_PacY{};
+int Pacman::m_X = STARTING_X;
+int Pacman::m_Y = STARTING_Y;
 
 Pacman::Pacman()
 {
-    LoadPacmanImages();
+    LoadImages();
 
     m_AnimationState = 0;
     m_AnimationModifyFactor = 6;
 
-    m_Direction=Direction::left;
-    m_NextDirection=Direction::none;
-    m_PacX=STARTING_X;
-    m_PacY=STARTING_Y;
+    m_Direction = Direction::LEFT;
+    m_NextDirection = Direction::NONE;
+    m_X = STARTING_X;
+    m_Y = STARTING_Y;
 }
 
 void Pacman::Reset()
@@ -24,17 +24,17 @@ void Pacman::Reset()
     m_AnimationState = 0;
     m_AnimationModifyFactor = 6;
 
-    m_Direction=Direction::left;
-    m_NextDirection=Direction::none;
-    m_PacX=STARTING_X;
-    m_PacY=STARTING_Y;
+    m_Direction = Direction::LEFT;
+    m_NextDirection = Direction::NONE;
+    m_X = STARTING_X;
+    m_Y = STARTING_Y;
 }
 
 void Pacman::AdvanceAnimation()
 {
-    if(m_AnimationState>8*m_AnimationModifyFactor-2)
+    if(m_AnimationState > 8 * m_AnimationModifyFactor - 2)
     {
-        m_AnimationState=0;
+        m_AnimationState = 0;
     }
     else
     {
@@ -42,27 +42,27 @@ void Pacman::AdvanceAnimation()
     }
 }
 
-void Pacman::LoadPacmanImages()
+void Pacman::LoadImages()
 {
-    m_Right1.load(":/pacman/images/pacman_images/pacclose.png");
-    m_Right2.load(":/pacman/images/pacman_images/pacopen1.png");
-    m_Right3.load(":/pacman/images/pacman_images/pacopen2.png");
-    m_Right4.load(":/pacman/images/pacman_images/pacopen3.png");
+    m_Right1Pixmap.load(":/pacman/images/pacman_images/pacclose.png");
+    m_Right2Pixmap.load(":/pacman/images/pacman_images/pacopen1.png");
+    m_Right3Pixmap.load(":/pacman/images/pacman_images/pacopen2.png");
+    m_Right4Pixmap.load(":/pacman/images/pacman_images/pacopen3.png");
 
-    m_Up1.load(":/pacman/images/pacman_images/paccloseu.png");
-    m_Up2.load(":/pacman/images/pacman_images/pacopen1u.png");
-    m_Up3.load(":/pacman/images/pacman_images/pacopen2u.png");
-    m_Up4.load(":/pacman/images/pacman_images/pacopen3u.png");
+    m_Up1Pixmap.load(":/pacman/images/pacman_images/paccloseu.png");
+    m_Up2Pixmap.load(":/pacman/images/pacman_images/pacopen1u.png");
+    m_Up3Pixmap.load(":/pacman/images/pacman_images/pacopen2u.png");
+    m_Up4Pixmap.load(":/pacman/images/pacman_images/pacopen3u.png");
 
-    m_Down1.load(":/pacman/images/pacman_images/pacclosed.png");
-    m_Down2.load(":/pacman/images/pacman_images/pacopen1d.png");
-    m_Down3.load(":/pacman/images/pacman_images/pacopen2d.png");
-    m_Down4.load(":/pacman/images/pacman_images/pacopen3d.png");
+    m_Down1Pixmap.load(":/pacman/images/pacman_images/pacclosed.png");
+    m_Down2Pixmap.load(":/pacman/images/pacman_images/pacopen1d.png");
+    m_Down3Pixmap.load(":/pacman/images/pacman_images/pacopen2d.png");
+    m_Down4Pixmap.load(":/pacman/images/pacman_images/pacopen3d.png");
 
-    m_Left1.load(":/pacman/images/pacman_images/pacclosel.png");
-    m_Left2.load(":/pacman/images/pacman_images/pacopen1l.png");
-    m_Left3.load(":/pacman/images/pacman_images/pacopen2l.png");
-    m_Left4.load(":/pacman/images/pacman_images/pacopen3l.png");
+    m_Left1Pixmap.load(":/pacman/images/pacman_images/pacclosel.png");
+    m_Left2Pixmap.load(":/pacman/images/pacman_images/pacopen1l.png");
+    m_Left3Pixmap.load(":/pacman/images/pacman_images/pacopen2l.png");
+    m_Left4Pixmap.load(":/pacman/images/pacman_images/pacopen3l.png");
 }
 
 void Pacman::SetNextDirection(Direction direction)
@@ -75,209 +75,209 @@ void Pacman::Move()
     /*Path point which is tested for validity*/
     QPoint point;
 
-    if(m_NextDirection!=m_Direction)
+    if(m_NextDirection != m_Direction)
     {
         switch(m_NextDirection)
         {
-        case Direction::left:
-            point.setX(m_PacX-1);
-            point.setY(m_PacY);
+        case Direction::LEFT:
+            point.setX(m_X - 1);
+            point.setY(m_Y);
 
             if(GameMap::IsPointAvailable(point))
             {
-                m_Direction=m_NextDirection;
-                m_NextDirection=Direction::none;
+                m_Direction = m_NextDirection;
+                m_NextDirection = Direction::NONE;
             }
             break;
 
-        case Direction::up:
-            point.setX(m_PacX);
-            point.setY(m_PacY-1);
+        case Direction::UP:
+            point.setX(m_X);
+            point.setY(m_Y - 1);
+            if(GameMap::IsPointAvailable(point))
+            {
+                m_Direction = m_NextDirection;
+                m_NextDirection = Direction::NONE;
+            }
+            break;
+
+        case Direction::DOWN:
+            point.setX(m_X);
+            point.setY(m_Y + 1);
+            if(GameMap::IsPointAvailable(point))
+            {
+                m_Direction = m_NextDirection;
+                m_NextDirection = Direction::NONE;
+            }
+            break;
+
+        case Direction::RIGHT:
+            point.setX(m_X + 1);
+            point.setY(m_Y);
             if(GameMap::IsPointAvailable(point))
             {
                 m_Direction=m_NextDirection;
-                m_NextDirection=Direction::none;
+                m_NextDirection = Direction::NONE;
             }
             break;
 
-        case Direction::down:
-            point.setX(m_PacX);
-            point.setY(m_PacY+1);
-            if(GameMap::IsPointAvailable(point))
-            {
-                m_Direction=m_NextDirection;
-                m_NextDirection=Direction::none;
-            }
-            break;
-
-        case Direction::right:
-            point.setX(m_PacX+1);
-            point.setY(m_PacY);
-            if(GameMap::IsPointAvailable(point))
-            {
-                m_Direction=m_NextDirection;
-                m_NextDirection=Direction::none;
-            }
-            break;
-
-        case Direction::none:
+        case Direction::NONE:
             break;
         }
     }
 
     switch(m_Direction)
     {
-    case Direction::left:
-        point.setX(m_PacX-1);
-        point.setY(m_PacY);
+    case Direction::LEFT:
+        point.setX(m_X - 1);
+        point.setY(m_Y);
 
         if(GameMap::IsPointAvailable(point))
         {
-            m_PacX = m_PacX - 1;
+            m_X = m_X - 1;
         }
         break;
 
-    case Direction::up:
-        point.setX(m_PacX);
-        point.setY(m_PacY-1);
+    case Direction::UP:
+        point.setX(m_X);
+        point.setY(m_Y - 1);
 
         if(GameMap::IsPointAvailable(point))
         {
-            m_PacY= m_PacY - 1;
+            m_Y= m_Y - 1;
         }
         break;
 
-    case Direction::down:
-        point.setX(m_PacX);
-        point.setY(m_PacY+1);
+    case Direction::DOWN:
+        point.setX(m_X);
+        point.setY(m_Y + 1);
 
         if(GameMap::IsPointAvailable(point))
         {
-            m_PacY= m_PacY + 1;
+            m_Y= m_Y + 1;
         }
         break;
 
-    case Direction::right:
-        point.setX(m_PacX+1);
-        point.setY(m_PacY);
+    case Direction::RIGHT:
+        point.setX(m_X + 1);
+        point.setY(m_Y);
 
         if(GameMap::IsPointAvailable(point))
         {
-            m_PacX = m_PacX + 1;
+            m_X = m_X + 1;
         }
         break;
 
-    case Direction::none:
+    case Direction::NONE:
         break;
     }
 
     /*Teleportation when reached left boundary of middle horizontal line*/
-    if(m_PacX<=0)
+    if(m_X <= 0)
     {
-        m_PacX=613;
+        m_X = 613;
     }
 
     /*Teleportation when reached right boundary of middle horizontal line*/
-    if(m_PacX>=614)
+    if(m_X >= 614)
     {
-        m_PacX=1;
+        m_X = 1;
     }
 }
 
 QRectF Pacman::boundingRect() const
 {
-    int const pacmanRadius=30;
-    int const offsetX=-15;
-    int const offsetY=-15;
+    const int DIAMETER = 30;
+    const int OFFSET_X = -15;
+    const int OFFSET_Y = -15;
 
-    return QRect(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius);
+    return QRect(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER);
 }
 
 void Pacman::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
-    int const pacmanRadius=30;
-    int const offsetX=-15;
-    int const offsetY=-15;
+    const int DIAMETER = 30;
+    const int OFFSET_X = -15;
+    const int OFFSET_Y = -15;
 
     switch(m_Direction)
     {
-    case Direction::left:
-        if(m_AnimationState<2*m_AnimationModifyFactor)
+    case Direction::LEFT:
+        if(m_AnimationState < 2 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Left1);
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Left1Pixmap);
         }
-        else if(m_AnimationState<4*m_AnimationModifyFactor)
+        else if(m_AnimationState < 4 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Left2);
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Left2Pixmap);
         }
-        else if(m_AnimationState<6*m_AnimationModifyFactor)
+        else if(m_AnimationState < 6 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Left3);
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Left3Pixmap);
         }
-        else if(m_AnimationState<8*m_AnimationModifyFactor)
+        else if(m_AnimationState < 8 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Left4);
-        }
-        break;
-
-    case Direction::right:
-        if(m_AnimationState<2*m_AnimationModifyFactor)
-        {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Right1);
-        }
-        else if(m_AnimationState<4*m_AnimationModifyFactor)
-        {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Right2);
-        }
-        else if(m_AnimationState<6*m_AnimationModifyFactor)
-        {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Right3);
-        }
-        else if(m_AnimationState<8*m_AnimationModifyFactor)
-        {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Right4);
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Left4Pixmap);
         }
         break;
 
-    case Direction::down:
-        if(m_AnimationState<2*m_AnimationModifyFactor)
+    case Direction::RIGHT:
+        if(m_AnimationState < 2 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Down1);
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Right1Pixmap);
         }
-        else if(m_AnimationState<4*m_AnimationModifyFactor)
+        else if(m_AnimationState < 4 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Down2);
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Right2Pixmap);
         }
-        else if(m_AnimationState<6*m_AnimationModifyFactor)
+        else if(m_AnimationState < 6 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Down3);
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Right3Pixmap);
         }
-        else if(m_AnimationState<8*m_AnimationModifyFactor)
+        else if(m_AnimationState < 8 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Down4);
-        }
-        break;
-
-    case Direction::up:
-        if(m_AnimationState<2*m_AnimationModifyFactor)
-        {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Up1);
-        }
-        else if(m_AnimationState<4*m_AnimationModifyFactor)
-        {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Up2);
-        }
-        else if(m_AnimationState<6*m_AnimationModifyFactor)
-        {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Up3);
-        }
-        else if(m_AnimationState<8*m_AnimationModifyFactor)
-        {
-            painter->drawPixmap(m_PacX+offsetX, m_PacY+offsetY, pacmanRadius, pacmanRadius, m_Up4);
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Right4Pixmap);
         }
         break;
 
-    case Direction::none:
+    case Direction::DOWN:
+        if(m_AnimationState < 2 * m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Down1Pixmap);
+        }
+        else if(m_AnimationState < 4 * m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Down2Pixmap);
+        }
+        else if(m_AnimationState < 6 * m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Down3Pixmap);
+        }
+        else if(m_AnimationState < 8 * m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Down4Pixmap);
+        }
+        break;
+
+    case Direction::UP:
+        if(m_AnimationState < 2 * m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Up1Pixmap);
+        }
+        else if(m_AnimationState < 4 * m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Up2Pixmap);
+        }
+        else if(m_AnimationState < 6 * m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Up3Pixmap);
+        }
+        else if(m_AnimationState < 8 * m_AnimationModifyFactor)
+        {
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER , DIAMETER , m_Up4Pixmap);
+        }
+        break;
+
+    case Direction::NONE:
         break;
     }
 }

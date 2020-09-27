@@ -10,35 +10,35 @@ int Ghost::m_GhostNumber = 0;
 
 Ghost::Ghost()
 {
-    m_AllGhostsScaredState=0;
-    m_AllGhostScared=false;
+    m_AllGhostsScaredState = 0;
+    m_AllGhostScared = false;
     m_GhostsStartTimer = 0;
-    m_AllGhostsStartedFreeMovement=false;
+    m_AllGhostsStartedFreeMovement = false;
 
-    m_AnimationState= 0;
-    m_AnimationModifyFactor= 6;
-    m_GhostDirection=Direction::left;
-    m_NextGhostDirection=Direction::none;
-    m_IsScared=false;
-    m_ScaredWhite=false;
+    m_AnimationState = 0;
+    m_AnimationModifyFactor = 6;
+    m_Direction = Direction::LEFT;
+    m_NextDirection = Direction::NONE;
+    m_IsScared = false;
+    m_ScaredWhite = false;
     m_GhostMoving = false;
     m_GhostStartedFreeMovement = false;
-    m_GhostX = STARTING_X;
-    m_GhostY = STARTING_Y;
+    m_X = STARTING_X;
+    m_Y = STARTING_Y;
 
-    LoadGhostImages();
+    LoadImages();
 
-    /*Each ghost has unique color*/
+    /*Each ghost has an unique color*/
     switch(m_GhostNumber)
     {
     case 0:
-        SetGhostColor("orange");
+        SetColor("orange");
         break;
     case 1:
-        SetGhostColor("red");
+        SetColor("red");
         break;
     case 2:
-        SetGhostColor("blue");
+        SetColor("blue");
         break;
     }
 
@@ -47,44 +47,44 @@ Ghost::Ghost()
 
 void Ghost::Reset()
 {
-    m_AllGhostsScaredState=0;
-    m_AllGhostScared=false;
+    m_AllGhostsScaredState = 0;
+    m_AllGhostScared = false;
     m_GhostsStartTimer = 0;
-    m_AllGhostsStartedFreeMovement=false;
+    m_AllGhostsStartedFreeMovement = false;
 
-    m_AnimationState= 0;
-    m_AnimationModifyFactor= 6;
-    m_GhostDirection=Direction::left;
-    m_IsScared=false;
-    m_ScaredWhite=false;
+    m_AnimationState = 0;
+    m_AnimationModifyFactor = 6;
+    m_Direction = Direction::LEFT;
+    m_IsScared = false;
+    m_ScaredWhite = false;
     m_GhostMoving = false;
     m_GhostStartedFreeMovement = false;
-    m_NextGhostDirection=Direction::none;
-    m_GhostX = STARTING_X;
-    m_GhostY = STARTING_Y;
+    m_NextDirection = Direction::NONE;
+    m_X = STARTING_X;
+    m_Y = STARTING_Y;
 }
 
-void Ghost::LoadGhostImages()
+void Ghost::LoadImages()
 {
-    m_Right1.load(":/ghosts/images/ghost_images/ghostright1.png");
-    m_Right2.load(":/ghosts/images/ghost_images/ghostright2.png");
-    m_Up1.load(":/ghosts/images/ghost_images/ghostup1.png");
-    m_Up2.load(":/ghosts/images/ghost_images/ghostup2.png");
-    m_Down1.load(":/ghosts/images/ghost_images/ghostdown1.png");
-    m_Down2.load(":/ghosts/images/ghost_images/ghostdown2.png");
-    m_Left1.load(":/ghosts/images/ghost_images/ghostleft1.png");
-    m_Left2.load(":/ghosts/images/ghost_images/ghostleft2.png");
-    m_ScaredBlue.load(":/ghosts/images/ghost_images/ghostscaredblue1.png");
-    m_ScaredBlue1.load(":/ghosts/images/ghost_images/ghostscaredblue2.png");
-    m_ScaredWhitePix.load(":/ghosts/images/ghost_images/ghostscaredwhite1.png");
-    m_ScaredWhite1.load(":/ghosts/images/ghost_images/ghostscaredwhite2.png");
+    m_Right1Pixmap.load(":/ghosts/images/ghost_images/ghostright1.png");
+    m_Right2Pixmap.load(":/ghosts/images/ghost_images/ghostright2.png");
+    m_Up1Pixmap.load(":/ghosts/images/ghost_images/ghostup1.png");
+    m_Up2Pixmap.load(":/ghosts/images/ghost_images/ghostup2.png");
+    m_Down1Pixmap.load(":/ghosts/images/ghost_images/ghostdown1.png");
+    m_Down2Pixmap.load(":/ghosts/images/ghost_images/ghostdown2.png");
+    m_Left1Pixmap.load(":/ghosts/images/ghost_images/ghostleft1.png");
+    m_Left2Pixmap.load(":/ghosts/images/ghost_images/ghostleft2.png");
+    m_ScaredBlue1Pixmap.load(":/ghosts/images/ghost_images/ghostscaredblue1.png");
+    m_ScaredBlue2Pixmap.load(":/ghosts/images/ghost_images/ghostscaredblue2.png");
+    m_ScaredWhite1Pixmap.load(":/ghosts/images/ghost_images/ghostscaredwhite1.png");
+    m_ScaredWhite2Pixmap.load(":/ghosts/images/ghost_images/ghostscaredwhite2.png");
 }
 
 void Ghost::AdvanceAnimation()
 {
-    if(m_AnimationState>2)
+    if(m_AnimationState > 2)
     {
-        m_AnimationState=0;
+        m_AnimationState = 0;
     }
     else
     {
@@ -94,214 +94,214 @@ void Ghost::AdvanceAnimation()
 
 void Ghost::Respawn()
 {
-    m_GhostX = STARTING_X;
-    m_GhostY = 252;
+    m_X = STARTING_X;
+    m_Y = 252;
     m_IsScared = false;
 }
 
-void Ghost::SetGhostColor(const QString& col)
+void Ghost::SetColor(const QString& col)
 {
-    if(col=="blue")
+    if(col == "blue")
     {
-        m_Right1.load(":/ghosts/images/ghost_images/ghostrightblue1.png");
-        m_Right2.load(":/ghosts/images/ghost_images/ghostrightblue2.png");
-        m_Up1.load(":/ghosts/images/ghost_images/ghostupblue1.png");
-        m_Up2.load(":/ghosts/images/ghost_images/ghostupblue2.png");
-        m_Down1.load(":/ghosts/images/ghost_images/ghostdownblue1.png");
-        m_Down2.load(":/ghosts/images/ghost_images/ghostdownblue2.png");
-        m_Left1.load(":/ghosts/images/ghost_images/ghostleftblue1.png");
-        m_Left2.load(":/ghosts/images/ghost_images/ghostleftblue2.png");
+        m_Right1Pixmap.load(":/ghosts/images/ghost_images/ghostrightblue1.png");
+        m_Right2Pixmap.load(":/ghosts/images/ghost_images/ghostrightblue2.png");
+        m_Up1Pixmap.load(":/ghosts/images/ghost_images/ghostupblue1.png");
+        m_Up2Pixmap.load(":/ghosts/images/ghost_images/ghostupblue2.png");
+        m_Down1Pixmap.load(":/ghosts/images/ghost_images/ghostdownblue1.png");
+        m_Down2Pixmap.load(":/ghosts/images/ghost_images/ghostdownblue2.png");
+        m_Left1Pixmap.load(":/ghosts/images/ghost_images/ghostleftblue1.png");
+        m_Left2Pixmap.load(":/ghosts/images/ghost_images/ghostleftblue2.png");
     }
-    else if(col=="orange")
+    else if(col == "orange")
     {
-        m_Right1.load(":/ghosts/images/ghost_images/ghostrightorange1.png");
-        m_Right2.load(":/ghosts/images/ghost_images/ghostrightorange2.png");
-        m_Up1.load(":/ghosts/images/ghost_images/ghostuporange1.png");
-        m_Up2.load(":/ghosts/images/ghost_images/ghostuporange2.png");
-        m_Down1.load(":/ghosts/images/ghost_images/ghostdownorange1.png");
-        m_Down2.load(":/ghosts/images/ghost_images/ghostdownorange2.png");
-        m_Left1.load(":/ghosts/images/ghost_images/ghostleftorange1.png");
-        m_Left2.load(":/ghosts/images/ghost_images/ghostleftorange2.png");
+        m_Right1Pixmap.load(":/ghosts/images/ghost_images/ghostrightorange1.png");
+        m_Right2Pixmap.load(":/ghosts/images/ghost_images/ghostrightorange2.png");
+        m_Up1Pixmap.load(":/ghosts/images/ghost_images/ghostuporange1.png");
+        m_Up2Pixmap.load(":/ghosts/images/ghost_images/ghostuporange2.png");
+        m_Down1Pixmap.load(":/ghosts/images/ghost_images/ghostdownorange1.png");
+        m_Down2Pixmap.load(":/ghosts/images/ghost_images/ghostdownorange2.png");
+        m_Left1Pixmap.load(":/ghosts/images/ghost_images/ghostleftorange1.png");
+        m_Left2Pixmap.load(":/ghosts/images/ghost_images/ghostleftorange2.png");
     }
-    else if(col=="red")
+    else if(col == "red")
     {
-        m_Right1.load(":/ghosts/images/ghost_images/ghostrightred1.png");
-        m_Right2.load(":/ghosts/images/ghost_images/ghostrightred2.png");
-        m_Up1.load(":/ghosts/images/ghost_images/ghostupred1.png");
-        m_Up2.load(":/ghosts/images/ghost_images/ghostupred2.png");
-        m_Down1.load(":/ghosts/images/ghost_images/ghostdownred1.png");
-        m_Down2.load(":/ghosts/images/ghost_images/ghostdownred2.png");
-        m_Left1.load(":/ghosts/images/ghost_images/ghostleftred1.png");
-        m_Left2.load(":/ghosts/images/ghost_images/ghostleftred2.png");
+        m_Right1Pixmap.load(":/ghosts/images/ghost_images/ghostrightred1.png");
+        m_Right2Pixmap.load(":/ghosts/images/ghost_images/ghostrightred2.png");
+        m_Up1Pixmap.load(":/ghosts/images/ghost_images/ghostupred1.png");
+        m_Up2Pixmap.load(":/ghosts/images/ghost_images/ghostupred2.png");
+        m_Down1Pixmap.load(":/ghosts/images/ghost_images/ghostdownred1.png");
+        m_Down2Pixmap.load(":/ghosts/images/ghost_images/ghostdownred2.png");
+        m_Left1Pixmap.load(":/ghosts/images/ghost_images/ghostleftred1.png");
+        m_Left2Pixmap.load(":/ghosts/images/ghost_images/ghostleftred2.png");
     }
 }
 
 void Ghost::Move()
 {
-    QPoint p;
+    QPoint point;
 
-    int pac_x = Pacman::GetPacX();
-    int pac_y = Pacman::GetPacY();
+    int pacmanX = Pacman::GetX();
+    int pacmanY = Pacman::GetY();
 
     if(!m_GhostMoving)
     {
-        m_GhostDirection=static_cast<Direction>((qrand()%4)+1);
+        m_Direction = static_cast<Direction>((qrand() % 4) + 1);
     }
     else
     {
-        if((m_GhostDirection==Direction::right && m_GhostY<pac_y) || (m_GhostDirection==Direction::left && m_GhostY>pac_y))
+        if((m_Direction == Direction::RIGHT && m_Y < pacmanY) || (m_Direction == Direction::LEFT && m_Y > pacmanY))
         {
-            if(m_GhostDirection==Direction::left && m_GhostY>pac_y)
+            if(m_Direction == Direction::LEFT && m_Y > pacmanY)
             {
-                m_NextGhostDirection=Direction::up;
+                m_NextDirection = Direction::UP;
             }
-            else if(m_GhostDirection==Direction::right &&m_GhostY<pac_y)
+            else if(m_Direction == Direction::RIGHT && m_Y < pacmanY)
             {
-                m_NextGhostDirection=Direction::down;
+                m_NextDirection = Direction::DOWN;
             }
         }
-        else if((m_GhostDirection==Direction::down && m_GhostX<pac_x) || (m_GhostDirection==Direction::up && m_GhostX>pac_x))
+        else if((m_Direction == Direction::DOWN && m_X < pacmanX) || (m_Direction == Direction::UP && m_X > pacmanX))
         {
-            if(m_GhostDirection==Direction::up && m_GhostX>pac_x)
+            if(m_Direction == Direction::UP && m_X > pacmanX)
             {
-                m_NextGhostDirection=Direction::left;
+                m_NextDirection = Direction::LEFT;
             }
-            else if(m_GhostDirection==Direction::down && m_GhostX<pac_x)
+            else if(m_Direction == Direction::DOWN && m_X < pacmanX)
             {
-                m_NextGhostDirection=Direction::right;
+                m_NextDirection=Direction::RIGHT;
             }
         }
     }
 
-    if(m_NextGhostDirection!=m_GhostDirection)
+    if(m_NextDirection != m_Direction)
     {
-        switch(m_NextGhostDirection)
+        switch(m_NextDirection)
         {
-        case Direction::left:
-            p.setX(m_GhostX-1);
-            p.setY(m_GhostY);
+        case Direction::LEFT:
+            point.setX(m_X - 1);
+            point.setY(m_Y);
 
-            if(GameMap::IsPointAvailable(p))
+            if(GameMap::IsPointAvailable(point))
             {
-                m_GhostDirection=m_NextGhostDirection;
-                m_NextGhostDirection=Direction::none;
+                m_Direction=m_NextDirection;
+                m_NextDirection = Direction::NONE;
             }
             break;
 
-        case Direction::right:
-            p.setX(m_GhostX+1);
-            p.setY(m_GhostY);
+        case Direction::RIGHT:
+            point.setX(m_X + 1);
+            point.setY(m_Y);
 
-            if(GameMap::IsPointAvailable(p))
+            if(GameMap::IsPointAvailable(point))
             {
-                m_GhostDirection=m_NextGhostDirection;
-                m_NextGhostDirection=Direction::none;
+                m_Direction = m_NextDirection;
+                m_NextDirection = Direction::NONE;
             }
             break;
 
-        case Direction::down:
-            p.setX(m_GhostX);
-            p.setY(m_GhostY+1);
-            if(GameMap::IsPointAvailable(p))
+        case Direction::DOWN:
+            point.setX(m_X);
+            point.setY(m_Y + 1);
+            if(GameMap::IsPointAvailable(point))
             {
-                m_GhostDirection=m_NextGhostDirection;
-                m_NextGhostDirection=Direction::none;
+                m_Direction = m_NextDirection;
+                m_NextDirection = Direction::NONE;
             }
             break;
 
-        case Direction::up:
-            p.setX(m_GhostX);
-            p.setY(m_GhostY-1);
+        case Direction::UP:
+            point.setX(m_X);
+            point.setY(m_Y - 1);
 
-            if(GameMap::IsPointAvailable(p))
+            if(GameMap::IsPointAvailable(point))
             {
-                m_GhostDirection=m_NextGhostDirection;
-                m_NextGhostDirection=Direction::none;
+                m_Direction = m_NextDirection;
+                m_NextDirection = Direction::NONE;
             }
             break;
 
-        case Direction::none:
+        case Direction::NONE:
             break;
         }
     }
 
-    switch(m_GhostDirection)
+    switch(m_Direction)
     {
-    case Direction::left:
-        p.setX(m_GhostX-1);
-        p.setY(m_GhostY);
+    case Direction::LEFT:
+        point.setX(m_X - 1);
+        point.setY(m_Y);
 
-        if(GameMap::IsPointAvailable(p))
+        if(GameMap::IsPointAvailable(point))
         {
-            m_GhostX-=1;
-            m_GhostMoving=true;
+            m_X -= 1;
+            m_GhostMoving = true;
         }
         else
         {
-            m_GhostMoving=false;
+            m_GhostMoving = false;
         }
         break;
 
-    case Direction::right:
-        p.setX(m_GhostX+1);
-        p.setY(m_GhostY);
+    case Direction::RIGHT:
+        point.setX(m_X + 1);
+        point.setY(m_Y);
 
-        if(GameMap::IsPointAvailable(p))
+        if(GameMap::IsPointAvailable(point))
         {
-            m_GhostX+=1;
-            m_GhostMoving=true;
+            m_X += 1;
+            m_GhostMoving = true;
         }
         else
         {
-            m_GhostMoving=false;
+            m_GhostMoving = false;
         }
         break;
 
-    case Direction::down:
-        p.setX(m_GhostX);
-        p.setY(m_GhostY+1);
+    case Direction::DOWN:
+        point.setX(m_X);
+        point.setY(m_Y + 1);
 
-        if(GameMap::IsPointAvailable(p))
+        if(GameMap::IsPointAvailable(point))
         {
-            m_GhostY+=1;
-            m_GhostMoving=true;
+            m_Y += 1;
+            m_GhostMoving = true;
         }
         else
         {
-            m_GhostMoving=false;
+            m_GhostMoving = false;
         }
         break;
 
-    case Direction::up:
-        p.setX(m_GhostX);
-        p.setY(m_GhostY-1);
+    case Direction::UP:
+        point.setX(m_X);
+        point.setY(m_Y - 1);
 
-        if(GameMap::IsPointAvailable(p))
+        if(GameMap::IsPointAvailable(point))
         {
-            m_GhostY-=1;
-            m_GhostMoving=true;
+            m_Y -= 1;
+            m_GhostMoving = true;
         }
         else
         {
-            m_GhostMoving=false;
+            m_GhostMoving = false;
         }
         break;
 
-    case Direction::none:
+    case Direction::NONE:
         break;
     }
 
     /*Teleportation when reached left boundary of middle horizontal line*/
-    if(m_GhostX<=0)
+    if(m_X <= 0)
     {
-        m_GhostX=613;
-        m_GhostY=318;
+        m_X = 613;
+        m_Y = 318;
     }
     /*Teleportation when reached right boundary of middle horizontal line*/
-    else if(m_GhostX>=614)
+    else if(m_X >= 614)
     {
-        m_GhostX=1;
-        m_GhostY=318;
+        m_X = 1;
+        m_Y = 318;
     }
 }
 
@@ -309,47 +309,47 @@ void Ghost::MoveInStartingRect()
 {
     int const horizontalMovementOffset = 50;
 
-    if(m_GhostX == STARTING_X - horizontalMovementOffset || m_GhostX == STARTING_X + horizontalMovementOffset)
+    if(m_X == STARTING_X - horizontalMovementOffset || m_X == STARTING_X + horizontalMovementOffset)
     {
-        if(m_GhostDirection==Direction::right)
+        if(m_Direction == Direction::RIGHT)
         {
             /*Go left*/
-            m_GhostDirection=Direction::left;
+            m_Direction = Direction::LEFT;
         }
         else
         {
             /*Go right*/
-            m_GhostDirection=Direction::right;
+            m_Direction = Direction::RIGHT;
         }
     }
 
-    if(m_GhostDirection==Direction::right)
+    if(m_Direction == Direction::RIGHT)
     {
-        m_GhostX+=1;
+        m_X += 1;
     }
     else
     {
-        m_GhostX-=1;
+        m_X -= 1;
     }
 }
 
 void Ghost::MoveOutOfTheStartingBox(int ghostX, int ghostY)
 {
-    if(ghostX>Ghost::STARTING_X)
+    if(ghostX > Ghost::STARTING_X)
     {
-        ghostX-=1;
+        ghostX -= 1;
     }
-    else if(ghostX<Ghost::STARTING_X)
+    else if(ghostX < Ghost::STARTING_X)
     {
-        ghostX+=1;
+        ghostX += 1;
     }
 
     if(!GetGhostStartedFreeMovement())
     {
-        ghostY-=1;
+        ghostY -= 1;
 
-        m_GhostX = ghostX;
-        m_GhostY = ghostY;
+        m_X = ghostX;
+        m_Y = ghostY;
 
         QPoint point(ghostX, ghostY);
 
@@ -362,68 +362,68 @@ void Ghost::MoveOutOfTheStartingBox(int ghostX, int ghostY)
 
 QRectF Ghost::boundingRect() const
 {
-    int const ghostRadius=30;
-    int const offsetX=-15;
-    int const offsetY=-15;
+    const int DIAMETER = 30;
+    const int OFFSET_X = -15;
+    const int OFFSET_Y = -15;
 
-    return QRect(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius);
+    return QRect(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER);
 }
 
 void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
-    int const ghostRadius=30;
-    int const offsetX=-15;
-    int const offsetY=-15;
+    int const DIAMETER = 30;
+    int const OFFSET_X = -15;
+    int const OFFSET_Y= -15;
 
     if(!m_IsScared)
     {
-        switch(m_GhostDirection)
+        switch(m_Direction)
         {
-        case Direction::left:
-            if(m_AnimationState==0)
+        case Direction::LEFT:
+            if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY,ghostRadius, ghostRadius, m_Left1);
+                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Left1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Left2);
+                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Left2Pixmap);
             }
             break;
 
-        case Direction::right:
-            if(m_AnimationState==0)
+        case Direction::RIGHT:
+            if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Right1);
+                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Right1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Right2);
+                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Right2Pixmap);
             }
             break;
 
-        case Direction::down:
-            if(m_AnimationState==0)
+        case Direction::DOWN:
+            if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Down1);
+                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Down1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Down2);
+                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Down2Pixmap);
             }
             break;
 
-        case Direction::up:
-            if(m_AnimationState==0)
+        case Direction::UP:
+            if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Up1);
+                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Up1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_Up2);
+                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Up2Pixmap);
             }
             break;
 
-        case Direction::none:
+        case Direction::NONE:
             break;
         }
     }
@@ -431,24 +431,24 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/
     {
         if(m_ScaredWhite)
         {
-            if(m_AnimationState==0)
+            if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_ScaredWhitePix);
+                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredWhite1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_ScaredWhite1);
+                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredWhite2Pixmap);
             }
         }
         else
         {
-            if(m_AnimationState==0)
+            if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_ScaredBlue);
+                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredBlue1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_GhostX+offsetX, m_GhostY+offsetY, ghostRadius, ghostRadius, m_ScaredBlue1);
+                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredBlue2Pixmap);
             }
         }
     }

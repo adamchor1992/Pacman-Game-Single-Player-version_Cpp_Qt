@@ -1,5 +1,5 @@
-#ifndef GHOST_H
-#define GHOST_H
+#pragma once
+
 #include <QGraphicsItem>
 #include <QPainter>
 
@@ -8,9 +8,6 @@
 class Ghost : public QGraphicsItem
 {
 public:
-    static int const STARTING_X = 307;
-    static int const STARTING_Y = 318;
-
     static int GetAllGhostsScareState(){return m_AllGhostsScaredState;}
     static bool GetAllGhostsScared(){return m_AllGhostScared;}
     static void SetAllGhostsScared(bool allGhostsScared){m_AllGhostScared = allGhostsScared;}
@@ -29,28 +26,25 @@ public:
     bool GetIsScared() const {return m_IsScared;}
     void AdvanceAnimation();
     bool GetGhostStartedFreeMovement() const {return m_GhostStartedFreeMovement;}
-    int GetGhostX() const {return m_GhostX;}
-    int GetGhostY() const {return m_GhostY;}
+    int GetX() const {return m_X;}
+    int GetY() const {return m_Y;}
     void Move();
     void MoveOutOfTheStartingBox(int ghostX, int ghostY);
     void MoveInStartingRect();
 
 private:
+    static const int STARTING_X = 307;
+    static const int STARTING_Y = 318;
+
     static int m_GhostNumber;
     static int m_AllGhostsScaredState;
     static bool m_AllGhostScared;
     static bool m_AllGhostsStartedFreeMovement;
     static int m_GhostsStartTimer;
 
-    QPixmap m_GhostPixmap;
-    QPixmap m_GhostScaredBlue;
-    QPixmap m_GhostScaredWhite;
-    QPixmap m_Left1, m_Left2;
-    QPixmap m_Up1, m_Up2;
-    QPixmap m_Down1, m_Down2;
-    QPixmap m_Right1, m_Right2;
-    QPixmap m_ScaredBlue, m_ScaredBlue1;
-    QPixmap m_ScaredWhitePix, m_ScaredWhite1;
+    QPixmap m_Left1Pixmap, m_Left2Pixmap, m_Up1Pixmap, m_Up2Pixmap, m_Down1Pixmap, m_Down2Pixmap, m_Right1Pixmap, m_Right2Pixmap;
+    QPixmap m_ScaredBlue1Pixmap, m_ScaredBlue2Pixmap;
+    QPixmap m_ScaredWhite1Pixmap, m_ScaredWhite2Pixmap;
 
     bool m_IsScared;
     bool m_ScaredWhite;
@@ -59,17 +53,15 @@ private:
 
     int m_AnimationState;
     int m_AnimationModifyFactor;
-    int m_GhostX;
-    int m_GhostY;
+    int m_X;
+    int m_Y;
 
-    Direction m_GhostDirection;
-    Direction m_NextGhostDirection;
+    Direction m_Direction;
+    Direction m_NextDirection;
 
-    void LoadGhostImages();
-    void SetGhostColor(const QString& col);
+    void LoadImages();
+    void SetColor(const QString& col);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 };
-
-#endif // GHOST_H
