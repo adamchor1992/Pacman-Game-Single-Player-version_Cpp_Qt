@@ -4,17 +4,15 @@
 #include <QPainter>
 #include <QDebug>
 
-Powerball::Powerball(int x, int y, int width, int height)
+Powerball::Powerball(int x, int y)
 {
     m_X = x;
     m_Y = y;
-    m_Width = width;
-    m_Height = height;
 }
 
 QRectF Powerball::boundingRect() const
 {
-    return QRect(m_X, m_Y, m_Width, m_Height);
+    return QRect(m_X, m_Y, DIAMETER, DIAMETER);
 }
 
 void Powerball::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
@@ -22,5 +20,5 @@ void Powerball::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*opti
     painter->setPen(Qt::NoPen);
     painter->setBrush(QBrush(Qt::white));
 
-    painter->drawEllipse(m_X, m_Y, m_Width, m_Height);
+    painter->drawEllipse(m_X, m_Y, DIAMETER, DIAMETER);
 }

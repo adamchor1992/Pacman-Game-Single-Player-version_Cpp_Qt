@@ -38,24 +38,16 @@ void GameWindow::PopulateMapWithBalls()
 
     m_FoodballItemsCount=foodballPositions.size();
 
-    int const powerballRadius = 15;
-
     for(auto powerballPosition : powerballPositions)
     {
         m_PowerballGraphicalItemsTable.push_back(std::make_unique<Powerball>(powerballPosition.x(),
-                                                                             powerballPosition.y(),
-                                                                             powerballRadius,
-                                                                             powerballRadius));
+                                                                             powerballPosition.y()));
     }
-
-    int const foodballRadius = 7;
 
     for(auto foodballPosition : foodballPositions)
     {
         m_FoodballGraphicalItemsTable.push_back(std::make_unique<Foodball>(foodballPosition.x(),
-                                                                           foodballPosition.y(),
-                                                                           foodballRadius,
-                                                                           foodballRadius));
+                                                                           foodballPosition.y()));
     }
 
     AddPowerballGraphicalItemsToScene();
