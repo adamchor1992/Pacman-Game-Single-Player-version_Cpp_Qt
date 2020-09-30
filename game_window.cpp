@@ -27,14 +27,18 @@ void GameWindow::PrepareFirstGameRun()
 {
     AddGraphicalItemsToScene();
 
-    PopulateMapWithBalls();
+    connect(&m_Timer, &QTimer::timeout, this, &GameWindow::Updater);
+    connect(&m_GhostsTimer, &QTimer::timeout, this, &GameWindow::GhostUpdater);
+
+    /*Gives keyboard input focus to this widget*/
+    setFocus();
 }
 
 void GameWindow::PopulateMapWithBalls()
 {  
     /*Get generated foodball nad powerball positions from GameMap object*/
-    QVector<QPoint> const powerballPositions = m_GameMap.GetPowerballPositions();
-    QVector<QPoint> const foodballPositions = m_GameMap.GetFoodballPositions();
+    const QVector<QPoint> powerballPositions = m_GameMap.GetPowerballPositions();
+    const QVector<QPoint> foodballPositions = m_GameMap.GetFoodballPositions();
 
     m_FoodballItemsCount=foodballPositions.size();
 
@@ -88,24 +92,6 @@ void GameWindow::AddFoodballGraphicalItemsToScene()
 
 void GameWindow::StartGame()
 {
-    m_StartEndTextDisplay.hide();
-
-    connect(&m_Timer, &QTimer::timeout, this, &GameWindow::Updater);
-    connect(&m_GhostsTimer, &QTimer::timeout, this, &GameWindow::GhostUpdater);
-
-    m_Sounds.PlayBeginningSound();
-
-    m_Timer.start(4);
-    m_GhostsTimer.start(4);
-
-    m_GameState = GameState::GameRunning;
-
-    /*Gives keyboard input focus to this widget*/
-    setFocus();
-}
-
-void GameWindow::RestartGame()
-{
     PopulateMapWithBalls();
 
     m_Pacman.Reset();
@@ -132,9 +118,6 @@ void GameWindow::RestartGame()
     m_GhostsTimer.start(4);
 
     m_GameState = GameState::GameRunning;
-
-    /*Gives keyboard input focus to this widget*/
-    setFocus();
 }
 
 void GameWindow::ClearContainers()
@@ -284,7 +267,7 @@ void GameWindow::Updater()
 
     CheckCollisionWithPowerball();
 
-    if(m_FoodballItemsCount==0)
+    if(m_FoodballItemsCount == 0)
     {
         m_Timer.stop();
         m_GhostsTimer.stop();
@@ -295,12 +278,12 @@ void GameWindow::Updater()
     {
         Ghost::IncrementAllGhostsScareState();
 
-        if(Ghost::GetAllGhostsScareState()==1)
+        if(Ghost::GetAllGhostsScareState() == 1)
         {
             m_GhostsTimer.setInterval(50);
         }
 
-        if(Ghost::GetAllGhostsScareState()==750)
+        if(Ghost::GetAllGhostsScareState() == 750)
         {
             m_Ghost1.SetScaredWhite(true);
             m_Ghost2.SetScaredWhite(true);
@@ -308,7 +291,7 @@ void GameWindow::Updater()
             m_Ghost4.SetScaredWhite(true);
         }
 
-        if(Ghost::GetAllGhostsScareState()==1000)
+        if(Ghost::GetAllGhostsScareState() == 1000)
         {
             Ghost::SetAllGhostsScared(false);
 
@@ -393,34 +376,34 @@ void GameWindow::GhostUpdater()
         }
 
         /*Substitute of timer implemented for every ghost to differentiate their start time*/
-        if(m_Ghost1.GetX()==300 ||
-                m_Ghost2.GetX()==300 ||
-                m_Ghost3.GetX()==300 ||
-                m_Ghost4.GetX()==300)
+        if(m_Ghost1.GetX() == 300 ||
+                m_Ghost2.GetX() == 300 ||
+                m_Ghost3.GetX() == 300 ||
+                m_Ghost4.GetX() == 300)
         {
             Ghost::IncrementGhostsStartTimer();
         }
 
         /*Ghost 1 starts*/
-        if(Ghost::GetGhostsStartTimer()>=3)
+        if(Ghost::GetGhostsStartTimer() >= 3)
         {
             m_Ghost1.MoveOutOfTheStartingBox(ghost1X, ghost1Y);
         }
 
         /*Ghost 2 starts*/
-        if(Ghost::GetGhostsStartTimer()>=6)
+        if(Ghost::GetGhostsStartTimer() >= 6)
         {
             m_Ghost2.MoveOutOfTheStartingBox(ghost2X, ghost2Y);
         }
 
         /*Ghost 3 starts*/
-        if(Ghost::GetGhostsStartTimer()>=9)
+        if(Ghost::GetGhostsStartTimer() >= 9)
         {
             m_Ghost3.MoveOutOfTheStartingBox(ghost3X, ghost3Y);
         }
 
         /*Ghost 4 starts*/
-        if(Ghost::GetGhostsStartTimer()>=12)
+        if(Ghost::GetGhostsStartTimer() >= 12)
         {
             m_Ghost4.MoveOutOfTheStartingBox(ghost4X, ghost4Y);
         }
@@ -468,15 +451,12 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
         break;
 
     case Qt::Key_Space:
-        if(m_GameState == GameState::BeforeFirstRun)
+        if(m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::GameStopped)
         {
             StartGame();
         }
-        if(m_GameState == GameState::GameStopped)
-        {
-            RestartGame();
-        }
         break;
+
     default:
         break;
     }

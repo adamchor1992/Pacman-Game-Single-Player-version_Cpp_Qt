@@ -74,7 +74,6 @@ private:
 
     void StartGame();
     void EndGame(bool win);
-    void RestartGame();
     void HideSceneItems();
     void ClearContainers();
     void PacmanMove();
