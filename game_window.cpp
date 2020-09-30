@@ -7,7 +7,7 @@ GameWindow::GameWindow(QWidget* parent) : QDialog(parent), ui(new Ui::GameWindow
 
     setFocus(Qt::ActiveWindowFocusReason);
 
-    m_GameState = GameState::BeforeFirstRun;
+    m_GameState = GameState::BEFORE_FIRST_RUN;
 
     InitializeGameplayAreaScene();
 
@@ -19,7 +19,7 @@ void GameWindow::InitializeGameplayAreaScene()
     m_Scene.setParent(this);
     ui->m_pGameplayArea->setScene(&m_Scene);
     ui->m_pGameplayArea->setRenderHint(QPainter::Antialiasing);
-    m_Scene.setSceneRect(0,0,614,740);
+    m_Scene.setSceneRect(0, 0, 614, 740);
     ui->m_pGameplayArea->setSceneRect(m_Scene.sceneRect());
 }
 
@@ -68,7 +68,7 @@ void GameWindow::AddGraphicalItemsToScene()
     m_Scene.addItem(&m_Ghost3);
     m_Scene.addItem(&m_Ghost4);
 
-    m_Scene.addItem(&m_StartEndTextDisplay);
+    m_Scene.addItem(&m_ScreenTextDisplay);
     m_Scene.addItem(&m_ScoreDisplay);
 }
 
@@ -108,14 +108,14 @@ void GameWindow::StartGame()
     m_ScoreDisplay.ResetScore();
     m_ScoreDisplay.show();
 
-    m_StartEndTextDisplay.hide();
+    m_ScreenTextDisplay.hide();
 
     m_Sounds.PlayBeginningSound();
 
     m_Timer.start(4);
     m_GhostsTimer.start(4);
 
-    m_GameState = GameState::GameRunning;
+    m_GameState = GameState::GAME_RUNNING;
 }
 
 void GameWindow::ClearContainers()
@@ -142,27 +142,19 @@ void GameWindow::EndGame(GameResult gameResult)
     m_Timer.stop();
     m_GhostsTimer.stop();
 
-    m_GameState = GameState::GameStopped;
+    m_GameState = GameState::GAME_STOPPED;
 
     ClearContainers();
 
     HideSceneItems();
 
-    m_StartEndTextDisplay.show();
-    m_StartEndTextDisplay.SetScore(m_ScoreDisplay.GetScore());
+    m_ScreenTextDisplay.SetScore(m_ScoreDisplay.GetScore());
+    m_ScreenTextDisplay.SetGameResult(gameResult);
+    m_ScreenTextDisplay.show();
 
-    if(gameResult == GameResult::GameLost)
-    {
-        m_StartEndTextDisplay.SetGameWon(true);
-    }
-    else if(gameResult == GameResult::GameWin)
+    if(gameResult == GameResult::GAME_LOST)
     {
         m_Sounds.PlayPacmanDeathSound();
-        m_StartEndTextDisplay.SetGameLost(true);
-    }
-    else
-    {
-        assert(false);
     }
 
     m_Scene.update();
@@ -201,7 +193,7 @@ void GameWindow::CheckCollisionWithGhost()
         }
         else
         {
-            EndGame(GameResult::GameWin);
+            EndGame(GameResult::GAME_LOST);
         }
     }
 }
@@ -268,9 +260,9 @@ void GameWindow::Updater()
 
     CheckCollisionWithPowerball();
 
-    if(m_GameState == GameState::GameRunning && m_FoodballGraphicalItemsTable.size() == 0)
+    if(m_GameState == GameState::GAME_RUNNING && m_FoodballGraphicalItemsTable.size() == 0)
     {
-        EndGame(GameResult::GameWin);
+        EndGame(GameResult::GAME_WIN);
     }
 
     if(Ghost::GetAllGhostsScared())
@@ -450,7 +442,7 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
         break;
 
     case Qt::Key_Space:
-        if(m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::GameStopped)
+        if(m_GameState == GameState::BEFORE_FIRST_RUN || m_GameState == GameState::GAME_STOPPED)
         {
             StartGame();
         }

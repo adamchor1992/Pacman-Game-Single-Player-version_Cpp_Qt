@@ -11,7 +11,7 @@
 #include "powerball.h"
 #include "foodball.h"
 #include "ghost.h"
-#include "start_end_text_display.h"
+#include "screen_text_display.h"
 #include "score_display.h"
 #include "sounds.h"
 
@@ -42,7 +42,7 @@ private:
     Ghost m_Ghost2;
     Ghost m_Ghost3;
     Ghost m_Ghost4;
-    StartEndTextDisplay m_StartEndTextDisplay;
+    ScreenTextDisplay m_ScreenTextDisplay;
     ScoreDisplay m_ScoreDisplay;
 
     Sounds m_Sounds;
@@ -53,13 +53,6 @@ private:
 
     std::vector<std::unique_ptr<Foodball>> m_FoodballGraphicalItemsTable;
     std::vector<std::unique_ptr<Powerball>> m_PowerballGraphicalItemsTable;
-
-    enum class GameState
-    {
-        BeforeFirstRun,
-        GameRunning,
-        GameStopped
-    };
 
     GameState m_GameState;
 

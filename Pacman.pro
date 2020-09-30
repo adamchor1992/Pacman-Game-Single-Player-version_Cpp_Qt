@@ -33,8 +33,8 @@ SOURCES += \
     powerball.cpp \
     ghost.cpp \
     sounds.cpp \
-    start_end_text_display.cpp \
-    score_display.cpp
+    score_display.cpp \
+    screen_text_display.cpp
 
 HEADERS += \
     game_map.h \
@@ -44,9 +44,9 @@ HEADERS += \
     powerball.h \
     ghost.h \
     sounds.h \
-    start_end_text_display.h \
     utilities.h \
-    score_display.h
+    score_display.h \
+    screen_text_display.h
 
 FORMS += \
     game_window.ui
