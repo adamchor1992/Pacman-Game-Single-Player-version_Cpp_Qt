@@ -5,6 +5,7 @@ GameWindow::GameWindow(QWidget* parent) : QDialog(parent), ui(new Ui::GameWindow
 {
     ui->setupUi(this);
 
+    /*Gives keyboard input focus to this widget*/
     setFocus(Qt::ActiveWindowFocusReason);
 
     InitializeGameplayAreaScene();
@@ -26,12 +27,23 @@ void GameWindow::PrepareFirstGameRun()
     m_GameState = GameState::BEFORE_FIRST_RUN;
 
     AddGraphicalItemsToScene();
+    PopulateMapWithBalls();
 
     connect(&m_GameTickTimer, &QTimer::timeout, this, &GameWindow::GameTick);
     connect(&m_GhostsTimer, &QTimer::timeout, this, &GameWindow::GhostUpdater);
+}
 
-    /*Gives keyboard input focus to this widget*/
-    setFocus();
+void GameWindow::AddGraphicalItemsToScene()
+{
+    /*Add background map picture*/
+    m_pMapItem = m_Scene.addPixmap(m_GameMap.GetMapBackgroundPicture());
+    m_Scene.addItem(&m_Pacman);
+    m_Scene.addItem(&m_Ghost1);
+    m_Scene.addItem(&m_Ghost2);
+    m_Scene.addItem(&m_Ghost3);
+    m_Scene.addItem(&m_Ghost4);
+    m_Scene.addItem(&m_ScreenTextDisplay);
+    m_Scene.addItem(&m_ScoreDisplay);
 }
 
 void GameWindow::PopulateMapWithBalls()
@@ -65,31 +77,14 @@ void GameWindow::PopulateMapWithBalls()
     }
 }
 
-void GameWindow::AddGraphicalItemsToScene()
-{
-    /*Add background map picture*/
-    m_pMapItem = m_Scene.addPixmap(m_GameMap.GetMapBackgroundPicture());
-
-    m_Scene.addItem(&m_Pacman);
-
-    m_Scene.addItem(&m_Ghost1);
-    m_Scene.addItem(&m_Ghost2);
-    m_Scene.addItem(&m_Ghost3);
-    m_Scene.addItem(&m_Ghost4);
-
-    m_Scene.addItem(&m_ScreenTextDisplay);
-    m_Scene.addItem(&m_ScoreDisplay);
-}
-
 void GameWindow::StartGame()
 {
-    PopulateMapWithBalls();
+    m_Sounds.PlayBeginningSound();
 
-    m_Pacman.Reset();
-    m_Ghost1.Reset();
-    m_Ghost2.Reset();
-    m_Ghost3.Reset();
-    m_Ghost4.Reset();
+    if(m_GameState != GameState::BEFORE_FIRST_RUN)
+    {
+        PopulateMapWithBalls();
+    }
 
     m_pMapItem->show();
     m_Pacman.show();
@@ -103,8 +98,6 @@ void GameWindow::StartGame()
 
     m_ScreenTextDisplay.hide();
 
-    m_Sounds.PlayBeginningSound();
-
     m_GameTickTimer.start(NORMAL_MOVABLE_CHARACTER_SPEED);
     m_GhostsTimer.start(NORMAL_MOVABLE_CHARACTER_SPEED);
 
@@ -117,13 +110,11 @@ void GameWindow::ClearContainers()
     m_PowerballGraphicalItems.clear();
 }
 
-void GameWindow::HideSceneItems()
+void GameWindow::HideItems()
 {
     m_pMapItem->hide();
     m_ScoreDisplay.hide();
-
     m_Pacman.hide();
-
     m_Ghost1.hide();
     m_Ghost2.hide();
     m_Ghost3.hide();
@@ -139,7 +130,13 @@ void GameWindow::EndGame(GameResult gameResult)
 
     ClearContainers();
 
-    HideSceneItems();
+    HideItems();
+
+    m_Pacman.Reset();
+    m_Ghost1.Reset();
+    m_Ghost2.Reset();
+    m_Ghost3.Reset();
+    m_Ghost4.Reset();
 
     m_ScreenTextDisplay.SetScore(m_ScoreDisplay.GetScore());
     m_ScreenTextDisplay.SetGameResult(gameResult);

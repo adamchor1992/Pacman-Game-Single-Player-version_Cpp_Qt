@@ -62,12 +62,10 @@ private:
     void PrepareFirstGameRun();
     void PopulateMapWithBalls();
     void AddGraphicalItemsToScene();
-
     void StartGame();
     void EndGame(GameResult gameResult);
-    void HideSceneItems();
+    void HideItems();
     void ClearContainers();
-
     void CheckCollisionWithGhost();
     void CheckCollisionWithFoodball();
     void CheckCollisionWithPowerball();
