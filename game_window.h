@@ -29,10 +29,13 @@ public:
     ~GameWindow() override;
 
 private slots:
-    void Updater();
+    void GameTick();
     void GhostUpdater();
 
 private:    
+    const int NORMAL_MOVABLE_CHARACTER_SPEED = 4;
+    const int SCARED_GHOST_SPEED = 50;
+
     Ui::GameWindow* ui;
     QGraphicsScene m_Scene;
 
@@ -44,15 +47,14 @@ private:
     Ghost m_Ghost4;
     ScreenTextDisplay m_ScreenTextDisplay;
     ScoreDisplay m_ScoreDisplay;
+    QGraphicsPixmapItem* m_pMapItem = nullptr;
 
     Sounds m_Sounds;
-    QTimer m_Timer;
+    QTimer m_GameTickTimer;
     QTimer m_GhostsTimer;
 
-    QGraphicsPixmapItem* m_pMapItem{nullptr};
-
-    std::vector<std::unique_ptr<Foodball>> m_FoodballGraphicalItemsTable;
-    std::vector<std::unique_ptr<Powerball>> m_PowerballGraphicalItemsTable;
+    std::vector<std::unique_ptr<Foodball>> m_FoodballGraphicalItems;
+    std::vector<std::unique_ptr<Powerball>> m_PowerballGraphicalItems;
 
     GameState m_GameState;
 
@@ -60,14 +62,11 @@ private:
     void PrepareFirstGameRun();
     void PopulateMapWithBalls();
     void AddGraphicalItemsToScene();
-    void AddPowerballGraphicalItemsToScene();
-    void AddFoodballGraphicalItemsToScene();
 
     void StartGame();
     void EndGame(GameResult gameResult);
     void HideSceneItems();
     void ClearContainers();
-    void PacmanMove();
 
     void CheckCollisionWithGhost();
     void CheckCollisionWithFoodball();

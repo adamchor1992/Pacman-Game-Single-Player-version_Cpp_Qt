@@ -7,8 +7,6 @@ GameWindow::GameWindow(QWidget* parent) : QDialog(parent), ui(new Ui::GameWindow
 
     setFocus(Qt::ActiveWindowFocusReason);
 
-    m_GameState = GameState::BEFORE_FIRST_RUN;
-
     InitializeGameplayAreaScene();
 
     PrepareFirstGameRun();
@@ -25,9 +23,11 @@ void GameWindow::InitializeGameplayAreaScene()
 
 void GameWindow::PrepareFirstGameRun()
 {
+    m_GameState = GameState::BEFORE_FIRST_RUN;
+
     AddGraphicalItemsToScene();
 
-    connect(&m_Timer, &QTimer::timeout, this, &GameWindow::Updater);
+    connect(&m_GameTickTimer, &QTimer::timeout, this, &GameWindow::GameTick);
     connect(&m_GhostsTimer, &QTimer::timeout, this, &GameWindow::GhostUpdater);
 
     /*Gives keyboard input focus to this widget*/
@@ -40,20 +40,29 @@ void GameWindow::PopulateMapWithBalls()
     const QVector<QPoint> powerballPositions = m_GameMap.GetPowerballPositions();
     const QVector<QPoint> foodballPositions = m_GameMap.GetFoodballPositions();
 
-    for(auto powerballPosition : powerballPositions)
+    /*Create balls graphical items and put them into vector*/
+    for(auto& powerballPosition : powerballPositions)
     {
-        m_PowerballGraphicalItemsTable.push_back(std::make_unique<Powerball>(powerballPosition.x(),
-                                                                             powerballPosition.y()));
+        m_PowerballGraphicalItems.push_back(std::make_unique<Powerball>(powerballPosition.x(),
+                                                                        powerballPosition.y()));
     }
 
-    for(auto foodballPosition : foodballPositions)
+    for(auto& foodballPosition : foodballPositions)
     {
-        m_FoodballGraphicalItemsTable.push_back(std::make_unique<Foodball>(foodballPosition.x(),
-                                                                           foodballPosition.y()));
+        m_FoodballGraphicalItems.push_back(std::make_unique<Foodball>(foodballPosition.x(),
+                                                                      foodballPosition.y()));
     }
 
-    AddPowerballGraphicalItemsToScene();
-    AddFoodballGraphicalItemsToScene();
+    /*Add balls graphical items to scene*/
+    for(auto& powerballGraphicalItem : m_PowerballGraphicalItems)
+    {
+        m_Scene.addItem(powerballGraphicalItem.get());
+    }
+
+    for(auto& foodballGraphicalItem : m_FoodballGraphicalItems)
+    {
+        m_Scene.addItem(foodballGraphicalItem.get());
+    }
 }
 
 void GameWindow::AddGraphicalItemsToScene()
@@ -70,22 +79,6 @@ void GameWindow::AddGraphicalItemsToScene()
 
     m_Scene.addItem(&m_ScreenTextDisplay);
     m_Scene.addItem(&m_ScoreDisplay);
-}
-
-void GameWindow::AddPowerballGraphicalItemsToScene()
-{
-    for(auto& powerballGraphicalItem : m_PowerballGraphicalItemsTable)
-    {
-        m_Scene.addItem(powerballGraphicalItem.get());
-    }
-}
-
-void GameWindow::AddFoodballGraphicalItemsToScene()
-{
-    for(auto& foodballGraphicalItem : m_FoodballGraphicalItemsTable)
-    {
-        m_Scene.addItem(foodballGraphicalItem.get());
-    }
 }
 
 void GameWindow::StartGame()
@@ -112,16 +105,16 @@ void GameWindow::StartGame()
 
     m_Sounds.PlayBeginningSound();
 
-    m_Timer.start(4);
-    m_GhostsTimer.start(4);
+    m_GameTickTimer.start(NORMAL_MOVABLE_CHARACTER_SPEED);
+    m_GhostsTimer.start(NORMAL_MOVABLE_CHARACTER_SPEED);
 
     m_GameState = GameState::GAME_RUNNING;
 }
 
 void GameWindow::ClearContainers()
 {
-    m_FoodballGraphicalItemsTable.clear();
-    m_PowerballGraphicalItemsTable.clear();
+    m_FoodballGraphicalItems.clear();
+    m_PowerballGraphicalItems.clear();
 }
 
 void GameWindow::HideSceneItems()
@@ -139,7 +132,7 @@ void GameWindow::HideSceneItems()
 
 void GameWindow::EndGame(GameResult gameResult)
 {
-    m_Timer.stop();
+    m_GameTickTimer.stop();
     m_GhostsTimer.stop();
 
     m_GameState = GameState::GAME_STOPPED;
@@ -170,25 +163,25 @@ void GameWindow::CheckCollisionWithGhost()
         if(m_Pacman.collidesWithItem(&m_Ghost1) && m_Ghost1.GetIsScared())
         {
             m_Sounds.PlayEatGhostSound();
-            m_ScoreDisplay.IncreaseScore(200);
+            m_ScoreDisplay.IncreaseScore(ScoreDisplay::GHOST_KILL_SCORE);
             m_Ghost1.Respawn();
         }
         else if(m_Pacman.collidesWithItem(&m_Ghost2) && m_Ghost2.GetIsScared())
         {
             m_Sounds.PlayEatGhostSound();
-            m_ScoreDisplay.IncreaseScore(200);
+            m_ScoreDisplay.IncreaseScore(ScoreDisplay::GHOST_KILL_SCORE);
             m_Ghost2.Respawn();
         }
         else if(m_Pacman.collidesWithItem(&m_Ghost3) && m_Ghost3.GetIsScared())
         {
             m_Sounds.PlayEatGhostSound();
-            m_ScoreDisplay.IncreaseScore(200);
+            m_ScoreDisplay.IncreaseScore(ScoreDisplay::GHOST_KILL_SCORE);
             m_Ghost3.Respawn();
         }
         else if(m_Pacman.collidesWithItem(&m_Ghost4) && m_Ghost4.GetIsScared())
         {
             m_Sounds.PlayEatGhostSound();
-            m_ScoreDisplay.IncreaseScore(200);
+            m_ScoreDisplay.IncreaseScore(ScoreDisplay::GHOST_KILL_SCORE);
             m_Ghost4.Respawn();
         }
         else
@@ -200,13 +193,13 @@ void GameWindow::CheckCollisionWithGhost()
 
 void GameWindow::CheckCollisionWithFoodball()
 {
-    auto iter = std::begin(m_FoodballGraphicalItemsTable);
+    auto iter = std::begin(m_FoodballGraphicalItems);
 
-    for (auto& foodballGraphicalItem : m_FoodballGraphicalItemsTable)
+    for (auto& foodballGraphicalItem : m_FoodballGraphicalItems)
     {
         if(m_Pacman.collidesWithItem(foodballGraphicalItem.get()))
         {
-            m_FoodballGraphicalItemsTable.erase(iter);
+            m_FoodballGraphicalItems.erase(iter);
 
             m_Sounds.PlayEatFoodballSound1();
 
@@ -221,13 +214,13 @@ void GameWindow::CheckCollisionWithFoodball()
 
 void GameWindow::CheckCollisionWithPowerball()
 {
-    auto iter = std::begin(m_PowerballGraphicalItemsTable);
+    auto iter = std::begin(m_PowerballGraphicalItems);
 
-    for (auto& powerballGraphicalItem : m_PowerballGraphicalItemsTable)
+    for (auto& powerballGraphicalItem : m_PowerballGraphicalItems)
     {
         if(m_Pacman.collidesWithItem(powerballGraphicalItem.get()))
         {
-            m_PowerballGraphicalItemsTable.erase(iter);
+            m_PowerballGraphicalItems.erase(iter);
 
             m_Sounds.PlayEatFoodballSound1();
 
@@ -249,9 +242,8 @@ void GameWindow::CheckCollisionWithPowerball()
     }
 }
 
-void GameWindow::Updater()
+void GameWindow::GameTick()
 {
-    /*Changes position of pacman*/
     m_Pacman.Move();
 
     CheckCollisionWithGhost();
@@ -260,7 +252,7 @@ void GameWindow::Updater()
 
     CheckCollisionWithPowerball();
 
-    if(m_GameState == GameState::GAME_RUNNING && m_FoodballGraphicalItemsTable.size() == 0)
+    if(m_GameState == GameState::GAME_RUNNING && m_FoodballGraphicalItems.size() == 0)
     {
         EndGame(GameResult::GAME_WIN);
     }
@@ -271,7 +263,7 @@ void GameWindow::Updater()
 
         if(Ghost::GetAllGhostsScareState() == 1)
         {
-            m_GhostsTimer.setInterval(50);
+            m_GhostsTimer.setInterval(SCARED_GHOST_SPEED);
         }
 
         if(Ghost::GetAllGhostsScareState() == 750)
@@ -297,7 +289,7 @@ void GameWindow::Updater()
             m_Ghost4.SetScaredWhite(false);
 
             Ghost::SetAllGhostsScareState(0);
-            m_GhostsTimer.setInterval(4);
+            m_GhostsTimer.setInterval(NORMAL_MOVABLE_CHARACTER_SPEED);
         }
     }
 
