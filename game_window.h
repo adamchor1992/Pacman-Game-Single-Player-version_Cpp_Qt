@@ -71,7 +71,7 @@ private:
     void AddFoodballGraphicalItemsToScene();
 
     void StartGame();
-    void EndGame(bool win);
+    void EndGame(GameResult gameResult);
     void HideSceneItems();
     void ClearContainers();
     void PacmanMove();

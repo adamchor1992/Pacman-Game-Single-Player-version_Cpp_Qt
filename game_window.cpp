@@ -137,7 +137,7 @@ void GameWindow::HideSceneItems()
     m_Ghost4.hide();
 }
 
-void GameWindow::EndGame(bool win)
+void GameWindow::EndGame(GameResult gameResult)
 {
     m_Timer.stop();
     m_GhostsTimer.stop();
@@ -151,14 +151,18 @@ void GameWindow::EndGame(bool win)
     m_StartEndTextDisplay.show();
     m_StartEndTextDisplay.SetScore(m_ScoreDisplay.GetScore());
 
-    if(win)
+    if(gameResult == GameResult::GameLost)
     {
         m_StartEndTextDisplay.SetGameWon(true);
     }
-    else
+    else if(gameResult == GameResult::GameWin)
     {
         m_Sounds.PlayPacmanDeathSound();
         m_StartEndTextDisplay.SetGameLost(true);
+    }
+    else
+    {
+        assert(false);
     }
 
     m_Scene.update();
@@ -197,7 +201,7 @@ void GameWindow::CheckCollisionWithGhost()
         }
         else
         {
-            EndGame(false);
+            EndGame(GameResult::GameWin);
         }
     }
 }
@@ -266,7 +270,7 @@ void GameWindow::Updater()
 
     if(m_GameState == GameState::GameRunning && m_FoodballGraphicalItemsTable.size() == 0)
     {
-        EndGame(true);
+        EndGame(GameResult::GameWin);
     }
 
     if(Ghost::GetAllGhostsScared())

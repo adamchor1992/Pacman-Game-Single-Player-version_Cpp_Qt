@@ -8,3 +8,9 @@ enum class Direction
     DOWN = 3,
     RIGHT = 4
 };
+
+enum class GameResult
+{
+    GameLost = 0,
+    GameWin = 1
+};
