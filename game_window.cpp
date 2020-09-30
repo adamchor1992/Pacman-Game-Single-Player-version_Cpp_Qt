@@ -263,7 +263,7 @@ void GameWindow::GameTick()
             m_GhostsTimer.setInterval(SCARED_GHOST_SPEED);
         }
 
-        if(Ghost::GetAllGhostsScareState() == 750)
+        if(Ghost::GetAllGhostsScareState() == Ghost::WHITE_SCARE_STATE_THRESHOLD)
         {
             m_Ghost1.SetScaredWhite(true);
             m_Ghost2.SetScaredWhite(true);
@@ -271,7 +271,7 @@ void GameWindow::GameTick()
             m_Ghost4.SetScaredWhite(true);
         }
 
-        if(Ghost::GetAllGhostsScareState() == 1000)
+        if(Ghost::GetAllGhostsScareState() == Ghost::SCARE_STATE_TIMER_MAX)
         {
             Ghost::SetAllGhostsScared(false);
 

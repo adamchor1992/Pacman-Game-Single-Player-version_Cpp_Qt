@@ -8,6 +8,9 @@
 class Ghost : public QGraphicsItem
 {
 public:
+    static const int WHITE_SCARE_STATE_THRESHOLD = 750;
+    static const int SCARE_STATE_TIMER_MAX = 1000;
+
     static int GetAllGhostsScareState(){return m_AllGhostsScaredState;}
     static bool GetAllGhostsScared(){return m_AllGhostScared;}
     static void SetAllGhostsScared(bool allGhostsScared){m_AllGhostScared = allGhostsScared;}

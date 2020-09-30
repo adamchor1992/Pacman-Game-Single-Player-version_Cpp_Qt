@@ -6,6 +6,7 @@ class ScoreDisplay : public QGraphicsItem
 {
 public:
     static const int GHOST_KILL_SCORE = 200;
+    static const int POWERBALL_SCORE = 100;
 
     ScoreDisplay();
     void SetScore(int score);
