@@ -33,7 +33,7 @@ private slots:
     void GhostUpdater();
 
 private:    
-    Ui::GameWindow *m_pUi;
+    Ui::GameWindow* ui;
     QGraphicsScene m_Scene;
 
     GameMap m_GameMap;
@@ -48,8 +48,6 @@ private:
     Sounds m_Sounds;
     QTimer m_Timer;
     QTimer m_GhostsTimer;
-
-    int m_FoodballItemsCount{0};
 
     QGraphicsPixmapItem* m_pMapItem{nullptr};
 

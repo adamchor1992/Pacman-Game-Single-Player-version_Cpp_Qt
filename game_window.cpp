@@ -1,9 +1,9 @@
 #include "game_window.h"
-#include "ui_gamewindow.h"
+#include "ui_game_window.h"
 
-GameWindow::GameWindow(QWidget *parent) : QDialog(parent), m_pUi(new Ui::GameWindow)
+GameWindow::GameWindow(QWidget* parent) : QDialog(parent), ui(new Ui::GameWindow)
 {
-    m_pUi->setupUi(this);
+    ui->setupUi(this);
 
     setFocus(Qt::ActiveWindowFocusReason);
 
@@ -17,10 +17,10 @@ GameWindow::GameWindow(QWidget *parent) : QDialog(parent), m_pUi(new Ui::GameWin
 void GameWindow::InitializeGameplayAreaScene()
 {
     m_Scene.setParent(this);
-    m_pUi->m_pGameplayArea->setScene(&m_Scene);
-    m_pUi->m_pGameplayArea->setRenderHint(QPainter::Antialiasing);
+    ui->m_pGameplayArea->setScene(&m_Scene);
+    ui->m_pGameplayArea->setRenderHint(QPainter::Antialiasing);
     m_Scene.setSceneRect(0,0,614,740);
-    m_pUi->m_pGameplayArea->setSceneRect(m_Scene.sceneRect());
+    ui->m_pGameplayArea->setSceneRect(m_Scene.sceneRect());
 }
 
 void GameWindow::PrepareFirstGameRun()
@@ -39,8 +39,6 @@ void GameWindow::PopulateMapWithBalls()
     /*Get generated foodball nad powerball positions from GameMap object*/
     const QVector<QPoint> powerballPositions = m_GameMap.GetPowerballPositions();
     const QVector<QPoint> foodballPositions = m_GameMap.GetFoodballPositions();
-
-    m_FoodballItemsCount=foodballPositions.size();
 
     for(auto powerballPosition : powerballPositions)
     {
@@ -141,6 +139,11 @@ void GameWindow::HideSceneItems()
 
 void GameWindow::EndGame(bool win)
 {
+    m_Timer.stop();
+    m_GhostsTimer.stop();
+
+    m_GameState = GameState::GameStopped;
+
     ClearContainers();
 
     HideSceneItems();
@@ -159,8 +162,6 @@ void GameWindow::EndGame(bool win)
     }
 
     m_Scene.update();
-
-    m_GameState = GameState::GameStopped;
 }
 
 void GameWindow::CheckCollisionWithGhost()
@@ -196,8 +197,6 @@ void GameWindow::CheckCollisionWithGhost()
         }
         else
         {
-            m_Timer.stop();
-            m_GhostsTimer.stop();
             EndGame(false);
         }
     }
@@ -216,8 +215,6 @@ void GameWindow::CheckCollisionWithFoodball()
             m_Sounds.PlayEatFoodballSound1();
 
             m_ScoreDisplay.IncreaseScore(1);
-
-            m_FoodballItemsCount--;
 
             return;
         }
@@ -267,10 +264,8 @@ void GameWindow::Updater()
 
     CheckCollisionWithPowerball();
 
-    if(m_FoodballItemsCount == 0)
+    if(m_GameState == GameState::GameRunning && m_FoodballGraphicalItemsTable.size() == 0)
     {
-        m_Timer.stop();
-        m_GhostsTimer.stop();
         EndGame(true);
     }
 
@@ -420,7 +415,7 @@ void GameWindow::GhostUpdater()
 
 GameWindow::~GameWindow()
 {
-    delete m_pUi;
+    delete ui;
 }
 
 /*Supports pacman movement using WSAD and directional keys*/

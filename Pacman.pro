@@ -49,7 +49,7 @@ HEADERS += \
     score_display.h
 
 FORMS += \
-    gamewindow.ui
+    game_window.ui
 
 RESOURCES += \
     images.qrc \
