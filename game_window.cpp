@@ -157,25 +157,25 @@ void GameWindow::CheckCollisionWithGhost()
             m_Pacman.collidesWithItem(&m_Ghost3) ||
             m_Pacman.collidesWithItem(&m_Ghost4))
     {
-        if(m_Pacman.collidesWithItem(&m_Ghost1) && m_Ghost1.GetIsScared())
+        if(m_Pacman.collidesWithItem(&m_Ghost1) && (m_Ghost1.GetScaredState() == Ghost::ScaredState::SCARED_BLUE || m_Ghost1.GetScaredState() == Ghost::ScaredState::SCARED_WHITE))
         {
             m_Sounds.PlayEatGhostSound();
             m_ScoreDisplay.IncreaseScore(ScoreDisplay::GHOST_KILL_SCORE);
             m_Ghost1.Respawn();
         }
-        else if(m_Pacman.collidesWithItem(&m_Ghost2) && m_Ghost2.GetIsScared())
+        else if(m_Pacman.collidesWithItem(&m_Ghost2) && (m_Ghost2.GetScaredState() == Ghost::ScaredState::SCARED_BLUE || m_Ghost2.GetScaredState() == Ghost::ScaredState::SCARED_WHITE))
         {
             m_Sounds.PlayEatGhostSound();
             m_ScoreDisplay.IncreaseScore(ScoreDisplay::GHOST_KILL_SCORE);
             m_Ghost2.Respawn();
         }
-        else if(m_Pacman.collidesWithItem(&m_Ghost3) && m_Ghost3.GetIsScared())
+        else if(m_Pacman.collidesWithItem(&m_Ghost3) && (m_Ghost3.GetScaredState() == Ghost::ScaredState::SCARED_BLUE || m_Ghost3.GetScaredState() == Ghost::ScaredState::SCARED_WHITE))
         {
             m_Sounds.PlayEatGhostSound();
             m_ScoreDisplay.IncreaseScore(ScoreDisplay::GHOST_KILL_SCORE);
             m_Ghost3.Respawn();
         }
-        else if(m_Pacman.collidesWithItem(&m_Ghost4) && m_Ghost4.GetIsScared())
+        else if(m_Pacman.collidesWithItem(&m_Ghost4) && (m_Ghost4.GetScaredState() == Ghost::ScaredState::SCARED_BLUE || m_Ghost4.GetScaredState() == Ghost::ScaredState::SCARED_WHITE))
         {
             m_Sounds.PlayEatGhostSound();
             m_ScoreDisplay.IncreaseScore(ScoreDisplay::GHOST_KILL_SCORE);
@@ -223,12 +223,10 @@ void GameWindow::CheckCollisionWithPowerball()
 
             Ghost::SetAllGhostsScareState(0);
 
-            m_Ghost1.SetIsScared(true);
-            m_Ghost2.SetIsScared(true);
-            m_Ghost3.SetIsScared(true);
-            m_Ghost4.SetIsScared(true);
-
-            Ghost::SetAllGhostsScared(true);
+            m_Ghost1.SetScaredState(Ghost::ScaredState::SCARED_BLUE);
+            m_Ghost2.SetScaredState(Ghost::ScaredState::SCARED_BLUE);
+            m_Ghost3.SetScaredState(Ghost::ScaredState::SCARED_BLUE);
+            m_Ghost4.SetScaredState(Ghost::ScaredState::SCARED_BLUE);
 
             m_ScoreDisplay.IncreaseScore(100);
 
@@ -254,7 +252,12 @@ void GameWindow::GameTick()
         EndGame(GameResult::GAME_WIN);
     }
 
-    if(Ghost::GetAllGhostsScared())
+    auto CheckIfGhostsScared = [&](){return (m_Ghost1.GetScaredState() == Ghost::ScaredState::SCARED_BLUE || m_Ghost1.GetScaredState() == Ghost::ScaredState::SCARED_WHITE) ||
+                (m_Ghost2.GetScaredState() == Ghost::ScaredState::SCARED_BLUE || m_Ghost2.GetScaredState() == Ghost::ScaredState::SCARED_WHITE) ||
+                (m_Ghost3.GetScaredState() == Ghost::ScaredState::SCARED_BLUE || m_Ghost3.GetScaredState() == Ghost::ScaredState::SCARED_WHITE) ||
+                (m_Ghost4.GetScaredState() == Ghost::ScaredState::SCARED_BLUE || m_Ghost4.GetScaredState() == Ghost::ScaredState::SCARED_WHITE);};
+
+    if(CheckIfGhostsScared())
     {
         Ghost::IncrementAllGhostsScareState();
 
@@ -265,25 +268,18 @@ void GameWindow::GameTick()
 
         if(Ghost::GetAllGhostsScareState() == Ghost::WHITE_SCARE_STATE_THRESHOLD)
         {
-            m_Ghost1.SetScaredWhite(true);
-            m_Ghost2.SetScaredWhite(true);
-            m_Ghost3.SetScaredWhite(true);
-            m_Ghost4.SetScaredWhite(true);
+            m_Ghost1.SetScaredState(Ghost::ScaredState::SCARED_WHITE);
+            m_Ghost2.SetScaredState(Ghost::ScaredState::SCARED_WHITE);
+            m_Ghost3.SetScaredState(Ghost::ScaredState::SCARED_WHITE);
+            m_Ghost4.SetScaredState(Ghost::ScaredState::SCARED_WHITE);
         }
 
         if(Ghost::GetAllGhostsScareState() == Ghost::SCARE_STATE_TIMER_MAX)
         {
-            Ghost::SetAllGhostsScared(false);
-
-            m_Ghost1.SetIsScared(false);
-            m_Ghost2.SetIsScared(false);
-            m_Ghost3.SetIsScared(false);
-            m_Ghost4.SetIsScared(false);
-
-            m_Ghost1.SetScaredWhite(false);
-            m_Ghost2.SetScaredWhite(false);
-            m_Ghost3.SetScaredWhite(false);
-            m_Ghost4.SetScaredWhite(false);
+            m_Ghost1.SetScaredState(Ghost::ScaredState::NO_SCARED);
+            m_Ghost2.SetScaredState(Ghost::ScaredState::NO_SCARED);
+            m_Ghost3.SetScaredState(Ghost::ScaredState::NO_SCARED);
+            m_Ghost4.SetScaredState(Ghost::ScaredState::NO_SCARED);
 
             Ghost::SetAllGhostsScareState(0);
             m_GhostsTimer.setInterval(NORMAL_MOVABLE_CHARACTER_SPEED);

@@ -11,9 +11,14 @@ public:
     static const int WHITE_SCARE_STATE_THRESHOLD = 750;
     static const int SCARE_STATE_TIMER_MAX = 1000;
 
+    enum class ScaredState
+    {
+        NO_SCARED,
+        SCARED_BLUE,
+        SCARED_WHITE
+    };
+
     static int GetAllGhostsScareState(){return m_AllGhostsScaredState;}
-    static bool GetAllGhostsScared(){return m_AllGhostScared;}
-    static void SetAllGhostsScared(bool allGhostsScared){m_AllGhostScared = allGhostsScared;}
     static bool GetAllGhostsStartedFreeMovement(){return m_AllGhostsStartedFreeMovement;}
     static void SetAllGhostsStartedFreeMovement(bool allGhostsStartedFreeMovement){m_AllGhostsStartedFreeMovement = allGhostsStartedFreeMovement;}
     static int GetGhostsStartTimer(){return m_GhostsStartTimer;}
@@ -24,9 +29,8 @@ public:
     Ghost();
     void Reset();
     void Respawn();
-    void SetIsScared(bool option) {m_IsScared=option;}
-    void SetScaredWhite(bool option) {m_ScaredWhite=option;}
-    bool GetIsScared() const {return m_IsScared;}
+    void SetScaredState(ScaredState scaredState) {m_ScaredState = scaredState;}
+    ScaredState GetScaredState() const {return m_ScaredState;}
     void AdvanceAnimation();
     bool GetGhostStartedFreeMovement() const {return m_GhostStartedFreeMovement;}
     int GetX() const {return m_X;}
@@ -41,7 +45,6 @@ private:
 
     static int m_GhostNumber;
     static int m_AllGhostsScaredState;
-    static bool m_AllGhostScared;
     static bool m_AllGhostsStartedFreeMovement;
     static int m_GhostsStartTimer;
 
@@ -49,8 +52,6 @@ private:
     QPixmap m_ScaredBlue1Pixmap, m_ScaredBlue2Pixmap;
     QPixmap m_ScaredWhite1Pixmap, m_ScaredWhite2Pixmap;
 
-    bool m_IsScared;
-    bool m_ScaredWhite;
     bool m_GhostMoving;
     bool m_GhostStartedFreeMovement;
 
@@ -61,6 +62,8 @@ private:
 
     Direction m_Direction;
     Direction m_NextDirection;
+
+    ScaredState m_ScaredState;
 
     void LoadImages();
     void SetColor(const QString& col);

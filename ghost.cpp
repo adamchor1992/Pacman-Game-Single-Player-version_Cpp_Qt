@@ -2,7 +2,6 @@
 #include "game_map.h"
 #include "pacman.h"
 
-bool Ghost::m_AllGhostScared = false;
 bool Ghost::m_AllGhostsStartedFreeMovement = false;
 int Ghost::m_GhostsStartTimer = 0;
 int Ghost::m_AllGhostsScaredState = 0;
@@ -11,7 +10,6 @@ int Ghost::m_GhostNumber = 0;
 Ghost::Ghost()
 {
     m_AllGhostsScaredState = 0;
-    m_AllGhostScared = false;
     m_GhostsStartTimer = 0;
     m_AllGhostsStartedFreeMovement = false;
 
@@ -19,8 +17,7 @@ Ghost::Ghost()
     m_AnimationModifyFactor = 6;
     m_Direction = Direction::LEFT;
     m_NextDirection = Direction::NONE;
-    m_IsScared = false;
-    m_ScaredWhite = false;
+    m_ScaredState = ScaredState::NO_SCARED;
     m_GhostMoving = false;
     m_GhostStartedFreeMovement = false;
     m_X = STARTING_X;
@@ -48,15 +45,13 @@ Ghost::Ghost()
 void Ghost::Reset()
 {
     m_AllGhostsScaredState = 0;
-    m_AllGhostScared = false;
     m_GhostsStartTimer = 0;
     m_AllGhostsStartedFreeMovement = false;
 
     m_AnimationState = 0;
     m_AnimationModifyFactor = 6;
     m_Direction = Direction::LEFT;
-    m_IsScared = false;
-    m_ScaredWhite = false;
+    m_ScaredState = ScaredState::NO_SCARED;
     m_GhostMoving = false;
     m_GhostStartedFreeMovement = false;
     m_NextDirection = Direction::NONE;
@@ -96,7 +91,7 @@ void Ghost::Respawn()
 {
     m_X = STARTING_X;
     m_Y = 252;
-    m_IsScared = false;
+    m_ScaredState = ScaredState::NO_SCARED;
 }
 
 void Ghost::SetColor(const QString& col)
@@ -371,11 +366,11 @@ QRectF Ghost::boundingRect() const
 
 void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
-    int const DIAMETER = 30;
-    int const OFFSET_X = -15;
-    int const OFFSET_Y= -15;
+    const int  DIAMETER = 30;
+    const int OFFSET_X = -15;
+    const int OFFSET_Y= -15;
 
-    if(!m_IsScared)
+    if(m_ScaredState == ScaredState::NO_SCARED)
     {
         switch(m_Direction)
         {
@@ -427,29 +422,30 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/
             break;
         }
     }
-    else
+    else if(m_ScaredState == ScaredState::SCARED_BLUE)
     {
-        if(m_ScaredWhite)
+        if(m_AnimationState == 0)
         {
-            if(m_AnimationState == 0)
-            {
-                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredWhite1Pixmap);
-            }
-            else
-            {
-                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredWhite2Pixmap);
-            }
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredBlue1Pixmap);
         }
         else
         {
-            if(m_AnimationState == 0)
-            {
-                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredBlue1Pixmap);
-            }
-            else
-            {
-                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredBlue2Pixmap);
-            }
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredBlue2Pixmap);
         }
+    }
+    else if(m_ScaredState == ScaredState::SCARED_WHITE)
+    {
+        if(m_AnimationState == 0)
+        {
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredWhite1Pixmap);
+        }
+        else
+        {
+            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredWhite2Pixmap);
+        }
+    }
+    else
+    {
+        assert(false);
     }
 }
