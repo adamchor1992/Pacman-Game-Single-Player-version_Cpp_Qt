@@ -10,7 +10,9 @@ QT += multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Pacman
+CONFIG += c++17
+
+TARGET = ../../PacmanSingle_Player_Qt_Cplusplus/executable/Pacman
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -34,7 +36,8 @@ SOURCES += \
     ghost.cpp \
     sounds.cpp \
     score_display.cpp \
-    screen_text_display.cpp
+    screen_text_display.cpp \
+    log_manager.cpp
 
 HEADERS += \
     game_map.h \
@@ -46,7 +49,8 @@ HEADERS += \
     sounds.h \
     utilities.h \
     score_display.h \
-    screen_text_display.h
+    screen_text_display.h \
+    log_manager.h
 
 FORMS += \
     game_window.ui

@@ -18,7 +18,7 @@ void GameWindow::InitializeGameplayAreaScene()
     m_Scene.setParent(this);
     ui->m_pGameplayArea->setScene(&m_Scene);
     ui->m_pGameplayArea->setRenderHint(QPainter::Antialiasing);
-    m_Scene.setSceneRect(0, 0, 614, 740);
+    m_Scene.setSceneRect(0, 0, SCENE_WIDTH, SCENE_HEIGHT);
     ui->m_pGameplayArea->setSceneRect(m_Scene.sceneRect());
 }
 

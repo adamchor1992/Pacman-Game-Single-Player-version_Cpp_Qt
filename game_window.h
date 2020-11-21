@@ -35,6 +35,8 @@ private slots:
 private:    
     const int NORMAL_MOVABLE_CHARACTER_SPEED = 4;
     const int SCARED_GHOST_SPEED = 50;
+    const int SCENE_WIDTH = 614;
+    const int SCENE_HEIGHT = 740;
 
     Ui::GameWindow* ui;
     QGraphicsScene m_Scene;
