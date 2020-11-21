@@ -217,9 +217,3 @@ void GameMap::GeneratePowerballPositions()
 
     assert(m_PowerballPositions.size() == TARGET_POWERBALL_COUNT);
 }
-
-/*Sets map bounding rect which will be updated and redrawn every timer cycle*/
-QRectF GameMap::boundingRect() const
-{
-    return QRect(0, 0, 614, 740);
-}
