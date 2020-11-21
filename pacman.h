@@ -22,6 +22,10 @@ private:
     static int m_X;
     static int m_Y;
 
+    const int DIAMETER = 30;
+    const int OFFSET_X = -15;
+    const int OFFSET_Y = -15;
+
     QPixmap m_Left1Pixmap, m_Left2Pixmap, m_Left3Pixmap, m_Left4Pixmap;
     QPixmap m_Up1Pixmap, m_Up2Pixmap, m_Up3Pixmap, m_Up4Pixmap;
     QPixmap m_Down1Pixmap, m_Down2Pixmap, m_Down3Pixmap, m_Down4Pixmap;

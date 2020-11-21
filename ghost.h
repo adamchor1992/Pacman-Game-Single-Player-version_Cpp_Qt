@@ -48,6 +48,10 @@ private:
     static bool m_AllGhostsStartedFreeMovement;
     static int m_GhostsStartTimer;
 
+    const int DIAMETER = 30;
+    const int OFFSET_X = -15;
+    const int OFFSET_Y = -15;
+
     QPixmap m_Left1Pixmap, m_Left2Pixmap, m_Up1Pixmap, m_Up2Pixmap, m_Down1Pixmap, m_Down2Pixmap, m_Right1Pixmap, m_Right2Pixmap;
     QPixmap m_ScaredBlue1Pixmap, m_ScaredBlue2Pixmap;
     QPixmap m_ScaredWhite1Pixmap, m_ScaredWhite2Pixmap;

@@ -357,18 +357,12 @@ void Ghost::MoveOutOfTheStartingBox(int ghostX, int ghostY)
 
 QRectF Ghost::boundingRect() const
 {
-    const int DIAMETER = 30;
-    const int OFFSET_X = -15;
-    const int OFFSET_Y = -15;
-
     return QRect(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER);
 }
 
 void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/, QWidget * /*widget*/)
 {
-    const int  DIAMETER = 30;
-    const int OFFSET_X = -15;
-    const int OFFSET_Y= -15;
+    QRect boundingRect(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER);
 
     if(m_ScaredState == ScaredState::NO_SCARED)
     {
@@ -377,44 +371,44 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/
         case Direction::LEFT:
             if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Left1Pixmap);
+                painter->drawPixmap(boundingRect, m_Left1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Left2Pixmap);
+                painter->drawPixmap(boundingRect, m_Left2Pixmap);
             }
             break;
 
         case Direction::RIGHT:
             if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Right1Pixmap);
+                painter->drawPixmap(boundingRect, m_Right1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Right2Pixmap);
+                painter->drawPixmap(boundingRect, m_Right2Pixmap);
             }
             break;
 
         case Direction::DOWN:
             if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Down1Pixmap);
+                painter->drawPixmap(boundingRect, m_Down1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Down2Pixmap);
+                painter->drawPixmap(boundingRect, m_Down2Pixmap);
             }
             break;
 
         case Direction::UP:
             if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Up1Pixmap);
+                painter->drawPixmap(boundingRect, m_Up1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_Up2Pixmap);
+                painter->drawPixmap(boundingRect, m_Up2Pixmap);
             }
             break;
 
@@ -426,22 +420,22 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem * /*option*/
     {
         if(m_AnimationState == 0)
         {
-            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredBlue1Pixmap);
+            painter->drawPixmap(boundingRect, m_ScaredBlue1Pixmap);
         }
         else
         {
-            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredBlue2Pixmap);
+            painter->drawPixmap(boundingRect, m_ScaredBlue2Pixmap);
         }
     }
     else if(m_ScaredState == ScaredState::SCARED_WHITE)
     {
         if(m_AnimationState == 0)
         {
-            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredWhite1Pixmap);
+            painter->drawPixmap(boundingRect, m_ScaredWhite1Pixmap);
         }
         else
         {
-            painter->drawPixmap(m_X + OFFSET_X, m_Y + OFFSET_Y, DIAMETER, DIAMETER, m_ScaredWhite2Pixmap);
+            painter->drawPixmap(boundingRect, m_ScaredWhite2Pixmap);
         }
     }
     else
