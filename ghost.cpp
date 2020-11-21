@@ -1,6 +1,7 @@
 #include "ghost.h"
 #include "game_map.h"
 #include "pacman.h"
+#include <QRandomGenerator>
 
 bool Ghost::m_AllGhostsStartedFreeMovement = false;
 int Ghost::m_GhostsStartTimer = 0;
@@ -140,7 +141,7 @@ void Ghost::Move()
 
     if(!m_GhostMoving)
     {
-        m_Direction = static_cast<Direction>((qrand() % 4) + 1);
+        m_Direction = static_cast<Direction>(QRandomGenerator::global()->bounded(1, 4));
     }
     else
     {
