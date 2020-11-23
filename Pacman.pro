@@ -12,7 +12,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
 
-TARGET = ../../PacmanSingle_Player_Qt_Cplusplus/executable/Pacman
+TARGET = ../../Pacman_Game_Single_Player_Qt_Cplusplus/executable/Pacman
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use

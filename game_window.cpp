@@ -36,7 +36,7 @@ void GameWindow::PrepareFirstGameRun()
 void GameWindow::AddGraphicalItemsToScene()
 {
     /*Add background map picture*/
-    m_pMapItem = m_Scene.addPixmap(m_GameMap.GetMapBackgroundPicture());
+    m_pMapItem = m_Scene.addPixmap(QPixmap(":/images/map.png"));
     m_Scene.addItem(&m_Pacman);
     m_Scene.addItem(&m_Ghost1);
     m_Scene.addItem(&m_Ghost2);
@@ -49,8 +49,8 @@ void GameWindow::AddGraphicalItemsToScene()
 void GameWindow::PopulateMapWithBalls()
 {  
     /*Get generated foodball nad powerball positions from GameMap object*/
-    const QVector<QPoint> powerballPositions = m_GameMap.GetPowerballPositions();
-    const QVector<QPoint> foodballPositions = m_GameMap.GetFoodballPositions();
+    const QVector<QPoint> powerballPositions = m_GameMap.GeneratePowerballPositions();
+    const QVector<QPoint> foodballPositions = m_GameMap.GenerateFoodballPositions();
 
     /*Create balls graphical items and put them into vector*/
     for(auto& powerballPosition : powerballPositions)

@@ -3,7 +3,7 @@
 
 QVector<QPoint> GameMap::m_PathPoints;
 
-GameMap::GameMap() : m_MapBackgroundPixmap(":/images/map.png")
+GameMap::GameMap()
 {
     //HORIZONTAL LINES
     //LINE 1
@@ -91,9 +91,6 @@ GameMap::GameMap() : m_MapBackgroundPixmap(":/images/map.png")
     GeneratePathPoints(579, 35, 579, 187);
     GeneratePathPoints(579, 449, 579, 514);
     GeneratePathPoints(579, 580, 579, 645);
-
-    GenerateFoodballPositions();
-    GeneratePowerballPositions();
 }
 
 void GameMap::GeneratePathPoints(int startX, int startY, int endX, int endY)
@@ -163,13 +160,15 @@ bool GameMap::IsPointAvailable(QPoint const& point)
     return m_PathPoints.contains(point);
 }
 
-void GameMap::GenerateFoodballPositions()
+QVector<QPoint> GameMap::GenerateFoodballPositions() const
 {
     const int COORDINATES_COUNT = 10;
 
     /*Coordinates (x,y) where foodballs will be placed*/
     std::array<int, COORDINATES_COUNT> verticalLinesXCoordinates={35, 79, 144, 209, 274, 340, 406, 470, 536, 579};
     std::array<int, COORDINATES_COUNT> horizontalLinesYCoordinates={35, 121, 187, 252, 318, 384, 449, 514, 580, 645};
+
+    QVector<QPoint> foodballPositions;
 
     for(int x : verticalLinesXCoordinates)
     {
@@ -190,30 +189,36 @@ void GameMap::GenerateFoodballPositions()
                 }
 
                 /*Check if the point is already in the vector*/
-                if(m_FoodballPositions.contains(foodballPoint))
+                if(foodballPositions.contains(foodballPoint))
                 {
                     continue;
                 }
 
-                m_FoodballPositions.push_back(QPoint(x, y));
+                foodballPositions.push_back(QPoint(x, y));
             }
         }
     }
 
-    assert(m_FoodballPositions.size() == TARGET_FOODBALL_COUNT);
+    assert(foodballPositions.size() == TARGET_FOODBALL_COUNT);
+
+    return foodballPositions;
 }
 
-void GameMap::GeneratePowerballPositions()
+QVector<QPoint> GameMap::GeneratePowerballPositions() const
 {
+    QVector<QPoint> powerballPositions;
+
     const QPoint powerball1Position(35, 75);
     const QPoint powerball2Position(579, 75);
     const QPoint powerball3Position(35, 514);
     const QPoint powerball4Position(579, 514);
 
-    m_PowerballPositions.push_back(powerball1Position);
-    m_PowerballPositions.push_back(powerball2Position);
-    m_PowerballPositions.push_back(powerball3Position);
-    m_PowerballPositions.push_back(powerball4Position);
+    powerballPositions.push_back(powerball1Position);
+    powerballPositions.push_back(powerball2Position);
+    powerballPositions.push_back(powerball3Position);
+    powerballPositions.push_back(powerball4Position);
 
-    assert(m_PowerballPositions.size() == TARGET_POWERBALL_COUNT);
+    assert(powerballPositions.size() == TARGET_POWERBALL_COUNT);
+
+    return powerballPositions;
 }
